@@ -1,8 +1,8 @@
 {
-  "name": "@civ-clone/base-city-happiness-civ1",
+  "name": "@civ-clone/civ1-city-happiness",
   "version": "0.1.0",
   "main": "index.js",
-  "repository": "git@github.com:civ-clone/base-city-happiness-civ1.git",
+  "repository": "git@github.com:civ-clone/civ1-city-happiness.git",
   "keywords": [
     "typescript",
     "civilization"
@@ -11,7 +11,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "npm run prettier:format && npm run ts:compile",
+    "build": "npm run ts:compile && npm run prettier:format",
     "prettier:check": "prettier --config .prettierrc '**/*.ts'",
     "prettier:format": "prettier --config .prettierrc '**/*.ts' --write",
     "test": "ts-mocha ./tests/*.test.ts",
@@ -19,11 +19,11 @@
     "ts:compile": "tsc --build tsconfig.json"
   },
   "devDependencies": {
-    "@civ-clone/base-city-civ1": "github:civ-clone/base-city-civ1",
-    "@civ-clone/base-world-generator": "github:civ-clone/base-world-generator",
+    "@civ-clone/civ1-city": "github:civ-clone/civ1-city",
     "@civ-clone/core-player-world": "^0.1.0",
     "@civ-clone/core-terrain-feature": "^0.1.0",
     "@civ-clone/core-tile-improvement": "^0.1.0",
+    "@civ-clone/simple-world-generator": "github:civ-clone/simple-world-generator",
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.0.3",
     "@types/node": "^14.11.2",
@@ -38,9 +38,11 @@
     "@civ-clone/base-city-yield-happiness": "^0.1.0",
     "@civ-clone/base-city-yield-luxuries": "^0.1.0",
     "@civ-clone/base-city-yield-unhappiness": "^0.1.0",
-    "@civ-clone/base-government-civ1": "github:civ-clone/base-government-civ1",
-    "@civ-clone/base-terrain-civ1": "github:civ-clone/base-terrain-civ1",
-    "@civ-clone/base-unit-civ1": "github:civ-clone/base-unit-civ1",
+    "@civ-clone/civ1-city-improvement": "github:civ-clone/civ1-city-improvement",
+    "@civ-clone/civ1-government": "github:civ-clone/civ1-government",
+    "@civ-clone/civ1-science": "github:civ-clone/civ1-science",
+    "@civ-clone/civ1-unit": "github:civ-clone/civ1-unit",
+    "@civ-clone/civ1-world": "github:civ-clone/civ1-world",
     "@civ-clone/core-city": "^0.1.0",
     "@civ-clone/core-city-growth": "^0.1.0",
     "@civ-clone/core-city-happiness": "^0.1.0",

@@ -1,4 +1,3 @@
-# base-city-happiness-civ1
+# civ1-city-happiness
 
-This is a template repo.
-
+Contains the `Rule`s for dealing with city happiness to be compatible with Civ 1.

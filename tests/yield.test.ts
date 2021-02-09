@@ -10,13 +10,13 @@ import { Unhappiness } from '../Yields';
 import Unit from '@civ-clone/core-unit/Unit';
 import UnitRegistry from '@civ-clone/core-unit/UnitRegistry';
 import Yield from '@civ-clone/core-yield/Yield';
-import added from '@civ-clone/base-government-civ1/Rules/Player/added';
+import added from '@civ-clone/civ1-government/Rules/Player/added';
 import cityYield from '../Rules/City/yield';
 import cost from '../Rules/City/cost';
-import created from '@civ-clone/base-city-civ1/Rules/City/created';
+import created from '@civ-clone/civ1-city/Rules/City/created';
 import { expect } from 'chai';
-import setUpCity from '@civ-clone/base-city-civ1/tests/lib/setUpCity';
-import { Fortifiable } from '@civ-clone/base-unit-civ1/Types';
+import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
+import { Fortifiable } from '@civ-clone/civ1-unit/Types';
 
 describe('city:yield', (): void => {
   const ruleRegistry = new RuleRegistry(),

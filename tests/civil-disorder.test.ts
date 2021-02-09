@@ -9,9 +9,9 @@ import TerrainFeatureRegistry from '@civ-clone/core-terrain-feature/TerrainFeatu
 import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprovementRegistry';
 import Yield from '@civ-clone/core-yield/Yield';
 import civilDisorder from '../Rules/City/civil-disorder';
-import created from '@civ-clone/base-city-civ1/Rules/City/created';
+import created from '@civ-clone/civ1-city/Rules/City/created';
 import { expect } from 'chai';
-import setUpCity from '@civ-clone/base-city-civ1/tests/lib/setUpCity';
+import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
 
 describe('city:civil-disorder', (): void => {
   const ruleRegistry = new RuleRegistry(),

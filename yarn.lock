@@ -7,29 +7,75 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@civ-clone/base-city-civ1@github:civ-clone/base-city-civ1":
+"@civ-clone/base-city-improvement-aqueduct@^0.1.0":
   version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-city-civ1/tar.gz/4a646444e3886123da0535b2fe1a7b315dd78765"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-aqueduct/-/base-city-improvement-aqueduct-0.1.0.tgz#6f2d29b4b34ec87f62f75e0ef512e28458872a34"
+  integrity sha512-COk36T/3Q0uaWWzFnSYztZsJWC1VWRxWdXKGcNp2HYU/VkgcdLGVdruyNqtobSaWcoT9rb3gq+RrcJNhhWsLsQ==
   dependencies:
-    "@civ-clone/base-city-yield-gold" "^0.1.0"
-    "@civ-clone/base-city-yield-happiness" "^0.1.0"
-    "@civ-clone/base-city-yield-luxuries" "^0.1.0"
-    "@civ-clone/base-city-yield-research" "^0.1.0"
-    "@civ-clone/base-city-yield-unhappiness" "^0.1.0"
-    "@civ-clone/base-government-civ1" "^0.1.0"
-    "@civ-clone/base-terrain-civ1" "git+ssh://git@github.com/civ-clone/base-terrain-civ1.git"
-    "@civ-clone/base-terrain-yield-trade" "^0.1.0"
-    "@civ-clone/core-city" "^0.1.0"
-    "@civ-clone/core-city-build" "^0.1.0"
-    "@civ-clone/core-city-growth" "^0.1.0"
-    "@civ-clone/core-engine" "^0.1.0"
-    "@civ-clone/core-government" "^0.1.0"
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-    "@civ-clone/core-unit" "^0.1.0"
-    "@civ-clone/core-world" "^0.1.0"
-    "@civ-clone/core-yield" "^0.1.0"
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-barracks@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-barracks/-/base-city-improvement-barracks-0.1.0.tgz#681391d0d546e84d06551958b5805a2e1d991107"
+  integrity sha512-7KGPwv4k/ABFK8BuvjzP1cokMRRi4GfJCkxbGvWUiefTqFv4W5ZXplNDmlRO/8o3/TRaFvM2tp0bAwQl11gvkQ==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-citywalls@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-citywalls/-/base-city-improvement-citywalls-0.1.0.tgz#f5c32ea327f7db3fa07a3f93ec1a54d438348221"
+  integrity sha512-rUR9FyCIhIQdij8cLGGHYsyrfqjzFY/HabfDaE8PoWHhQw1JLHsqYdhdr42aE8m1/et/KbCBEJZEeWNKQQ/NrQ==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-colosseum@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-colosseum/-/base-city-improvement-colosseum-0.1.0.tgz#8055d34c9fabf27292c0adab8a6889aa418882df"
+  integrity sha512-e9kmTabOKhDlFzdmEmYstrKx6bDCmNuQ2UOwJYeBjDCA0n3AxFYtCYXc8M4W2Ofnjb2ZLiWLaVYSvibaNKPmiA==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-courthouse@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-courthouse/-/base-city-improvement-courthouse-0.1.0.tgz#ab4aa52fe1a545c25e267dbcb6bc601a87609603"
+  integrity sha512-2+sADVWyUxGyWubyc3RgmrgQBU1l7Bvddg38MHqttj2F+Hzvv2pSoajYFsALP5IGW22f9slo+EiKUYvOp2S0zQ==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-granary@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-granary/-/base-city-improvement-granary-0.1.0.tgz#7e2178245ce026810a8cf46798edf1f3215fc33a"
+  integrity sha512-jwv4kPhCR0zbMYYAfatUWAaXZ57UVYxDM5aO1etrfWE8te2ZnEm/+lwsWRTbS3WfKQb9rp+aLc6mPGWZ61ho/g==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-library@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-library/-/base-city-improvement-library-0.1.0.tgz#e01010f788c245d9ccda8c0acbad546d1136a7ed"
+  integrity sha512-txNDKgwONcguVxElUKEF1i8VANqsx0SDad2CNlVSm9CWmWUdcN0GbCArHJQV7kK8g1AyLLit4uruc8ud+eheRA==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-marketplace@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-marketplace/-/base-city-improvement-marketplace-0.1.0.tgz#c00d7ac7aae97e1a17e9e1a7cf9ea2150d93cd4a"
+  integrity sha512-Osq7rW1phoPTPQSxhNPUM1NPMnVxYJHkCC6+ZFOm6PT1Ec6tE7MntxJ5ylUbgQOdLOlQYmjh0XB5+CbQMoTrtw==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-palace@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-palace/-/base-city-improvement-palace-0.1.0.tgz#a339944f12c406b226c647ac1e4d13c391c42d82"
+  integrity sha512-TnLxsYDRMURoCjG/hH3mKOgVYdFTK4T05zf4aWauHCaMCYQ6hTIGvWS4xyHhDXoILRZB6j/+dcpxZnCf/jEjKg==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
+
+"@civ-clone/base-city-improvement-temple@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-city-improvement-temple/-/base-city-improvement-temple-0.1.0.tgz#4d4f34d6282c5fbe805608e2d47de6b346c7005f"
+  integrity sha512-LWaWNhHLjNXC6l618M/kXWv4fmupswtASvH2sca30scwt1geq+ZC17EtAyeNiiVLeAewDPIYVgWS1p4lnoCuyQ==
+  dependencies:
+    "@civ-clone/core-city-improvement" "^0.1.0"
 
 "@civ-clone/base-city-yield-gold@^0.1.0":
   version "0.1.0"
@@ -72,41 +118,6 @@
   integrity sha512-+bOmYkf56MLzidpi1mlXJEv8NC59S4TFdNcDrGOk9hIsRdAr48RgNFueuOzwBIqq40W3dU3dhUqdFDTefYyhrA==
   dependencies:
     "@civ-clone/core-government" "^0.1.0"
-
-"@civ-clone/base-government-civ1@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@civ-clone/base-government-civ1/-/base-government-civ1-0.1.0.tgz#5791f5a8275b6e9912becd7f1e9e8e8ecd875191"
-  integrity sha512-FdDTRkF5ZPFmglJArcSuzHLurjMbmQPXJghIWdw2C5ueRIadKdkHUNBrkynuLjugHwgNbBTNXqyCHgv/AqJ1Mg==
-  dependencies:
-    "@civ-clone/base-government-anarchy" "^0.1.0"
-    "@civ-clone/base-government-communism" "^0.1.0"
-    "@civ-clone/base-government-democracy" "^0.1.0"
-    "@civ-clone/base-government-despotism" "^0.1.0"
-    "@civ-clone/base-government-monarchy" "^0.1.0"
-    "@civ-clone/base-government-republic" "^0.1.0"
-    "@civ-clone/base-science-civ1" "github:civ-clone/base-science-civ1#^0.1.0"
-    "@civ-clone/core-engine" "^0.1.0"
-    "@civ-clone/core-government" "^0.1.0"
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-science" "^0.1.0"
-
-"@civ-clone/base-government-civ1@github:civ-clone/base-government-civ1":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-government-civ1/tar.gz/ce80f85cfc8faa02eaba7303dd00f510a18c84c3"
-  dependencies:
-    "@civ-clone/base-government-anarchy" "^0.1.0"
-    "@civ-clone/base-government-communism" "^0.1.0"
-    "@civ-clone/base-government-democracy" "^0.1.0"
-    "@civ-clone/base-government-despotism" "^0.1.0"
-    "@civ-clone/base-government-monarchy" "^0.1.0"
-    "@civ-clone/base-government-republic" "^0.1.0"
-    "@civ-clone/base-science-civ1" "github:civ-clone/base-science-civ1"
-    "@civ-clone/core-engine" "^0.1.0"
-    "@civ-clone/core-government" "^0.1.0"
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-science" "^0.1.0"
 
 "@civ-clone/base-government-communism@^0.1.0":
   version "0.1.0"
@@ -339,45 +350,6 @@
   dependencies:
     "@civ-clone/core-science" "^0.1.0"
 
-"@civ-clone/base-science-civ1@github:civ-clone/base-science-civ1", "@civ-clone/base-science-civ1@github:civ-clone/base-science-civ1#^0.1.0":
-  version "0.1.0"
-  uid "54e68f57b9600e10f96b1b604c9f7ed3fe91f869"
-  resolved "https://codeload.github.com/civ-clone/base-science-civ1/tar.gz/54e68f57b9600e10f96b1b604c9f7ed3fe91f869"
-  dependencies:
-    "@civ-clone/base-science-advance-alphabet" "^0.1.0"
-    "@civ-clone/base-science-advance-astronomy" "^0.1.0"
-    "@civ-clone/base-science-advance-bridgebuilding" "^0.1.0"
-    "@civ-clone/base-science-advance-bronzeworking" "^0.1.0"
-    "@civ-clone/base-science-advance-ceremonialburial" "^0.1.0"
-    "@civ-clone/base-science-advance-chivalry" "^0.1.0"
-    "@civ-clone/base-science-advance-codeoflaws" "^0.1.0"
-    "@civ-clone/base-science-advance-construction" "^0.1.0"
-    "@civ-clone/base-science-advance-currency" "^0.1.0"
-    "@civ-clone/base-science-advance-engineering" "^0.1.0"
-    "@civ-clone/base-science-advance-feudalism" "^0.1.0"
-    "@civ-clone/base-science-advance-gunpowder" "^0.1.0"
-    "@civ-clone/base-science-advance-horsebackriding" "^0.1.0"
-    "@civ-clone/base-science-advance-invention" "^0.1.0"
-    "@civ-clone/base-science-advance-ironworking" "^0.1.0"
-    "@civ-clone/base-science-advance-literacy" "^0.1.0"
-    "@civ-clone/base-science-advance-mapmaking" "^0.1.0"
-    "@civ-clone/base-science-advance-masonry" "^0.1.0"
-    "@civ-clone/base-science-advance-mathematics" "^0.1.0"
-    "@civ-clone/base-science-advance-monarchy" "^0.1.0"
-    "@civ-clone/base-science-advance-mysticism" "^0.1.0"
-    "@civ-clone/base-science-advance-navigation" "^0.1.0"
-    "@civ-clone/base-science-advance-pottery" "^0.1.0"
-    "@civ-clone/base-science-advance-therepublic" "^0.1.0"
-    "@civ-clone/base-science-advance-thewheel" "^0.1.0"
-    "@civ-clone/base-science-advance-writing" "^0.1.0"
-    "@civ-clone/core-city" "^0.1.0"
-    "@civ-clone/core-engine" "^0.1.0"
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-science" "^0.1.0"
-    "@civ-clone/core-yield" "^0.1.0"
-
 "@civ-clone/base-terrain-arctic@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-arctic/-/base-terrain-arctic-0.1.0.tgz#9781ed30d64f7a8e41bea5d246bf7ff91502ad59"
@@ -385,158 +357,10 @@
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/base-terrain-arctic@github:civ-clone/base-terrain-arctic":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-arctic/tar.gz/d043bb06924c1cde16e8bfea4908174f2e0a16ec"
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
-"@civ-clone/base-terrain-civ1@git+ssh://git@github.com/civ-clone/base-terrain-civ1.git":
-  version "0.1.0"
-  resolved "git+ssh://git@github.com/civ-clone/base-terrain-civ1.git#a5c3af2fb04bc2b8c36abc35924fc0e045c4f1ca"
-  dependencies:
-    "@civ-clone/base-science-civ1" "github:civ-clone/base-science-civ1"
-    "@civ-clone/base-terrain-arctic" "^0.1.0"
-    "@civ-clone/base-terrain-desert" "^0.1.0"
-    "@civ-clone/base-terrain-feature-coal" "^0.1.0"
-    "@civ-clone/base-terrain-feature-fish" "^0.1.0"
-    "@civ-clone/base-terrain-feature-game" "^0.1.0"
-    "@civ-clone/base-terrain-feature-gems" "^0.1.0"
-    "@civ-clone/base-terrain-feature-gold" "^0.1.0"
-    "@civ-clone/base-terrain-feature-horse" "^0.1.0"
-    "@civ-clone/base-terrain-feature-oasis" "^0.1.0"
-    "@civ-clone/base-terrain-feature-oil" "^0.1.0"
-    "@civ-clone/base-terrain-feature-seal" "^0.1.0"
-    "@civ-clone/base-terrain-feature-shield" "^0.1.0"
-    "@civ-clone/base-terrain-forest" "^0.1.0"
-    "@civ-clone/base-terrain-grassland" "^0.1.0"
-    "@civ-clone/base-terrain-hills" "^0.1.0"
-    "@civ-clone/base-terrain-jungle" "^0.1.0"
-    "@civ-clone/base-terrain-mountains" "^0.1.0"
-    "@civ-clone/base-terrain-ocean" "^0.1.0"
-    "@civ-clone/base-terrain-plains" "^0.1.0"
-    "@civ-clone/base-terrain-river" "^0.1.0"
-    "@civ-clone/base-terrain-swamp" "^0.1.0"
-    "@civ-clone/base-terrain-tundra" "^0.1.0"
-    "@civ-clone/base-terrain-yield-food" "^0.1.0"
-    "@civ-clone/base-terrain-yield-production" "^0.1.0"
-    "@civ-clone/base-terrain-yield-trade" "^0.1.0"
-    "@civ-clone/base-tile-improvement-irrigation" "^0.1.0"
-    "@civ-clone/base-tile-improvement-mine" "^0.1.0"
-    "@civ-clone/base-tile-improvement-pollution" "^0.1.0"
-    "@civ-clone/base-tile-improvement-railroad" "^0.1.0"
-    "@civ-clone/base-tile-improvement-road" "^0.1.0"
-    "@civ-clone/core-engine" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-science" "^0.1.0"
-    "@civ-clone/core-terrain" "^0.1.0"
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-    "@civ-clone/core-world" "^0.1.0"
-    "@civ-clone/core-world-generator" "^0.1.0"
-    "@civ-clone/core-yield" "^0.1.0"
-
-"@civ-clone/base-terrain-civ1@github:civ-clone/base-terrain-civ1":
-  version "0.1.0"
-  uid a5c3af2fb04bc2b8c36abc35924fc0e045c4f1ca
-  resolved "https://codeload.github.com/civ-clone/base-terrain-civ1/tar.gz/a5c3af2fb04bc2b8c36abc35924fc0e045c4f1ca"
-  dependencies:
-    "@civ-clone/base-science-civ1" "github:civ-clone/base-science-civ1"
-    "@civ-clone/base-terrain-arctic" "^0.1.0"
-    "@civ-clone/base-terrain-desert" "^0.1.0"
-    "@civ-clone/base-terrain-feature-coal" "^0.1.0"
-    "@civ-clone/base-terrain-feature-fish" "^0.1.0"
-    "@civ-clone/base-terrain-feature-game" "^0.1.0"
-    "@civ-clone/base-terrain-feature-gems" "^0.1.0"
-    "@civ-clone/base-terrain-feature-gold" "^0.1.0"
-    "@civ-clone/base-terrain-feature-horse" "^0.1.0"
-    "@civ-clone/base-terrain-feature-oasis" "^0.1.0"
-    "@civ-clone/base-terrain-feature-oil" "^0.1.0"
-    "@civ-clone/base-terrain-feature-seal" "^0.1.0"
-    "@civ-clone/base-terrain-feature-shield" "^0.1.0"
-    "@civ-clone/base-terrain-forest" "^0.1.0"
-    "@civ-clone/base-terrain-grassland" "^0.1.0"
-    "@civ-clone/base-terrain-hills" "^0.1.0"
-    "@civ-clone/base-terrain-jungle" "^0.1.0"
-    "@civ-clone/base-terrain-mountains" "^0.1.0"
-    "@civ-clone/base-terrain-ocean" "^0.1.0"
-    "@civ-clone/base-terrain-plains" "^0.1.0"
-    "@civ-clone/base-terrain-river" "^0.1.0"
-    "@civ-clone/base-terrain-swamp" "^0.1.0"
-    "@civ-clone/base-terrain-tundra" "^0.1.0"
-    "@civ-clone/base-terrain-yield-food" "^0.1.0"
-    "@civ-clone/base-terrain-yield-production" "^0.1.0"
-    "@civ-clone/base-terrain-yield-trade" "^0.1.0"
-    "@civ-clone/base-tile-improvement-irrigation" "^0.1.0"
-    "@civ-clone/base-tile-improvement-mine" "^0.1.0"
-    "@civ-clone/base-tile-improvement-pollution" "^0.1.0"
-    "@civ-clone/base-tile-improvement-railroad" "^0.1.0"
-    "@civ-clone/base-tile-improvement-road" "^0.1.0"
-    "@civ-clone/core-engine" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-science" "^0.1.0"
-    "@civ-clone/core-terrain" "^0.1.0"
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-    "@civ-clone/core-world" "^0.1.0"
-    "@civ-clone/core-world-generator" "^0.1.0"
-    "@civ-clone/core-yield" "^0.1.0"
-
-"@civ-clone/base-terrain-civ1@github:civ-clone/base-terrain-civ1#^0.1.0":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-civ1/tar.gz/b1f72fccb65227d7f839e4aba4dc69f41030908c"
-  dependencies:
-    "@civ-clone/base-science-civ1" "github:civ-clone/base-science-civ1"
-    "@civ-clone/base-terrain-arctic" "github:civ-clone/base-terrain-arctic"
-    "@civ-clone/base-terrain-desert" "github:civ-clone/base-terrain-desert"
-    "@civ-clone/base-terrain-feature-coal" "github:civ-clone/base-terrain-feature-coal"
-    "@civ-clone/base-terrain-feature-fish" "github:civ-clone/base-terrain-feature-fish"
-    "@civ-clone/base-terrain-feature-game" "github:civ-clone/base-terrain-feature-game"
-    "@civ-clone/base-terrain-feature-gems" "github:civ-clone/base-terrain-feature-gems"
-    "@civ-clone/base-terrain-feature-gold" "github:civ-clone/base-terrain-feature-gold"
-    "@civ-clone/base-terrain-feature-horse" "github:civ-clone/base-terrain-feature-horse"
-    "@civ-clone/base-terrain-feature-oasis" "github:civ-clone/base-terrain-feature-oasis"
-    "@civ-clone/base-terrain-feature-oil" "github:civ-clone/base-terrain-feature-oil"
-    "@civ-clone/base-terrain-feature-seal" "github:civ-clone/base-terrain-feature-seal"
-    "@civ-clone/base-terrain-feature-shield" "github:civ-clone/base-terrain-feature-shield"
-    "@civ-clone/base-terrain-forest" "github:civ-clone/base-terrain-forest"
-    "@civ-clone/base-terrain-grassland" "github:civ-clone/base-terrain-grassland"
-    "@civ-clone/base-terrain-hills" "github:civ-clone/base-terrain-hills"
-    "@civ-clone/base-terrain-jungle" "github:civ-clone/base-terrain-jungle"
-    "@civ-clone/base-terrain-mountains" "github:civ-clone/base-terrain-mountains"
-    "@civ-clone/base-terrain-ocean" "github:civ-clone/base-terrain-ocean"
-    "@civ-clone/base-terrain-plains" "github:civ-clone/base-terrain-plains"
-    "@civ-clone/base-terrain-river" "github:civ-clone/base-terrain-river"
-    "@civ-clone/base-terrain-swamp" "github:civ-clone/base-terrain-swamp"
-    "@civ-clone/base-terrain-tundra" "github:civ-clone/base-terrain-tundra"
-    "@civ-clone/base-terrain-yield-food" "github:civ-clone/base-terrain-yield-food"
-    "@civ-clone/base-terrain-yield-production" "github:civ-clone/base-terrain-yield-production"
-    "@civ-clone/base-terrain-yield-trade" "github:civ-clone/base-terrain-yield-trade"
-    "@civ-clone/base-tile-improvement-irrigation" "github:civ-clone/base-tile-improvement-irrigation"
-    "@civ-clone/base-tile-improvement-mine" "github:civ-clone/base-tile-improvement-mine"
-    "@civ-clone/base-tile-improvement-pollution" "github:civ-clone/base-tile-improvement-pollution"
-    "@civ-clone/base-tile-improvement-railroad" "github:civ-clone/base-tile-improvement-railroad"
-    "@civ-clone/base-tile-improvement-road" "github:civ-clone/base-tile-improvement-road"
-    "@civ-clone/core-engine" "github:civ-clone/core-engine"
-    "@civ-clone/core-rule" "github:civ-clone/core-rule"
-    "@civ-clone/core-science" "github:civ-clone/core-science"
-    "@civ-clone/core-terrain" "github:civ-clone/core-terrain"
-    "@civ-clone/core-terrain-feature" "github:civ-clone/core-terrain-feature"
-    "@civ-clone/core-tile-improvement" "github:civ-clone/core-tile-improvement"
-    "@civ-clone/core-world" "github:civ-clone/core-world"
-    "@civ-clone/core-world-generator" "github:civ-clone/core-world-generator"
-    "@civ-clone/core-yield" "github:civ-clone/core-yield"
-
 "@civ-clone/base-terrain-desert@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-desert/-/base-terrain-desert-0.1.0.tgz#a3d7a25ac93ca7bb5e843d1755567bca456a0b1f"
   integrity sha512-GA7f4dhw03ERdhHASd1heMKKQLslspA9jV4rd5+fEA46O/wxAegyqNF4gspNYaGhQXaaUMVGNZV0w68JC7ySWQ==
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
-"@civ-clone/base-terrain-desert@github:civ-clone/base-terrain-desert":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-desert/tar.gz/5c3b72c9ee3a1055c9351b5478a29c47b4f2ddb8"
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
@@ -547,22 +371,10 @@
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
-"@civ-clone/base-terrain-feature-coal@github:civ-clone/base-terrain-feature-coal":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-coal/tar.gz/b5954a906ff7802782e946ea6b01f652a6e48dc7"
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
 "@civ-clone/base-terrain-feature-fish@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-feature-fish/-/base-terrain-feature-fish-0.1.0.tgz#bc4b9ed42226638c28c7540832754f3523fd7b43"
   integrity sha512-al9Yjxi+khSJI4WnjF2htse1Ri+8UwNEp4ZFdy8CR2PGdjiw5Uhk+BKOq5wAlysUr+P4ONKu+SIce8csVls0xQ==
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
-"@civ-clone/base-terrain-feature-fish@github:civ-clone/base-terrain-feature-fish":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-fish/tar.gz/5c51bf01609420660d592c8e494ec9a623066ba2"
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
@@ -573,22 +385,10 @@
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
-"@civ-clone/base-terrain-feature-game@github:civ-clone/base-terrain-feature-game":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-game/tar.gz/caaa4200c492f1c9a2779937e22cb965bddc0508"
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
 "@civ-clone/base-terrain-feature-gems@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-feature-gems/-/base-terrain-feature-gems-0.1.0.tgz#c78dcd0d9f552a88c1436b10ba4d190cd7e3aa54"
   integrity sha512-GW9mWUNYgt+z3vq/Xa/CDuldmLxuXwtN/BoEJ6qEJpjDJmv6l+AYOKAxJM35O07tRYtftaHQILbO+bUGj9iprQ==
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
-"@civ-clone/base-terrain-feature-gems@github:civ-clone/base-terrain-feature-gems":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-gems/tar.gz/bc0211caff78258dc3f376afdc1c7e8ab7353a38"
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
@@ -599,22 +399,10 @@
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
-"@civ-clone/base-terrain-feature-gold@github:civ-clone/base-terrain-feature-gold":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-gold/tar.gz/e25210f083ad88dfe94dc701fbc1b62fcd027d29"
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
 "@civ-clone/base-terrain-feature-horse@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-feature-horse/-/base-terrain-feature-horse-0.1.0.tgz#db678c447c389cb5bf93a14d50a4647564f923ee"
   integrity sha512-oIr+nML+2RiIgyjK2xACiB+7Ttl1TIZnMDwNvDTq2dd2e1u/wmpG56vhiW6213T/FZ9CLPB1YJgq1szFKdqJ9g==
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
-"@civ-clone/base-terrain-feature-horse@github:civ-clone/base-terrain-feature-horse":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-horse/tar.gz/e3da78791a7c43ef34c91bff43fd5c9bc5c95e22"
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
@@ -625,22 +413,10 @@
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
-"@civ-clone/base-terrain-feature-oasis@github:civ-clone/base-terrain-feature-oasis":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-oasis/tar.gz/e7d7c83fe8017dfb8adea30d974167189ced66a3"
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
 "@civ-clone/base-terrain-feature-oil@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-feature-oil/-/base-terrain-feature-oil-0.1.0.tgz#bfe7d602dc5719c5ed2a410bd3db8dd731876857"
   integrity sha512-4hGB6+K0xD4kJECFRhyixXnAbdXztlPSVhWu28aSJO2rOD6Tp2bS6xHjMlBrmSP8PSSmS/IccC8gKg1jHFOVtw==
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
-"@civ-clone/base-terrain-feature-oil@github:civ-clone/base-terrain-feature-oil":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-oil/tar.gz/fb94f11b0720f7f05bfdda7caa1a10faa2ecf4f8"
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
@@ -651,22 +427,10 @@
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
-"@civ-clone/base-terrain-feature-seal@github:civ-clone/base-terrain-feature-seal":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-seal/tar.gz/cc54a080d76b2706bde8e5fadca9d22eb67e9147"
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
 "@civ-clone/base-terrain-feature-shield@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-feature-shield/-/base-terrain-feature-shield-0.1.0.tgz#83da56ab7605e7c843bc3fd6a14a27e69750ca13"
   integrity sha512-4/oPWiyRrrzbEtmrROLdpcqjTMU29GBYTu08yF2mW4SHhpHCoNQm5s1DmL7jTUP27G06YRqz3nGY0lqNh+prUg==
-  dependencies:
-    "@civ-clone/core-terrain-feature" "^0.1.0"
-
-"@civ-clone/base-terrain-feature-shield@github:civ-clone/base-terrain-feature-shield":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-feature-shield/tar.gz/4dab9c655024d888018e521dccf094bc1666b1ea"
   dependencies:
     "@civ-clone/core-terrain-feature" "^0.1.0"
 
@@ -677,22 +441,10 @@
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/base-terrain-forest@github:civ-clone/base-terrain-forest":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-forest/tar.gz/e3fa3c2aa74785049f73572543ed87dff0f5f21d"
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
 "@civ-clone/base-terrain-grassland@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-grassland/-/base-terrain-grassland-0.1.0.tgz#bc6c9087c48d906478ef8aec328cfe8698fa5339"
   integrity sha512-J5tMbkL0lH+R6hjFx5Xge4hDPAXEW9c+DgMJac+2cLCtX1sXcMatYeyEtFj1IiApb8iZinRYnW9JDpII89cxpw==
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
-"@civ-clone/base-terrain-grassland@github:civ-clone/base-terrain-grassland":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-grassland/tar.gz/c71d36d4b2a6ac50035dda085e328bfa429abfa4"
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
@@ -703,22 +455,10 @@
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/base-terrain-hills@github:civ-clone/base-terrain-hills":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-hills/tar.gz/ff82edecc1e4c5855939024f0d6beb3bad5658a4"
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
 "@civ-clone/base-terrain-jungle@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-jungle/-/base-terrain-jungle-0.1.0.tgz#e570dfe4a2ec011c5d1a98227fd8a73e30240585"
   integrity sha512-SCNT/eM06JIOlGepuFS5ahovexjZMJm4k6vGV7YOi8EsINQDg/zMFgdYpjZEM8xmr2b4S/oR5F/nBk8Sixoj0w==
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
-"@civ-clone/base-terrain-jungle@github:civ-clone/base-terrain-jungle":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-jungle/tar.gz/07a970810ba2adcd7839b7a06f301e5ee19a8ecf"
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
@@ -729,22 +469,10 @@
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/base-terrain-mountains@github:civ-clone/base-terrain-mountains":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-mountains/tar.gz/ac7b0d60b5799d28cff864217b2ae0790a55cadd"
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
 "@civ-clone/base-terrain-ocean@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-ocean/-/base-terrain-ocean-0.1.0.tgz#570b421978ea46f6ef1b628f0a237e42df2a53b3"
   integrity sha512-2/l7aZaBX6RqJ8kZKaVv5jPTF6jAuKBAmI+HxXQWAjizMt42+EMBKGOutnDL+qbvNjrHeYqPfRi8NtQPyQPbJA==
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
-"@civ-clone/base-terrain-ocean@github:civ-clone/base-terrain-ocean":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-ocean/tar.gz/cd40cc9d6dd18c3d6b5085e7e63fe6f5b0fccde6"
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
@@ -755,22 +483,10 @@
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/base-terrain-plains@github:civ-clone/base-terrain-plains":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-plains/tar.gz/77a3cd365a461ccb85c0d915e71caaaacfc20af9"
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
 "@civ-clone/base-terrain-river@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-river/-/base-terrain-river-0.1.0.tgz#114f671b11c2d0c4988867c2c1da1d5c0525e336"
   integrity sha512-sSB2YVp/TyyA7vsUqwItsoKH/qPbFxJZAuz0qbuh2C8xdKiw1T4qePB1VOEzInwalJ8a3c7Id5UtQuizMn2MZA==
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
-"@civ-clone/base-terrain-river@github:civ-clone/base-terrain-river":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-river/tar.gz/92081ae31bbef130c42414a4b1d6e0053931d6ea"
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
@@ -781,22 +497,10 @@
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/base-terrain-swamp@github:civ-clone/base-terrain-swamp":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-swamp/tar.gz/1ef1c975a393827926c56179561de2dfb59c7df9"
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
 "@civ-clone/base-terrain-tundra@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-tundra/-/base-terrain-tundra-0.1.0.tgz#00d9574e1f36f1ecac3b6f4b4ca69d6b3898e680"
   integrity sha512-TOkwukpOjiOCShELd7jSs7yjIRFlMASPK4IwBEadtISBhXEBwujSSG0QKQrX53GOxyDCP3NQgjFuwW7EXKdh/g==
-  dependencies:
-    "@civ-clone/core-terrain" "^0.1.0"
-
-"@civ-clone/base-terrain-tundra@github:civ-clone/base-terrain-tundra":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-tundra/tar.gz/ffb9667069e94a0752566dd8ac5961535413eada"
   dependencies:
     "@civ-clone/core-terrain" "^0.1.0"
 
@@ -807,22 +511,10 @@
   dependencies:
     "@civ-clone/core-yield" "^0.1.0"
 
-"@civ-clone/base-terrain-yield-food@github:civ-clone/base-terrain-yield-food":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-yield-food/tar.gz/57384f674ffd7583a3636e7ac25c332eb124f188"
-  dependencies:
-    "@civ-clone/core-yield" "^0.1.0"
-
 "@civ-clone/base-terrain-yield-production@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-terrain-yield-production/-/base-terrain-yield-production-0.1.0.tgz#2bce61a377e0998df829ee7f72c4739a4114200e"
   integrity sha512-nybCDYetmeEABSgOKU+ampCZGGlxx1iV9LB6eo6JoHuEfJ6eV5Q0YeuZ4XdT2EvtU4su3KQH1JLct+7nsrl4cw==
-  dependencies:
-    "@civ-clone/core-yield" "^0.1.0"
-
-"@civ-clone/base-terrain-yield-production@github:civ-clone/base-terrain-yield-production":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-yield-production/tar.gz/07c8be28155e286dd736eb72a72e8fb4740a2e0a"
   dependencies:
     "@civ-clone/core-yield" "^0.1.0"
 
@@ -833,22 +525,10 @@
   dependencies:
     "@civ-clone/core-yield" "^0.1.0"
 
-"@civ-clone/base-terrain-yield-trade@github:civ-clone/base-terrain-yield-trade":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-terrain-yield-trade/tar.gz/de531642114affff7b181c343143e6b5e2a37797"
-  dependencies:
-    "@civ-clone/core-yield" "^0.1.0"
-
 "@civ-clone/base-tile-improvement-irrigation@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-tile-improvement-irrigation/-/base-tile-improvement-irrigation-0.1.0.tgz#42efcf15df55bb8e4e188b66de8b3d104deb619f"
   integrity sha512-dBLtJRui4AQYyT7n7holoX1KmJ9U/vxioy6zSXsUYBl8l4XgNFa/LRG71H7ZGRVMN6kK0XeiealbpHdgOBm4rw==
-  dependencies:
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-
-"@civ-clone/base-tile-improvement-irrigation@github:civ-clone/base-tile-improvement-irrigation":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-tile-improvement-irrigation/tar.gz/235fbdfa6342bdb74f20af12a82bdb2ada822b25"
   dependencies:
     "@civ-clone/core-tile-improvement" "^0.1.0"
 
@@ -859,22 +539,10 @@
   dependencies:
     "@civ-clone/core-tile-improvement" "^0.1.0"
 
-"@civ-clone/base-tile-improvement-mine@github:civ-clone/base-tile-improvement-mine":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-tile-improvement-mine/tar.gz/640bc15af5677fdc96a112407164121761f5eaf0"
-  dependencies:
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-
 "@civ-clone/base-tile-improvement-pollution@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-tile-improvement-pollution/-/base-tile-improvement-pollution-0.1.0.tgz#c699f19340c11a904a82ce24c626893356a41b05"
   integrity sha512-CMTPGYCZEZ6aZ6eaw4/ICbuiuzyef3tccVVxfBWVnydCzUDFJMXqt4KztMhaqSNJj/2Yfv/LhbSNCS428kFuXw==
-  dependencies:
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-
-"@civ-clone/base-tile-improvement-pollution@github:civ-clone/base-tile-improvement-pollution":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-tile-improvement-pollution/tar.gz/7e6996f7de49aab6e258ecb30abfb9b32c1cfe26"
   dependencies:
     "@civ-clone/core-tile-improvement" "^0.1.0"
 
@@ -885,22 +553,10 @@
   dependencies:
     "@civ-clone/core-tile-improvement" "^0.1.0"
 
-"@civ-clone/base-tile-improvement-railroad@github:civ-clone/base-tile-improvement-railroad":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-tile-improvement-railroad/tar.gz/116a41ec3af493deebc632167fd74b777cdbaf09"
-  dependencies:
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-
 "@civ-clone/base-tile-improvement-road@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/base-tile-improvement-road/-/base-tile-improvement-road-0.1.0.tgz#671e44e74162ec77892b90db93c7dbeab567b386"
   integrity sha512-4Z+SrnwCbqOzWkd5HIlXw0CI+ddq8q9KcbpUWoevkZoDscbXILfwrIZXXD7cfhcJdwH97Pi4xbkVDePdZOFqmg==
-  dependencies:
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-
-"@civ-clone/base-tile-improvement-road@github:civ-clone/base-tile-improvement-road":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-tile-improvement-road/tar.gz/1fe30a067fe84fdebfc0fbca17544602a93f3977"
   dependencies:
     "@civ-clone/core-tile-improvement" "^0.1.0"
 
@@ -985,9 +641,9 @@
     "@civ-clone/core-unit-transport" "^0.1.0"
 
 "@civ-clone/base-unit-action-embark@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@civ-clone/base-unit-action-embark/-/base-unit-action-embark-0.1.0.tgz#3cead9d40b2dc15d0bab315fa2a9201e69b69eaa"
-  integrity sha512-RNb6fWILkoJcE4TnFUu67lLXiFh4m0ujiGH0jfOkbGzME9aATFftrm1sbJGpuJxvgyBS3U/a04JNnro8Te2YGw==
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-unit-action-embark/-/base-unit-action-embark-0.1.1.tgz#a14c68bf962efd3c7e9925418d5dd00871d8bd0f"
+  integrity sha512-8MM/oWi6g9gpx11U4KsQHZff9jkfjTqvjyBVyPC/KnOwNzPQ2J+ZTNyH/S7Fo7zvYn8tDFTKRqj81ySK9KMWmw==
   dependencies:
     "@civ-clone/base-unit-action-move" "^0.1.0"
     "@civ-clone/base-unit-type-naval-transport" "^0.1.0"
@@ -1013,9 +669,9 @@
     "@civ-clone/core-unit" "^0.1.0"
 
 "@civ-clone/base-unit-action-move@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@civ-clone/base-unit-action-move/-/base-unit-action-move-0.1.0.tgz#91de8fc3b8dace2abdf1e7a3f44b70da3b4652f5"
-  integrity sha512-cFywMvRv3y7No2EAfaDuSnCFR7P1kZXzhvfdcGW9dtfxKTpIG1Owa5IOG0Y8BdSgCN8DDFj9gaU4NFh5jcs80g==
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@civ-clone/base-unit-action-move/-/base-unit-action-move-0.1.1.tgz#bdc2dc76f6ba2776798b37f2d91d86d822c7b7a3"
+  integrity sha512-iOX9aTusQPicuQZ571KRAYDTIMJCwZc+WUfC3VJJMqkrkVvDpQzgycJw1XMlpSFf2X7yZlVcYTLkNcvH71Qiwg==
   dependencies:
     "@civ-clone/core-unit" "^0.1.0"
 
@@ -1073,62 +729,6 @@
   integrity sha512-sKi0p5LHiZhOpvbVnNFoPkUK4dRQ2CT3T/JTlOLRCBmI0TP2raokP9ZuC+2d1dyz9RH2ar3jhS+O7Mwda/leqg==
   dependencies:
     "@civ-clone/base-unit-type-fortifiable" "^0.1.0"
-
-"@civ-clone/base-unit-civ1@github:civ-clone/base-unit-civ1":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-unit-civ1/tar.gz/c3460b5e47db0b7217144b528071bfac4f9a758b"
-  dependencies:
-    "@civ-clone/base-player-action-active-unit" "^0.1.0"
-    "@civ-clone/base-player-action-inactive-unit" "^0.1.0"
-    "@civ-clone/base-terrain-civ1" "github:civ-clone/base-terrain-civ1#^0.1.0"
-    "@civ-clone/base-unit-action-attack" "^0.1.0"
-    "@civ-clone/base-unit-action-build-irrigation" "^0.1.0"
-    "@civ-clone/base-unit-action-build-mine" "^0.1.0"
-    "@civ-clone/base-unit-action-build-road" "^0.1.0"
-    "@civ-clone/base-unit-action-capture-city" "^0.1.0"
-    "@civ-clone/base-unit-action-clear-forest" "^0.1.0"
-    "@civ-clone/base-unit-action-clear-jungle" "^0.1.0"
-    "@civ-clone/base-unit-action-clear-swamp" "^0.1.0"
-    "@civ-clone/base-unit-action-disembark" "^0.1.0"
-    "@civ-clone/base-unit-action-embark" "^0.1.0"
-    "@civ-clone/base-unit-action-fortify" "^0.1.0"
-    "@civ-clone/base-unit-action-found-city" "^0.1.0"
-    "@civ-clone/base-unit-action-move" "^0.1.0"
-    "@civ-clone/base-unit-action-no-orders" "^0.1.0"
-    "@civ-clone/base-unit-action-pillage" "^0.1.0"
-    "@civ-clone/base-unit-action-plant-forest" "^0.1.0"
-    "@civ-clone/base-unit-action-sleep" "^0.1.0"
-    "@civ-clone/base-unit-action-unload" "^0.1.0"
-    "@civ-clone/base-unit-catapult" "^0.1.0"
-    "@civ-clone/base-unit-chariot" "^0.1.0"
-    "@civ-clone/base-unit-horseman" "^0.1.0"
-    "@civ-clone/base-unit-improvement-fortified" "^0.1.0"
-    "@civ-clone/base-unit-improvement-veteran" "^0.1.0"
-    "@civ-clone/base-unit-knight" "^0.1.0"
-    "@civ-clone/base-unit-musketman" "^0.1.0"
-    "@civ-clone/base-unit-sail" "^0.1.0"
-    "@civ-clone/base-unit-settlers" "^0.1.0"
-    "@civ-clone/base-unit-spearman" "^0.1.0"
-    "@civ-clone/base-unit-swordman" "^0.1.0"
-    "@civ-clone/base-unit-trireme" "^0.1.0"
-    "@civ-clone/base-unit-type-fortifiable" "^0.1.0"
-    "@civ-clone/base-unit-type-land" "^0.1.0"
-    "@civ-clone/base-unit-type-naval" "^0.1.0"
-    "@civ-clone/base-unit-type-naval-transport" "^0.1.0"
-    "@civ-clone/base-unit-type-worker" "^0.1.0"
-    "@civ-clone/base-unit-warrior" "^0.1.0"
-    "@civ-clone/core-city" "^0.1.0"
-    "@civ-clone/core-city-build" "^0.1.0"
-    "@civ-clone/core-city-growth" "^0.1.0"
-    "@civ-clone/core-engine" "^0.1.0"
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-terrain" "^0.1.0"
-    "@civ-clone/core-tile-improvement" "^0.1.0"
-    "@civ-clone/core-unit" "^0.1.0"
-    "@civ-clone/core-unit-transport" "^0.1.0"
-    "@civ-clone/core-world" "^0.1.0"
 
 "@civ-clone/base-unit-horseman@^0.1.0":
   version "0.1.0"
@@ -1253,14 +853,217 @@
   dependencies:
     "@civ-clone/base-unit-type-fortifiable" "^0.1.0"
 
-"@civ-clone/base-world-generator@github:civ-clone/base-world-generator":
+"@civ-clone/civ1-city-improvement@github:civ-clone/civ1-city-improvement":
   version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/base-world-generator/tar.gz/b01ac52f52cd611ce91258e71f5f2619c32d385b"
+  resolved "https://codeload.github.com/civ-clone/civ1-city-improvement/tar.gz/52f24cd340d6dbf88b2319b3cf7889c5fe1f4495"
   dependencies:
-    "@civ-clone/base-terrain-civ1" "github:civ-clone/base-terrain-civ1"
+    "@civ-clone/base-city-improvement-aqueduct" "^0.1.0"
+    "@civ-clone/base-city-improvement-barracks" "^0.1.0"
+    "@civ-clone/base-city-improvement-citywalls" "^0.1.0"
+    "@civ-clone/base-city-improvement-colosseum" "^0.1.0"
+    "@civ-clone/base-city-improvement-courthouse" "^0.1.0"
+    "@civ-clone/base-city-improvement-granary" "^0.1.0"
+    "@civ-clone/base-city-improvement-library" "^0.1.0"
+    "@civ-clone/base-city-improvement-marketplace" "^0.1.0"
+    "@civ-clone/base-city-improvement-palace" "^0.1.0"
+    "@civ-clone/base-city-improvement-temple" "^0.1.0"
+    "@civ-clone/base-city-yield-gold" "^0.1.0"
+    "@civ-clone/civ1-science" "github:civ-clone/civ1-science"
+    "@civ-clone/civ1-unit" "github:civ-clone/civ1-unit"
+    "@civ-clone/core-city" "^0.1.0"
+    "@civ-clone/core-city-build" "^0.1.0"
+    "@civ-clone/core-city-growth" "^0.1.0"
+    "@civ-clone/core-city-improvement" "^0.1.0"
+    "@civ-clone/core-engine" "^0.1.0"
+    "@civ-clone/core-registry" "^0.1.0"
+    "@civ-clone/core-rule" "^0.1.0"
+    "@civ-clone/core-science" "^0.1.0"
+    "@civ-clone/core-unit" "^0.1.0"
+    "@civ-clone/core-unit-improvement" "^0.1.0"
+    "@civ-clone/core-yield" "^0.1.0"
+
+"@civ-clone/civ1-city@github:civ-clone/civ1-city":
+  version "0.1.0"
+  resolved "https://codeload.github.com/civ-clone/civ1-city/tar.gz/2da8d5cdf6c4a852b51762cd65574cabf173f657"
+  dependencies:
+    "@civ-clone/base-city-yield-gold" "^0.1.0"
+    "@civ-clone/base-city-yield-happiness" "^0.1.0"
+    "@civ-clone/base-city-yield-luxuries" "^0.1.0"
+    "@civ-clone/base-city-yield-research" "^0.1.0"
+    "@civ-clone/base-city-yield-unhappiness" "^0.1.0"
+    "@civ-clone/base-terrain-yield-trade" "^0.1.0"
+    "@civ-clone/civ1-government" "github:civ-clone/civ1-government"
+    "@civ-clone/civ1-world" "github:civ-clone/civ1-world"
+    "@civ-clone/core-city" "^0.1.0"
+    "@civ-clone/core-city-build" "^0.1.0"
+    "@civ-clone/core-city-growth" "^0.1.0"
+    "@civ-clone/core-engine" "^0.1.0"
+    "@civ-clone/core-government" "^0.1.0"
+    "@civ-clone/core-player" "^0.1.0"
+    "@civ-clone/core-rule" "^0.1.0"
+    "@civ-clone/core-tile-improvement" "^0.1.0"
+    "@civ-clone/core-unit" "^0.1.0"
+    "@civ-clone/core-world" "^0.1.0"
+    "@civ-clone/core-yield" "^0.1.0"
+
+"@civ-clone/civ1-government@github:civ-clone/civ1-government":
+  version "0.1.0"
+  resolved "https://codeload.github.com/civ-clone/civ1-government/tar.gz/51641f139376071d6531d290d58c89aefc227c5e"
+  dependencies:
+    "@civ-clone/base-government-anarchy" "^0.1.0"
+    "@civ-clone/base-government-communism" "^0.1.0"
+    "@civ-clone/base-government-democracy" "^0.1.0"
+    "@civ-clone/base-government-despotism" "^0.1.0"
+    "@civ-clone/base-government-monarchy" "^0.1.0"
+    "@civ-clone/base-government-republic" "^0.1.0"
+    "@civ-clone/civ1-science" "github:civ-clone/civ1-science"
+    "@civ-clone/core-engine" "^0.1.0"
+    "@civ-clone/core-government" "^0.1.0"
+    "@civ-clone/core-player" "^0.1.0"
+    "@civ-clone/core-player-world" "^0.1.0"
+    "@civ-clone/core-rule" "^0.1.0"
+    "@civ-clone/core-science" "^0.1.0"
+    "@civ-clone/core-world" "^0.1.0"
+
+"@civ-clone/civ1-science@github:civ-clone/civ1-science":
+  version "0.1.0"
+  resolved "https://codeload.github.com/civ-clone/civ1-science/tar.gz/2f3707d10bf475b67b348cf25d44824a3812378e"
+  dependencies:
+    "@civ-clone/base-city-yield-research" "^0.1.0"
+    "@civ-clone/base-science-advance-alphabet" "^0.1.0"
+    "@civ-clone/base-science-advance-astronomy" "^0.1.0"
+    "@civ-clone/base-science-advance-bridgebuilding" "^0.1.0"
+    "@civ-clone/base-science-advance-bronzeworking" "^0.1.0"
+    "@civ-clone/base-science-advance-ceremonialburial" "^0.1.0"
+    "@civ-clone/base-science-advance-chivalry" "^0.1.0"
+    "@civ-clone/base-science-advance-codeoflaws" "^0.1.0"
+    "@civ-clone/base-science-advance-construction" "^0.1.0"
+    "@civ-clone/base-science-advance-currency" "^0.1.0"
+    "@civ-clone/base-science-advance-engineering" "^0.1.0"
+    "@civ-clone/base-science-advance-feudalism" "^0.1.0"
+    "@civ-clone/base-science-advance-gunpowder" "^0.1.0"
+    "@civ-clone/base-science-advance-horsebackriding" "^0.1.0"
+    "@civ-clone/base-science-advance-invention" "^0.1.0"
+    "@civ-clone/base-science-advance-ironworking" "^0.1.0"
+    "@civ-clone/base-science-advance-literacy" "^0.1.0"
+    "@civ-clone/base-science-advance-mapmaking" "^0.1.0"
+    "@civ-clone/base-science-advance-masonry" "^0.1.0"
+    "@civ-clone/base-science-advance-mathematics" "^0.1.0"
+    "@civ-clone/base-science-advance-monarchy" "^0.1.0"
+    "@civ-clone/base-science-advance-mysticism" "^0.1.0"
+    "@civ-clone/base-science-advance-navigation" "^0.1.0"
+    "@civ-clone/base-science-advance-pottery" "^0.1.0"
+    "@civ-clone/base-science-advance-therepublic" "^0.1.0"
+    "@civ-clone/base-science-advance-thewheel" "^0.1.0"
+    "@civ-clone/base-science-advance-writing" "^0.1.0"
+    "@civ-clone/core-city" "^0.1.0"
+    "@civ-clone/core-engine" "^0.1.0"
+    "@civ-clone/core-player" "^0.1.0"
+    "@civ-clone/core-registry" "^0.1.0"
+    "@civ-clone/core-rule" "^0.1.0"
+    "@civ-clone/core-science" "^0.1.0"
+    "@civ-clone/core-yield" "^0.1.0"
+
+"@civ-clone/civ1-unit@github:civ-clone/civ1-unit":
+  version "0.1.0"
+  resolved "https://codeload.github.com/civ-clone/civ1-unit/tar.gz/9ec6e53e60a4fbf5955fa1b5c872b7dfcdf2f52d"
+  dependencies:
+    "@civ-clone/base-player-action-active-unit" "^0.1.0"
+    "@civ-clone/base-player-action-inactive-unit" "^0.1.0"
+    "@civ-clone/base-unit-action-attack" "^0.1.0"
+    "@civ-clone/base-unit-action-build-irrigation" "^0.1.0"
+    "@civ-clone/base-unit-action-build-mine" "^0.1.0"
+    "@civ-clone/base-unit-action-build-road" "^0.1.0"
+    "@civ-clone/base-unit-action-capture-city" "^0.1.0"
+    "@civ-clone/base-unit-action-clear-forest" "^0.1.0"
+    "@civ-clone/base-unit-action-clear-jungle" "^0.1.0"
+    "@civ-clone/base-unit-action-clear-swamp" "^0.1.0"
+    "@civ-clone/base-unit-action-disembark" "^0.1.0"
+    "@civ-clone/base-unit-action-embark" "^0.1.0"
+    "@civ-clone/base-unit-action-fortify" "^0.1.0"
+    "@civ-clone/base-unit-action-found-city" "^0.1.0"
+    "@civ-clone/base-unit-action-move" "^0.1.0"
+    "@civ-clone/base-unit-action-no-orders" "^0.1.0"
+    "@civ-clone/base-unit-action-pillage" "^0.1.0"
+    "@civ-clone/base-unit-action-plant-forest" "^0.1.0"
+    "@civ-clone/base-unit-action-sleep" "^0.1.0"
+    "@civ-clone/base-unit-action-unload" "^0.1.0"
+    "@civ-clone/base-unit-catapult" "^0.1.0"
+    "@civ-clone/base-unit-chariot" "^0.1.0"
+    "@civ-clone/base-unit-horseman" "^0.1.0"
+    "@civ-clone/base-unit-improvement-fortified" "^0.1.0"
+    "@civ-clone/base-unit-improvement-veteran" "^0.1.0"
+    "@civ-clone/base-unit-knight" "^0.1.0"
+    "@civ-clone/base-unit-musketman" "^0.1.0"
+    "@civ-clone/base-unit-sail" "^0.1.0"
+    "@civ-clone/base-unit-settlers" "^0.1.0"
+    "@civ-clone/base-unit-spearman" "^0.1.0"
+    "@civ-clone/base-unit-swordman" "^0.1.0"
+    "@civ-clone/base-unit-trireme" "^0.1.0"
+    "@civ-clone/base-unit-type-fortifiable" "^0.1.0"
+    "@civ-clone/base-unit-type-land" "^0.1.0"
+    "@civ-clone/base-unit-type-naval" "^0.1.0"
+    "@civ-clone/base-unit-type-naval-transport" "^0.1.0"
+    "@civ-clone/base-unit-type-worker" "^0.1.0"
+    "@civ-clone/base-unit-warrior" "^0.1.0"
+    "@civ-clone/civ1-world" "github:civ-clone/civ1-world"
+    "@civ-clone/core-city" "^0.1.0"
+    "@civ-clone/core-city-build" "^0.1.0"
+    "@civ-clone/core-city-growth" "^0.1.0"
+    "@civ-clone/core-engine" "^0.1.0"
+    "@civ-clone/core-player" "^0.1.0"
+    "@civ-clone/core-registry" "^0.1.0"
     "@civ-clone/core-rule" "^0.1.0"
     "@civ-clone/core-terrain" "^0.1.0"
+    "@civ-clone/core-tile-improvement" "^0.1.0"
+    "@civ-clone/core-unit" "^0.1.0"
+    "@civ-clone/core-unit-transport" "^0.1.0"
+    "@civ-clone/core-world" "^0.1.0"
+
+"@civ-clone/civ1-world@github:civ-clone/civ1-world":
+  version "0.1.0"
+  resolved "https://codeload.github.com/civ-clone/civ1-world/tar.gz/c39e98fda4d12c887f2d6783f33d794aabd69a4f"
+  dependencies:
+    "@civ-clone/base-terrain-arctic" "^0.1.0"
+    "@civ-clone/base-terrain-desert" "^0.1.0"
+    "@civ-clone/base-terrain-feature-coal" "^0.1.0"
+    "@civ-clone/base-terrain-feature-fish" "^0.1.0"
+    "@civ-clone/base-terrain-feature-game" "^0.1.0"
+    "@civ-clone/base-terrain-feature-gems" "^0.1.0"
+    "@civ-clone/base-terrain-feature-gold" "^0.1.0"
+    "@civ-clone/base-terrain-feature-horse" "^0.1.0"
+    "@civ-clone/base-terrain-feature-oasis" "^0.1.0"
+    "@civ-clone/base-terrain-feature-oil" "^0.1.0"
+    "@civ-clone/base-terrain-feature-seal" "^0.1.0"
+    "@civ-clone/base-terrain-feature-shield" "^0.1.0"
+    "@civ-clone/base-terrain-forest" "^0.1.0"
+    "@civ-clone/base-terrain-grassland" "^0.1.0"
+    "@civ-clone/base-terrain-hills" "^0.1.0"
+    "@civ-clone/base-terrain-jungle" "^0.1.0"
+    "@civ-clone/base-terrain-mountains" "^0.1.0"
+    "@civ-clone/base-terrain-ocean" "^0.1.0"
+    "@civ-clone/base-terrain-plains" "^0.1.0"
+    "@civ-clone/base-terrain-river" "^0.1.0"
+    "@civ-clone/base-terrain-swamp" "^0.1.0"
+    "@civ-clone/base-terrain-tundra" "^0.1.0"
+    "@civ-clone/base-terrain-yield-food" "^0.1.0"
+    "@civ-clone/base-terrain-yield-production" "^0.1.0"
+    "@civ-clone/base-terrain-yield-trade" "^0.1.0"
+    "@civ-clone/base-tile-improvement-irrigation" "^0.1.0"
+    "@civ-clone/base-tile-improvement-mine" "^0.1.0"
+    "@civ-clone/base-tile-improvement-pollution" "^0.1.0"
+    "@civ-clone/base-tile-improvement-railroad" "^0.1.0"
+    "@civ-clone/base-tile-improvement-road" "^0.1.0"
+    "@civ-clone/civ1-science" "github:civ-clone/civ1-science"
+    "@civ-clone/core-engine" "^0.1.0"
+    "@civ-clone/core-rule" "^0.1.0"
+    "@civ-clone/core-science" "^0.1.0"
+    "@civ-clone/core-terrain" "^0.1.0"
+    "@civ-clone/core-terrain-feature" "^0.1.0"
+    "@civ-clone/core-tile-improvement" "^0.1.0"
+    "@civ-clone/core-world" "^0.1.0"
     "@civ-clone/core-world-generator" "^0.1.0"
+    "@civ-clone/core-yield" "^0.1.0"
 
 "@civ-clone/core-city-build@^0.1.0":
   version "0.1.0"
@@ -1344,15 +1147,6 @@
     "@types/glob" "^7.1.3"
     glob "^7.1.6"
 
-"@civ-clone/core-engine@github:civ-clone/core-engine":
-  version "0.1.1"
-  resolved "https://codeload.github.com/civ-clone/core-engine/tar.gz/4badfa2087652c4c81f97fad0aad24b53cfecebb"
-  dependencies:
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@types/glob" "^7.1.3"
-    glob "^7.1.6"
-
 "@civ-clone/core-government@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/core-government/-/core-government-0.1.0.tgz#f3d6a0c1f64c45491703fe7bce2cae66b28f0c62"
@@ -1397,25 +1191,10 @@
   dependencies:
     "@civ-clone/core-registry" "^0.1"
 
-"@civ-clone/core-rule@github:civ-clone/core-rule":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/core-rule/tar.gz/e9046ac9f2d1b4bf6351b3ad61bfa8e689e8fbf3"
-  dependencies:
-    "@civ-clone/core-registry" "^0.1"
-
 "@civ-clone/core-science@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/core-science/-/core-science-0.1.0.tgz#b227825d29d68189f444cdc9128a4cf372049392"
   integrity sha512-9LNgHkcchzOHykhB9odXiU5Jgj8qez6xKJ5JxBGosee5QYajcekUt46tnnBDCPsld7hDyhE1AH5BmhJ9pE/Jhw==
-  dependencies:
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-yield" "^0.1.0"
-
-"@civ-clone/core-science@github:civ-clone/core-science":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/core-science/tar.gz/35c90ccaf0422b6c525a69b3d37503598354e100"
   dependencies:
     "@civ-clone/core-player" "^0.1.0"
     "@civ-clone/core-registry" "^0.1.0"
@@ -1431,14 +1210,6 @@
     "@civ-clone/core-rule" "^0.1.0"
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/core-terrain-feature@github:civ-clone/core-terrain-feature":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/core-terrain-feature/tar.gz/9336f7a3c0819aa0583092281cc4808fd9d79991"
-  dependencies:
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-terrain" "^0.1.0"
-
 "@civ-clone/core-terrain@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/core-terrain/-/core-terrain-0.1.0.tgz#80a2a5585a4415a3c2a722b0a9250bc1a3cc7f58"
@@ -1448,29 +1219,10 @@
     "@civ-clone/core-registry" "^0.1.0"
     "@civ-clone/core-rule" "^0.1.0"
 
-"@civ-clone/core-terrain@github:civ-clone/core-terrain":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/core-terrain/tar.gz/29fa0fd6366dd577847941b3a720e21f8da93d9d"
-  dependencies:
-    "@civ-clone/core-data-object" "^0.1.0"
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-
 "@civ-clone/core-tile-improvement@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@civ-clone/core-tile-improvement/-/core-tile-improvement-0.1.0.tgz#e64cc15065d956877315beffaf14d57ecca9eccb"
   integrity sha512-E2HH/HJSDfARsZQOZitWM0UvX+aSS6I6j4vTnERofUKLfZeR9CJNbTesZoF1rpC7J0AFrSPzrH5RW4BKVtpj8Q==
-  dependencies:
-    "@civ-clone/core-data-object" "^0.1.0"
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-terrain" "^0.1.0"
-    "@civ-clone/core-world" "^0.1.0"
-
-"@civ-clone/core-tile-improvement@github:civ-clone/core-tile-improvement":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/core-tile-improvement/tar.gz/3fa03d00496ad7eb435f3b22e3bdde9627905c81"
   dependencies:
     "@civ-clone/core-data-object" "^0.1.0"
     "@civ-clone/core-player" "^0.1.0"
@@ -1528,30 +1280,10 @@
     "@civ-clone/core-rule" "^0.1.0"
     "@civ-clone/core-terrain" "^0.1.0"
 
-"@civ-clone/core-world-generator@github:civ-clone/core-world-generator":
-  version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/core-world-generator/tar.gz/45b3a8ecd1caf95a164a35e8972763e0e668cbb7"
-  dependencies:
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-terrain" "^0.1.0"
-
 "@civ-clone/core-world@^0.1.0":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@civ-clone/core-world/-/core-world-0.1.2.tgz#0b802a7967b173550fd5742740f6536cc933ee62"
   integrity sha512-TH8I+Hg3wwI3hRkb6GhVYHAY0Lz867itmKiPeZF4BpowNH+Tyy1onYaIv2e3gmlbRFjOcTWiQ4T+n8PI0Z9IKg==
-  dependencies:
-    "@civ-clone/core-data-object" "^0.1.0"
-    "@civ-clone/core-player" "^0.1.0"
-    "@civ-clone/core-registry" "^0.1.0"
-    "@civ-clone/core-rule" "^0.1.0"
-    "@civ-clone/core-terrain" "^0.1.0"
-    "@civ-clone/core-world-generator" "^0.1.0"
-    "@civ-clone/core-yield" "^0.1.0"
-
-"@civ-clone/core-world@github:civ-clone/core-world":
-  version "0.1.2"
-  resolved "https://codeload.github.com/civ-clone/core-world/tar.gz/a169a0c86d99a457ef82d06f7146eb1cbf124795"
   dependencies:
     "@civ-clone/core-data-object" "^0.1.0"
     "@civ-clone/core-player" "^0.1.0"
@@ -1569,12 +1301,14 @@
     "@civ-clone/core-data-object" "^0.1.0"
     "@civ-clone/core-registry" "^0.1.0"
 
-"@civ-clone/core-yield@github:civ-clone/core-yield":
+"@civ-clone/simple-world-generator@github:civ-clone/simple-world-generator":
   version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/core-yield/tar.gz/8479b607f87c9003d10320d3cbca05bad7c718b6"
+  resolved "https://codeload.github.com/civ-clone/simple-world-generator/tar.gz/8d9e4fe32e2d91e0f4bd70754666e6066f9235d7"
   dependencies:
-    "@civ-clone/core-data-object" "^0.1.0"
-    "@civ-clone/core-registry" "^0.1.0"
+    "@civ-clone/civ1-world" "github:civ-clone/civ1-world"
+    "@civ-clone/core-rule" "^0.1.0"
+    "@civ-clone/core-terrain" "^0.1.0"
+    "@civ-clone/core-world-generator" "^0.1.0"
 
 "@istanbuljs/schema@^0.1.2":
   version "0.1.2"
@@ -1620,9 +1354,9 @@
   integrity sha512-/Sge3BymXo4lKc31C8OINJgXLaw+7vL1/L1pGiBNpGrBiT8FQiaFpSYV0uhTaG4y78vcMBTMFsWaHDvuD+xGzQ==
 
 "@types/node@*", "@types/node@^14.11.2":
-  version "14.14.22"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.22.tgz#0d29f382472c4ccf3bd96ff0ce47daf5b7b84b18"
-  integrity sha512-g+f/qj/cNcqKkc3tFqlXOYjrmZA+jNBiDzbP3kH+B+otKFqAdPgVTGP1IeKRdMml/aE69as5S4FqtxAbl+LaMw==
+  version "14.14.25"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.25.tgz#15967a7b577ff81383f9b888aa6705d43fbbae93"
+  integrity sha512-EPpXLOVqDvisVxtlbvzfyqSsFeQxltFbluZNRndIb8tr9KiBnYNLzrc1N3pyKUCww2RNrfHDViqDWWE1LCJQtQ==
 
 "@ungap/promise-all-settled@1.1.2":
   version "1.1.2"
@@ -1724,9 +1458,9 @@ buffer-from@^1.0.0, buffer-from@^1.1.0:
   integrity sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
 
 c8@^7.3.1:
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/c8/-/c8-7.4.0.tgz#098ba30ba4a58de9e080645116ba8ae3d545fd5c"
-  integrity sha512-K8I7MEe2i4L91YBX3HtV10kKpU5uqGeyjtsdGS2FxfT0pk15d9jthujjR1ORRLrCJ4tXuDK9PSH2vChzRDoAZw==
+  version "7.5.0"
+  resolved "https://registry.yarnpkg.com/c8/-/c8-7.5.0.tgz#a69439ab82848f344a74bb25dc5dd4e867764481"
+  integrity sha512-GSkLsbvDr+FIwjNSJ8OwzWAyuznEYGTAd1pzb/Kr0FMLuV4vqYJTyjboDTwmlUNAG6jAU3PFWzqIdKrOt1D8tw==
   dependencies:
     "@bcoe/v8-coverage" "^0.2.3"
     "@istanbuljs/schema" "^0.1.2"
@@ -1753,9 +1487,9 @@ camelcase@^6.0.0:
   integrity sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==
 
 chai@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"
-  integrity sha512-XQU3bhBukrOsQCuwZndwGcCVQHyZi53fQ6Ys1Fym7E4olpIqqZZhhoFJoaKVvV17lWQoXYwgWN2nF5crA8J2jw==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/chai/-/chai-4.3.0.tgz#5523a5faf7f819c8a92480d70a8cccbadacfc25f"
+  integrity sha512-/BFd2J30EcOwmdOgXvVsmM48l0Br0nmZPlO0uOW4XKh6kpsUumRXBgPV+IlaqFaqr9cYbeoZAM1Npx0i4A+aiA==
   dependencies:
     assertion-error "^1.1.0"
     check-error "^1.0.2"
@@ -2506,9 +2240,9 @@ type-detect@^4.0.0, type-detect@^4.0.5:
   integrity sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==
 
 typescript@^4.0.3:
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.3.tgz#519d582bd94cba0cf8934c7d8e8467e473f53bb7"
-  integrity sha512-B3ZIOf1IKeH2ixgHhj6la6xdwR9QrLC5d1VKeCSY4tvkqhF2eqd9O7txNlS0PO3GrBAFIdr3L1ndNwteUbZLYg==
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.4.tgz#f058636e2f4f83f94ddaae07b20fd5e14598432f"
+  integrity sha512-+Uru0t8qIRgjuCpiSPpfGuhHecMllk5Zsazj5LZvVsEStEjmIRRBZe+jHjGQvsgS7M1wONy2PQXd67EMyV6acg==
 
 v8-to-istanbul@^7.1.0:
   version "7.1.0"

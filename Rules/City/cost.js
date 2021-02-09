@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRules = void 0;
-const Governments_1 = require("@civ-clone/base-government-civ1/Governments");
+const Governments_1 = require("@civ-clone/civ1-government/Governments");
 const Yields_1 = require("../../Yields");
 const PlayerGovernmentRegistry_1 = require("@civ-clone/core-government/PlayerGovernmentRegistry");
 const UnitRegistry_1 = require("@civ-clone/core-unit/UnitRegistry");
 const Cost_1 = require("@civ-clone/core-city/Rules/Cost");
 const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
-const Types_1 = require("@civ-clone/base-unit-civ1/Types");
+const Types_1 = require("@civ-clone/civ1-unit/Types");
 const Luxuries_1 = require("@civ-clone/base-city-yield-luxuries/Luxuries");
 const getRules = (playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, unitRegistry = UnitRegistry_1.instance) => [
     new Cost_1.default(new Criterion_1.default((cityYield) => cityYield instanceof Luxuries_1.default), new Effect_1.default((cityYield, city, yields) => {

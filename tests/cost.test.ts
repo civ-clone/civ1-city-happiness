@@ -11,9 +11,9 @@ import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprov
 import UnitRegistry from '@civ-clone/core-unit/UnitRegistry';
 import Yield from '@civ-clone/core-yield/Yield';
 import cost from '../Rules/City/cost';
-import created from '@civ-clone/base-city-civ1/Rules/City/created';
+import created from '@civ-clone/civ1-city/Rules/City/created';
 import { expect } from 'chai';
-import setUpCity from '@civ-clone/base-city-civ1/tests/lib/setUpCity';
+import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
 
 describe('city:cost', (): void => {
   const ruleRegistry = new RuleRegistry(),
