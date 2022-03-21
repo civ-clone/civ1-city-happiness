@@ -5,17 +5,15 @@ import CityGrowthRegistry from '@civ-clone/core-city-growth/CityGrowthRegistry';
 import CityRegistry from '@civ-clone/core-city/CityRegistry';
 import PlayerWorldRegistry from '@civ-clone/core-player-world/PlayerWorldRegistry';
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
-import TerrainFeatureRegistry from '@civ-clone/core-terrain-feature/TerrainFeatureRegistry';
 import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprovementRegistry';
 import Yield from '@civ-clone/core-yield/Yield';
-import celebrateLeader from '../Rules/City/celebrate-leader';
-import created from '@civ-clone/civ1-city/Rules/City/created';
+import cityCelebrateLeader from '../Rules/City/celebrate-leader';
+import cityCreated from '@civ-clone/civ1-city/Rules/City/created';
 import { expect } from 'chai';
 import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
 
 describe('city:celebrate-leader', (): void => {
   const ruleRegistry = new RuleRegistry(),
-    terrainFeatureRegistry = new TerrainFeatureRegistry(),
     tileImprovementRegistry = new TileImprovementRegistry(),
     cityBuildRegistry = new CityBuildRegistry(),
     cityGrowthRegistry = new CityGrowthRegistry(),
@@ -23,24 +21,23 @@ describe('city:celebrate-leader', (): void => {
     playerWorldRegistry = new PlayerWorldRegistry();
 
   ruleRegistry.register(
-    ...created(
+    ...cityCelebrateLeader(cityGrowthRegistry),
+    ...cityCreated(
       tileImprovementRegistry,
       cityBuildRegistry,
       cityGrowthRegistry,
       cityRegistry,
       playerWorldRegistry,
       ruleRegistry
-    ),
-    ...celebrateLeader(cityGrowthRegistry)
+    )
   );
 
-  it('should trigger leader celebration when half or more citizens are happy and there is no unhappiness and the city size is greater than 2', (): void => {
-    const city = setUpCity({
+  it('should trigger leader celebration when half or more citizens are happy and there is no unhappiness and the city size is greater than 2', async (): Promise<void> => {
+    const city = await setUpCity({
       size: 4,
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
     });
 
@@ -53,13 +50,12 @@ describe('city:celebrate-leader', (): void => {
     ).to.true;
   });
 
-  it('should not trigger leader celebration when half or more citizens are happy if any unhappiness', (): void => {
-    const city = setUpCity({
+  it('should not trigger leader celebration when half or more citizens are happy if any unhappiness', async (): Promise<void> => {
+    const city = await setUpCity({
       size: 6,
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
     });
 
@@ -72,13 +68,12 @@ describe('city:celebrate-leader', (): void => {
     ).to.false;
   });
 
-  it('should not trigger leader celebration when city size is < 3', (): void => {
-    const city = setUpCity({
+  it('should not trigger leader celebration when city size is < 3', async (): Promise<void> => {
+    const city = await setUpCity({
       size: 2,
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
     });
 
@@ -91,13 +86,12 @@ describe('city:celebrate-leader', (): void => {
     ).to.false;
   });
 
-  it('should not trigger leader celebration when happiness is less than half the city size', (): void => {
-    const city = setUpCity({
+  it('should not trigger leader celebration when happiness is less than half the city size', async (): Promise<void> => {
+    const city = await setUpCity({
       size: 3,
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
     });
 

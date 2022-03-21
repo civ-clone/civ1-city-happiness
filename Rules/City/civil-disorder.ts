@@ -26,6 +26,7 @@ export const getRules: () => CivilDisorder[] = (): CivilDisorder[] => [
               total + unhappiness.value(),
             0
           );
+
       return unhappiness > happiness;
     })
   ),

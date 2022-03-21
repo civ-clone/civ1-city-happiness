@@ -18,6 +18,7 @@ import CivilDisorder, {
   ICivilDisorderRegistry,
 } from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
 import Effect from '@civ-clone/core-rule/Effect';
+import { Low } from '@civ-clone/core-rule/Priorities';
 import Player from '@civ-clone/core-player/Player';
 import TurnStart from '@civ-clone/core-player/Rules/TurnStart';
 
@@ -31,6 +32,7 @@ export const getRules: (
   engine = engineInstance
 ): TurnStart[] => [
   new TurnStart(
+    new Low(),
     new Effect((player: Player): void =>
       cityRegistry.getByPlayer(player).forEach((city: City) => {
         if (

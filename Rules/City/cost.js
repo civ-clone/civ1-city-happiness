@@ -13,14 +13,24 @@ const Luxuries_1 = require("@civ-clone/base-city-yield-luxuries/Luxuries");
 const getRules = (playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, unitRegistry = UnitRegistry_1.instance) => [
     new Cost_1.default(new Criterion_1.default((cityYield) => cityYield instanceof Luxuries_1.default), new Effect_1.default((cityYield, city, yields) => {
         const [happiness] = yields.filter((cityYield) => cityYield instanceof Yields_1.Happiness);
-        happiness.add(Math.floor(cityYield.value() / 2), 'luxuries');
+        happiness.add(Math.floor(cityYield.value() / 2), 'Luxuries');
     })),
     new Cost_1.default(new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Unhappiness), new Criterion_1.default((cityYield, city) => playerGovernmentRegistry
         .getByPlayer(city.player())
-        .is(Governments_1.Anarchy, Governments_1.Despotism, Governments_1.Monarchy)), new Effect_1.default((cityYield, city) => cityYield.subtract(Math.min(4, Math.min(cityYield.value(), unitRegistry
+        .is(Governments_1.Anarchy, Governments_1.Communism, Governments_1.Despotism, Governments_1.Monarchy)), new Effect_1.default((cityYield, city) => cityYield.subtract(Math.min(4, Math.min(cityYield.value(), unitRegistry
         .getByTile(city.tile())
         .filter((unit) => unit instanceof Types_1.Fortifiable)
-        .length)), 'martial-law'))),
+        .length)), 'MartialLaw'))),
+    new Cost_1.default(new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Unhappiness), new Criterion_1.default((cityYield, city) => playerGovernmentRegistry.getByPlayer(city.player()).is(Governments_1.Republic)), new Criterion_1.default((cityYield, city) => unitRegistry
+        .getByCity(city)
+        .filter((unit) => unit.tile() !== city.tile()).length > 0), new Effect_1.default((cityYield, city) => cityYield.add(unitRegistry
+        .getByCity(city)
+        .filter((unit) => unit.tile() !== city.tile()).length, 'MilitaryDiscontent'))),
+    new Cost_1.default(new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Unhappiness), new Criterion_1.default((cityYield, city) => playerGovernmentRegistry.getByPlayer(city.player()).is(Governments_1.Democracy)), new Criterion_1.default((cityYield, city) => unitRegistry
+        .getByCity(city)
+        .filter((unit) => unit.tile() !== city.tile()).length > 0), new Effect_1.default((cityYield, city) => cityYield.add(unitRegistry
+        .getByCity(city)
+        .filter((unit) => unit.tile() !== city.tile()).length * 2, 'MilitaryDiscontent'))),
 ];
 exports.getRules = getRules;
 exports.default = exports.getRules;

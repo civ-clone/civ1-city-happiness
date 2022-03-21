@@ -17,7 +17,6 @@ import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
 
 describe('city:cost', (): void => {
   const ruleRegistry = new RuleRegistry(),
-    terrainFeatureRegistry = new TerrainFeatureRegistry(),
     tileImprovementRegistry = new TileImprovementRegistry(),
     cityGrowthRegistry = new CityGrowthRegistry(),
     playerGovernmentRegistry = new PlayerGovernmentRegistry(),
@@ -38,13 +37,12 @@ describe('city:cost', (): void => {
     ...cost(playerGovernmentRegistry, unitRegistry)
   );
 
-  it('should not provide Happiness for 1 Luxuries yield', (): void => {
-    const city = setUpCity({
+  it('should not provide Happiness for 1 Luxuries yield', async (): Promise<void> => {
+    const city = await setUpCity({
         size: 2,
         ruleRegistry,
         playerWorldRegistry,
         cityGrowthRegistry,
-        terrainFeatureRegistry,
         tileImprovementRegistry,
       }),
       tile = city.tile();
@@ -57,13 +55,12 @@ describe('city:cost', (): void => {
     expect(happiness.value()).to.equal(0);
   });
 
-  it('should provide 1 Happiness for 2 Luxuries yields', (): void => {
-    const city = setUpCity({
+  it('should provide 1 Happiness for 2 Luxuries yields', async (): Promise<void> => {
+    const city = await setUpCity({
         size: 2,
         ruleRegistry,
         playerWorldRegistry,
         cityGrowthRegistry,
-        terrainFeatureRegistry,
         tileImprovementRegistry,
       }),
       tile = city.tile();
@@ -77,13 +74,12 @@ describe('city:cost', (): void => {
     expect(happiness.value()).to.equal(1);
   });
 
-  it('should provide 1 Happiness for 3 Luxuries yields', (): void => {
-    const city = setUpCity({
+  it('should provide 1 Happiness for 3 Luxuries yields', async (): Promise<void> => {
+    const city = await setUpCity({
         size: 2,
         ruleRegistry,
         playerWorldRegistry,
         cityGrowthRegistry,
-        terrainFeatureRegistry,
         tileImprovementRegistry,
       }),
       tile = city.tile();

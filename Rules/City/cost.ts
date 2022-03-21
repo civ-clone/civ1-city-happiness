@@ -1,7 +1,10 @@
 import {
   Anarchy,
+  Communism,
+  Democracy,
   Despotism,
   Monarchy,
+  Republic,
 } from '@civ-clone/civ1-government/Governments';
 import { Happiness, Unhappiness } from '../../Yields';
 import {
@@ -35,7 +38,7 @@ export const getRules: (
         (cityYield: Yield): boolean => cityYield instanceof Happiness
       );
 
-      happiness.add(Math.floor(cityYield.value() / 2), 'luxuries');
+      happiness.add(Math.floor(cityYield.value() / 2), 'Luxuries');
     })
   ),
   new Cost(
@@ -45,7 +48,7 @@ export const getRules: (
     new Criterion((cityYield: Yield, city: City): boolean =>
       playerGovernmentRegistry
         .getByPlayer(city.player())
-        .is(Anarchy, Despotism, Monarchy)
+        .is(Anarchy, Communism, Despotism, Monarchy)
     ),
     new Effect((cityYield: Yield, city: City): void =>
       cityYield.subtract(
@@ -59,7 +62,53 @@ export const getRules: (
               .length
           )
         ),
-        'martial-law'
+        'MartialLaw'
+      )
+    )
+  ),
+
+  new Cost(
+    new Criterion(
+      (cityYield: Yield): boolean => cityYield instanceof Unhappiness
+    ),
+    new Criterion((cityYield: Yield, city: City): boolean =>
+      playerGovernmentRegistry.getByPlayer(city.player()).is(Republic)
+    ),
+    new Criterion(
+      (cityYield: Yield, city: City): boolean =>
+        unitRegistry
+          .getByCity(city)
+          .filter((unit) => unit.tile() !== city.tile()).length > 0
+    ),
+    new Effect((cityYield: Yield, city: City): void =>
+      cityYield.add(
+        unitRegistry
+          .getByCity(city)
+          .filter((unit) => unit.tile() !== city.tile()).length,
+        'MilitaryDiscontent'
+      )
+    )
+  ),
+
+  new Cost(
+    new Criterion(
+      (cityYield: Yield): boolean => cityYield instanceof Unhappiness
+    ),
+    new Criterion((cityYield: Yield, city: City): boolean =>
+      playerGovernmentRegistry.getByPlayer(city.player()).is(Democracy)
+    ),
+    new Criterion(
+      (cityYield: Yield, city: City): boolean =>
+        unitRegistry
+          .getByCity(city)
+          .filter((unit) => unit.tile() !== city.tile()).length > 0
+    ),
+    new Effect((cityYield: Yield, city: City): void =>
+      cityYield.add(
+        unitRegistry
+          .getByCity(city)
+          .filter((unit) => unit.tile() !== city.tile()).length * 2,
+        'MilitaryDiscontent'
       )
     )
   ),

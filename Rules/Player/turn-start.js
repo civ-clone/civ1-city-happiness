@@ -7,9 +7,10 @@ const RuleRegistry_1 = require("@civ-clone/core-rule/RuleRegistry");
 const CelebrateLeader_1 = require("@civ-clone/core-city-happiness/Rules/CelebrateLeader");
 const CivilDisorder_1 = require("@civ-clone/core-city-happiness/Rules/CivilDisorder");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
+const Priorities_1 = require("@civ-clone/core-rule/Priorities");
 const TurnStart_1 = require("@civ-clone/core-player/Rules/TurnStart");
 const getRules = (cityRegistry = CityRegistry_1.instance, ruleRegistry = RuleRegistry_1.instance, engine = Engine_1.instance) => [
-    new TurnStart_1.default(new Effect_1.default((player) => cityRegistry.getByPlayer(player).forEach((city) => {
+    new TurnStart_1.default(new Priorities_1.Low(), new Effect_1.default((player) => cityRegistry.getByPlayer(player).forEach((city) => {
         if (ruleRegistry
             .get(CivilDisorder_1.default)
             .some((rule) => rule.validate(city, city.yields()))) {

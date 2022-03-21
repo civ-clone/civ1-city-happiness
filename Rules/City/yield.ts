@@ -32,6 +32,7 @@ import Effect from '@civ-clone/core-rule/Effect';
 import { Gold } from '@civ-clone/civ1-city/Yields';
 import { Research } from '@civ-clone/civ1-science/Yields';
 import { Mysticism } from '@civ-clone/civ1-science/Advances';
+import Priority from '@civ-clone/core-rule/Priority';
 import { Production } from '@civ-clone/civ1-world/Yields';
 import { Unhappiness } from '../../Yields';
 import Yield from '@civ-clone/core-yield/Yield';
@@ -61,35 +62,30 @@ export const getRules: (
     )
   ),
   new CityYield(
-    new Low(),
-    new Criterion(
-      (cityYield: Yield): boolean => cityYield instanceof Production
-    ),
-    new Criterion((cityYield: Yield, city: City, yields: Yield[]): boolean =>
-      (ruleRegistry as ICivilDisorderRegistry)
-        .get(CivilDisorder)
-        .some((rule: CivilDisorder): boolean => rule.validate(city, yields))
-    ),
-    new Effect((cityYield: Yield): void => cityYield.set(0, CivilDisorder.name))
-  ),
-  new CityYield(
-    new Low(),
+    new Priority(1000),
     new Criterion(
       (cityYield: Yield): boolean =>
-        cityYield instanceof Gold || cityYield instanceof Research
+        cityYield instanceof Gold ||
+        cityYield instanceof Research ||
+        cityYield instanceof Production
     ),
-    new Criterion((cityYield: Yield, city: City, yields: Yield[]): boolean =>
-      (ruleRegistry as ICivilDisorderRegistry)
-        .get(CivilDisorder)
-        .some((rule: CivilDisorder): boolean => rule.validate(city, yields))
+    new Criterion(
+      (
+        cityYield: Yield,
+        city: City,
+        yields: Yield[] = city.yields()
+      ): boolean =>
+        (ruleRegistry as ICivilDisorderRegistry)
+          .get(CivilDisorder)
+          .some((rule: CivilDisorder): boolean => rule.validate(city, yields))
     ),
     new Effect((cityYield: Yield): void => cityYield.set(0, CivilDisorder.name))
   ),
   ...(
     [
       [Temple, 1],
-      [Colosseum, 2],
-      [Cathedral, 3],
+      [Colosseum, 3],
+      [Cathedral, 4],
     ] as [typeof CityImprovement, number][]
   ).map(
     ([Improvement, reduction]) =>

@@ -1,29 +1,37 @@
 import { Happiness, Unhappiness } from '../Yields';
-import CityGrowthRegistry from '@civ-clone/core-city-growth/CityGrowthRegistry';
 import CityBuildRegistry from '@civ-clone/core-city-build/CityBuildRegistry';
+import CityGrowthRegistry from '@civ-clone/core-city-growth/CityGrowthRegistry';
+import CityImprovementRegistry from '@civ-clone/core-city-improvement/CityImprovementRegistry';
 import CityRegistry from '@civ-clone/core-city/CityRegistry';
 import CivilDisorder from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
+import PlayerResearchRegistry from '@civ-clone/core-science/PlayerResearchRegistry';
 import PlayerWorldRegistry from '@civ-clone/core-player-world/PlayerWorldRegistry';
+import { Production } from '@civ-clone/civ1-world/Yields';
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
-import TerrainFeatureRegistry from '@civ-clone/core-terrain-feature/TerrainFeatureRegistry';
 import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprovementRegistry';
 import Yield from '@civ-clone/core-yield/Yield';
+import YieldRegistry from '@civ-clone/core-yield/YieldRegistry';
 import civilDisorder from '../Rules/City/civil-disorder';
-import created from '@civ-clone/civ1-city/Rules/City/created';
+import cityYield from '../Rules/City/yield';
+import cityCreated from '@civ-clone/civ1-city/Rules/City/created';
 import { expect } from 'chai';
 import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
 
 describe('city:civil-disorder', (): void => {
   const ruleRegistry = new RuleRegistry(),
-    terrainFeatureRegistry = new TerrainFeatureRegistry(),
     tileImprovementRegistry = new TileImprovementRegistry(),
     cityBuildRegistry = new CityBuildRegistry(),
+    cityImprovementRegistry = new CityImprovementRegistry(),
     cityGrowthRegistry = new CityGrowthRegistry(),
     cityRegistry = new CityRegistry(),
-    playerWorldRegistry = new PlayerWorldRegistry();
+    playerResearchRegistry = new PlayerResearchRegistry(),
+    playerWorldRegistry = new PlayerWorldRegistry(),
+    yieldRegistry = new YieldRegistry();
+
+  yieldRegistry.register(Production, Happiness, Unhappiness);
 
   ruleRegistry.register(
-    ...created(
+    ...cityCreated(
       tileImprovementRegistry,
       cityBuildRegistry,
       cityGrowthRegistry,
@@ -31,19 +39,25 @@ describe('city:civil-disorder', (): void => {
       playerWorldRegistry,
       ruleRegistry
     ),
+    ...cityYield(
+      ruleRegistry,
+      cityGrowthRegistry,
+      cityImprovementRegistry,
+      playerResearchRegistry
+    ),
     ...civilDisorder()
   );
 
-  it('should be triggered in a city with Unhappiness and no Happiness', (): void => {
-    const city = setUpCity({
+  it('should be triggered in a city with Unhappiness and no Happiness', async (): Promise<void> => {
+    const city = await setUpCity({
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
+      yieldRegistry,
     });
 
-    city.yields = (): Yield[] => [new Unhappiness(1)];
+    city.tile().yields = (): Yield[] => [new Unhappiness(1)];
 
     expect(
       ruleRegistry
@@ -52,16 +66,16 @@ describe('city:civil-disorder', (): void => {
     ).to.true;
   });
 
-  it('should be triggered in a city with more Unhappiness than Happiness', (): void => {
-    const city = setUpCity({
+  it('should be triggered in a city with more Unhappiness than Happiness', async (): Promise<void> => {
+    const city = await setUpCity({
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
+      yieldRegistry,
     });
 
-    city.yields = (): Yield[] => [new Unhappiness(2), new Happiness(1)];
+    city.tile().yields = (): Yield[] => [new Unhappiness(2), new Happiness(1)];
 
     expect(
       ruleRegistry
@@ -70,16 +84,16 @@ describe('city:civil-disorder', (): void => {
     );
   });
 
-  it('should be not triggered in a city with the same amount of Unhappiness and Happiness', (): void => {
-    const city = setUpCity({
+  it('should be not triggered in a city with the same amount of Unhappiness and Happiness', async (): Promise<void> => {
+    const city = await setUpCity({
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
+      yieldRegistry,
     });
 
-    city.yields = (): Yield[] => [new Unhappiness(1), new Happiness(1)];
+    city.tile().yields = (): Yield[] => [new Unhappiness(1), new Happiness(1)];
 
     expect(
       ruleRegistry
@@ -88,13 +102,13 @@ describe('city:civil-disorder', (): void => {
     ).to.false;
   });
 
-  it('should not be triggered in a city with no Unhappiness', (): void => {
-    const city = setUpCity({
+  it('should not be triggered in a city with no Unhappiness', async (): Promise<void> => {
+    const city = await setUpCity({
       ruleRegistry,
       playerWorldRegistry,
       cityGrowthRegistry,
-      terrainFeatureRegistry,
       tileImprovementRegistry,
+      yieldRegistry,
     });
 
     expect(
@@ -105,44 +119,31 @@ describe('city:civil-disorder', (): void => {
   });
 
   // TODO: check effects of civil disorder
-  // it('should halt production when in civil disorder', (): void => {
-  //   const city = setUpCity({
-  //     playerWorldRegistry,
-  //     cityGrowthRegistry,
-  //     terrainFeatureRegistry,
-  //     tileImprovementRegistry,
-  //     ruleRegistry,
-  //   });
-  //
-  //   tile.yields = (): Yield[] => [
-  //     new Production(2),
-  //   ];
-  //
-  //   const yields = city.yields(),
-  //     [production] = yields.filter((cityYield: Yield): boolean => cityYield instanceof Production);
-  //
-  //   expect(production.value()).to.equal(0);
-  // });
-  //
-  // it('should not halt production when not in civil disorder', (): void => {
-  //   const city = setUpCity({
-  //       size: 5,
-  //       playerWorldRegistry,
-  //       cityGrowthRegistry,
-  //       terrainFeatureRegistry,
-  //       tileImprovementRegistry,
-  //       ruleRegistry,
-  //     }),
-  //   });
-  //
-  //   tile.yields = (): Yield[] => [
-  //     new Production(2),
-  //   ];
-  //
-  //   const yields = city.yields(),
-  //     [production] = yields.filter((cityYield: Yield): boolean => cityYield instanceof Production)
-  //   ;
-  //
-  //   assert.strictEqual(production.value(), 7);
-  // });
+  it('should halt production when in civil disorder', async (): Promise<void> => {
+    const city = await setUpCity({
+        playerWorldRegistry,
+        cityGrowthRegistry,
+        tileImprovementRegistry,
+        ruleRegistry,
+        yieldRegistry,
+      }),
+      yields = [new Unhappiness(1), new Production(2)];
+
+    city.tile().yields = (): Yield[] => yields;
+
+    const [production] = city
+      .yields()
+      .filter((cityYield: Yield): boolean => cityYield instanceof Production);
+
+    expect(production.value()).to.equal(0);
+
+    yields.push(new Happiness(1));
+
+    const updatedYields = city.yields([], yieldRegistry),
+      [updatedProduction] = updatedYields.filter(
+        (cityYield: Yield): boolean => cityYield instanceof Production
+      );
+
+    expect(updatedProduction.value()).to.equal(2);
+  });
 });
