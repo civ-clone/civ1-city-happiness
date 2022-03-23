@@ -1,12 +1,10 @@
 import { CityGrowthRegistry } from '@civ-clone/core-city-growth/CityGrowthRegistry';
-import { CityImprovementRegistry } from '@civ-clone/core-city-improvement/CityImprovementRegistry';
-import { PlayerResearchRegistry } from '@civ-clone/core-science/PlayerResearchRegistry';
-import { RuleRegistry } from '@civ-clone/core-rule/RuleRegistry';
+import { PlayerGovernmentRegistry } from '@civ-clone/core-government/PlayerGovernmentRegistry';
+import { UnitRegistry } from '@civ-clone/core-unit/UnitRegistry';
 import CityYield from '@civ-clone/core-city/Rules/Yield';
 export declare const getRules: (
-  ruleRegistry?: RuleRegistry,
   cityGrowthRegistry?: CityGrowthRegistry,
-  cityImprovementRegistry?: CityImprovementRegistry,
-  playerResearchRegistry?: PlayerResearchRegistry
+  playerGovernmentRegistry?: PlayerGovernmentRegistry,
+  unitRegistry?: UnitRegistry
 ) => CityYield[];
 export default getRules;

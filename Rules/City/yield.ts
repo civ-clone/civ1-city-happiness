@@ -1,52 +1,35 @@
-import {
-  Cathedral,
-  Colosseum,
-  Temple,
-} from '@civ-clone/civ1-city-improvement/CityImprovements';
+import { Air, Fortifiable, Naval } from '@civ-clone/civ1-unit/Types';
 import {
   CityGrowthRegistry,
   instance as cityGrowthRegistryInstance,
 } from '@civ-clone/core-city-growth/CityGrowthRegistry';
+import { Democracy, Republic } from '@civ-clone/civ1-government/Governments';
+import { Happiness, Unhappiness } from '../../Yields';
+import {High, Low} from '@civ-clone/core-rule/Priorities';
 import {
-  CityImprovementRegistry,
-  instance as cityImprovementRegistryInstance,
-} from '@civ-clone/core-city-improvement/CityImprovementRegistry';
+  PlayerGovernmentRegistry,
+  instance as playerGovernmentRegistryInstance,
+} from '@civ-clone/core-government/PlayerGovernmentRegistry';
 import {
-  CivilDisorder,
-  ICivilDisorderRegistry,
-} from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
-import { High, Low } from '@civ-clone/core-rule/Priorities';
-import {
-  PlayerResearchRegistry,
-  instance as playerResearchRegistryInstance,
-} from '@civ-clone/core-science/PlayerResearchRegistry';
-import {
-  RuleRegistry,
-  instance as ruleRegistryInstance,
-} from '@civ-clone/core-rule/RuleRegistry';
+  UnitRegistry,
+  instance as unitRegistryInstance,
+} from '@civ-clone/core-unit/UnitRegistry';
 import City from '@civ-clone/core-city/City';
-import CityImprovement from '@civ-clone/core-city-improvement/CityImprovement';
 import CityYield from '@civ-clone/core-city/Rules/Yield';
 import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
-import { Gold } from '@civ-clone/civ1-city/Yields';
-import { Research } from '@civ-clone/civ1-science/Yields';
-import { Mysticism } from '@civ-clone/civ1-science/Advances';
-import Priority from '@civ-clone/core-rule/Priority';
-import { Production } from '@civ-clone/civ1-world/Yields';
-import { Unhappiness } from '../../Yields';
+import Luxuries from '@civ-clone/base-city-yield-luxuries/Luxuries';
 import Yield from '@civ-clone/core-yield/Yield';
+import Government from "@civ-clone/core-government/Government";
 
 export const getRules: (
-  ruleRegistry?: RuleRegistry,
   cityGrowthRegistry?: CityGrowthRegistry,
-  cityImprovementRegistry?: CityImprovementRegistry,
-  playerResearchRegistry?: PlayerResearchRegistry
+  playerGovernmentRegistry?: PlayerGovernmentRegistry,
+  unitRegistry?: UnitRegistry
 ) => CityYield[] = (
-  ruleRegistry: RuleRegistry = ruleRegistryInstance,
   cityGrowthRegistry: CityGrowthRegistry = cityGrowthRegistryInstance,
-  cityImprovementRegistry: CityImprovementRegistry = cityImprovementRegistryInstance,
-  playerResearchRegistry: PlayerResearchRegistry = playerResearchRegistryInstance
+  playerGovernmentRegistry: PlayerGovernmentRegistry = playerGovernmentRegistryInstance,
+  unitRegistry: UnitRegistry = unitRegistryInstance
 ): CityYield[] => [
   new CityYield(
     new High(),
@@ -61,70 +44,87 @@ export const getRules: (
       )
     )
   ),
+
   new CityYield(
-    new Priority(1000),
-    new Criterion(
-      (cityYield: Yield): boolean =>
-        cityYield instanceof Gold ||
-        cityYield instanceof Research ||
-        cityYield instanceof Production
-    ),
-    new Criterion(
-      (
-        cityYield: Yield,
-        city: City,
-        yields: Yield[] = city.yields()
-      ): boolean =>
-        (ruleRegistry as ICivilDisorderRegistry)
-          .get(CivilDisorder)
-          .some((rule: CivilDisorder): boolean => rule.validate(city, yields))
-    ),
-    new Effect((cityYield: Yield): void => cityYield.set(0, CivilDisorder.name))
+    new Criterion((cityYield: Yield): boolean => cityYield instanceof Luxuries),
+    new Effect((cityYield: Yield, city: City, yields: Yield[]): void => {
+      const [happiness] = yields.filter(
+        (cityYield: Yield): boolean => cityYield instanceof Happiness
+      );
+
+      happiness.add(Math.floor(cityYield.value() / 2), Luxuries.name);
+    })
   ),
-  ...(
-    [
-      [Temple, 1],
-      [Colosseum, 3],
-      [Cathedral, 4],
-    ] as [typeof CityImprovement, number][]
-  ).map(
-    ([Improvement, reduction]) =>
+
+  ...([
+    [Republic, 1],
+    [Democracy, 2],
+  ] as [typeof Government, number][])
+    .map(([GovernmentType, discontent]) =>
       new CityYield(
-        new Low(),
         new Criterion(
           (cityYield: Yield): boolean => cityYield instanceof Unhappiness
         ),
         new Criterion((cityYield: Yield, city: City): boolean =>
-          cityImprovementRegistry
-            .getByCity(city)
-            .some(
-              (cityImprovement: CityImprovement): boolean =>
-                cityImprovement instanceof Improvement
-            )
+          playerGovernmentRegistry.getByPlayer(city.player()).is(GovernmentType)
         ),
-        new Effect((cityYield: Yield): void =>
-          cityYield.subtract(reduction, Improvement.name)
+        new Criterion(
+          (cityYield: Yield, city: City): boolean =>
+            unitRegistry
+              .getByCity(city)
+              .filter(
+                (unit) =>
+                  [Air, Fortifiable, Naval].some(
+                    (UnitType) => unit instanceof UnitType
+                  ) && unit.tile() !== city.tile()
+              ).length > 0
+        ),
+        new Effect((cityYield: Yield, city: City): void =>
+          cityYield.add(
+            unitRegistry
+              .getByCity(city)
+              .filter(
+                (unit) =>
+                  [Air, Fortifiable, Naval].some(
+                    (UnitType) => unit instanceof UnitType
+                  ) && unit.tile() !== city.tile()
+              ).length * discontent,
+            'MilitaryDiscontent'
+          )
         )
-      )
-  ),
+      ),
+    ),
+
   new CityYield(
-    new Low(),
     new Criterion(
       (cityYield: Yield): boolean => cityYield instanceof Unhappiness
     ),
     new Criterion((cityYield: Yield, city: City): boolean =>
-      cityImprovementRegistry
-        .getByCity(city)
-        .some(
-          (cityImprovement: CityImprovement): boolean =>
-            cityImprovement instanceof Temple
-        )
+      playerGovernmentRegistry.getByPlayer(city.player()).is(Democracy)
     ),
-    new Criterion((cityYield: Yield, city: City): boolean =>
-      playerResearchRegistry.getByPlayer(city.player()).completed(Mysticism)
+    new Criterion(
+      (cityYield: Yield, city: City): boolean =>
+        unitRegistry
+          .getByCity(city)
+          .filter(
+            (unit) =>
+              [Air, Fortifiable, Naval].some(
+                (UnitType) => unit instanceof UnitType
+              ) && unit.tile() !== city.tile()
+          ).length > 0
     ),
-    new Effect((cityYield: Yield): void =>
-      cityYield.subtract(1, Mysticism.name)
+    new Effect((cityYield: Yield, city: City): void =>
+      cityYield.add(
+        unitRegistry
+          .getByCity(city)
+          .filter(
+            (unit) =>
+              [Air, Fortifiable, Naval].some(
+                (UnitType) => unit instanceof UnitType
+              ) && unit.tile() !== city.tile()
+          ).length * 2,
+        'MilitaryDiscontent'
+      )
     )
   ),
 ];
