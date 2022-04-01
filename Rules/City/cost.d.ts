@@ -4,7 +4,7 @@ import { PlayerGovernmentRegistry } from '@civ-clone/core-government/PlayerGover
 import { PlayerResearchRegistry } from '@civ-clone/core-science/PlayerResearchRegistry';
 import { RuleRegistry } from '@civ-clone/core-rule/RuleRegistry';
 import { UnitRegistry } from '@civ-clone/core-unit/UnitRegistry';
-import CityYield from '@civ-clone/core-city/Rules/Yield';
+import Cost from '@civ-clone/core-city/Rules/Cost';
 export declare const getRules: (
   ruleRegistry?: RuleRegistry,
   cityGrowthRegistry?: CityGrowthRegistry,
@@ -12,5 +12,5 @@ export declare const getRules: (
   playerGovernmentRegistry?: PlayerGovernmentRegistry,
   playerResearchRegistry?: PlayerResearchRegistry,
   unitRegistry?: UnitRegistry
-) => CityYield[];
+) => Cost[];
 export default getRules;

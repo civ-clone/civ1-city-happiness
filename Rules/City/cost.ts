@@ -22,6 +22,14 @@ import {
   ICivilDisorderRegistry,
 } from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
 import {
+  Gold,
+  Happiness,
+  Luxuries,
+  Production,
+  Research,
+  Unhappiness,
+} from '../../Yields';
+import {
   PlayerGovernmentRegistry,
   instance as playerGovernmentRegistryInstance,
 } from '@civ-clone/core-government/PlayerGovernmentRegistry';
@@ -39,19 +47,17 @@ import {
 } from '@civ-clone/core-unit/UnitRegistry';
 import City from '@civ-clone/core-city/City';
 import CityImprovement from '@civ-clone/core-city-improvement/CityImprovement';
-import CityYield from '@civ-clone/core-city/Rules/Yield';
 import Cost from '@civ-clone/core-city/Rules/Cost';
 import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import { Fortifiable } from '@civ-clone/civ1-unit/Types';
-import { Gold } from '@civ-clone/civ1-city/Yields';
+import High from '@civ-clone/core-rule/Priorities/High';
 import { Low } from '@civ-clone/core-rule/Priorities';
 import { Mysticism } from '@civ-clone/civ1-science/Advances';
-import { Production } from '@civ-clone/civ1-world/Yields';
-import { Research } from '@civ-clone/civ1-science/Yields';
-import { Unhappiness } from '../../Yields';
+import Priority from '@civ-clone/core-rule/Priority';
 import Unit from '@civ-clone/core-unit/Unit';
 import Yield from '@civ-clone/core-yield/Yield';
+import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
   ruleRegistry?: RuleRegistry,
@@ -60,7 +66,7 @@ export const getRules: (
   playerGovernmentRegistry?: PlayerGovernmentRegistry,
   playerResearchRegistry?: PlayerResearchRegistry,
   unitRegistry?: UnitRegistry
-) => CityYield[] = (
+) => Cost[] = (
   ruleRegistry: RuleRegistry = ruleRegistryInstance,
   cityGrowthRegistry: CityGrowthRegistry = cityGrowthRegistryInstance,
   cityImprovementRegistry: CityImprovementRegistry = cityImprovementRegistryInstance,
@@ -69,90 +75,39 @@ export const getRules: (
   unitRegistry: UnitRegistry = unitRegistryInstance
 ): Cost[] => [
   new Cost(
-    new Low(),
-    new Criterion(
-      (cityYield: Yield): boolean =>
-        cityYield instanceof Gold ||
-        cityYield instanceof Research ||
-        cityYield instanceof Production
+    new Priority(9001),
+    new Criterion((city: City, yields: Yield[]): boolean =>
+      (ruleRegistry as ICivilDisorderRegistry)
+        .get(CivilDisorder)
+        .some((rule: CivilDisorder): boolean => rule.validate(city, yields))
     ),
-    new Criterion(
-      (
-        cityYield: Yield,
-        city: City,
-        yields: Yield[] = city.yields()
-      ): boolean =>
-        (ruleRegistry as ICivilDisorderRegistry)
-          .get(CivilDisorder)
-          .some((rule: CivilDisorder): boolean => rule.validate(city, yields))
-    ),
-    new Effect((cityYield: Yield): void =>
-      cityYield.subtract(cityYield, CivilDisorder.name)
+    new Effect((city: City, yields: Yield[]): Yield[] =>
+      [Gold, Research, Production].map(
+        (YieldType) =>
+          new YieldType(-reduceYield(yields, YieldType), CivilDisorder.name)
+      )
     )
   ),
 
+  // Martial Law
   new Cost(
-    new Criterion(
-      (cityYield: Yield): boolean => cityYield instanceof Unhappiness
-    ),
-    new Criterion((cityYield: Yield, city: City): boolean =>
+    new Criterion((city: City): boolean =>
       playerGovernmentRegistry
         .getByPlayer(city.player())
         .is(Anarchy, Communism, Despotism, Monarchy)
     ),
-    new Effect((cityYield: Yield, city: City): void =>
-      cityYield.subtract(
-        Math.min(
-          4,
-          Math.min(
-            cityYield.value(),
-            unitRegistry
-              .getByTile(city.tile())
-              .filter((unit: Unit): boolean => unit instanceof Fortifiable)
-              .length
-          )
-        ),
-        'MartialLaw'
-      )
+    new Effect((city: City, yields: Yield[]): Yield[] =>
+      unitRegistry
+        .getByTile(city.tile())
+        .filter((unit: Unit): boolean => unit instanceof Fortifiable)
+        .slice(0, Math.min(4, reduceYield(yields, Unhappiness)))
+        .map((unit) => new Unhappiness(-1, unit.id()))
     )
-  ),
-
-  ...(
-    [
-      [Temple, 1],
-      [Colosseum, 3],
-      [Cathedral, 4],
-    ] as [typeof CityImprovement, number][]
-  ).map(
-    ([Improvement, reduction]) =>
-      new CityYield(
-        new Low(),
-        new Criterion(
-          (cityYield: Yield): boolean => cityYield instanceof Unhappiness
-        ),
-        new Criterion((cityYield: Yield, city: City): boolean =>
-          cityImprovementRegistry
-            .getByCity(city)
-            .some(
-              (cityImprovement: CityImprovement): boolean =>
-                cityImprovement instanceof Improvement
-            )
-        ),
-        new Effect((cityYield: Yield): void =>
-          cityYield.subtract(
-            Math.min(reduction, cityYield.value()),
-            Improvement.name
-          )
-        )
-      )
   ),
 
   new Cost(
     new Low(),
-    new Criterion(
-      (cityYield: Yield): boolean => cityYield instanceof Unhappiness
-    ),
-    new Criterion((cityYield: Yield, city: City): boolean =>
+    new Criterion((city: City): boolean =>
       cityImprovementRegistry
         .getByCity(city)
         .some(
@@ -160,11 +115,86 @@ export const getRules: (
             cityImprovement instanceof Temple
         )
     ),
-    new Criterion((cityYield: Yield, city: City): boolean =>
+    new Criterion(
+      (city: City): boolean =>
+        !playerResearchRegistry.getByPlayer(city.player()).completed(Mysticism)
+    ),
+    new Effect(
+      (city: City, yields: Yield[]): Yield =>
+        new Unhappiness(
+          -Math.min(1, reduceYield(yields, Unhappiness)),
+          Temple.name
+        )
+    )
+  ),
+
+  new Cost(
+    new Low(),
+    new Criterion((city: City): boolean =>
+      cityImprovementRegistry
+        .getByCity(city)
+        .some(
+          (cityImprovement: CityImprovement): boolean =>
+            cityImprovement instanceof Temple
+        )
+    ),
+    new Criterion((city: City): boolean =>
       playerResearchRegistry.getByPlayer(city.player()).completed(Mysticism)
     ),
-    new Effect((cityYield: Yield): void =>
-      cityYield.subtract(Math.min(1, cityYield.value()), Mysticism.name)
+    new Effect(
+      (city: City, yields: Yield[]): Yield =>
+        new Unhappiness(
+          -Math.min(2, reduceYield(yields, Unhappiness)),
+          Temple.name
+        )
+    )
+  ),
+
+  ...(
+    [
+      [Colosseum, 3],
+      [Cathedral, 4],
+    ] as [typeof CityImprovement, number][]
+  ).map(
+    ([Improvement, reduction]) =>
+      new Cost(
+        new Low(),
+        new Criterion((city: City, yields: Yield[]): boolean =>
+          cityImprovementRegistry
+            .getByCity(city)
+            .some(
+              (cityImprovement: CityImprovement): boolean =>
+                cityImprovement instanceof Improvement
+            )
+        ),
+        new Effect(
+          (city: City, yields: Yield[]): Yield =>
+            new Unhappiness(
+              -Math.min(reduction, reduceYield(yields, Unhappiness)),
+              Improvement.name
+            )
+        )
+      )
+  ),
+
+  new Cost(
+    new High(),
+    new Criterion(
+      (city: City, yields: Yield[]) =>
+        !yields.some(
+          (cityYield) =>
+            cityYield instanceof Happiness &&
+            cityYield
+              .values()
+              .some(([, provider]) => provider === Luxuries.name)
+        )
+    ),
+    new Effect(
+      (city: City, yields: Yield[]): Yield =>
+        new Happiness(
+          Math.floor(reduceYield(yields, Luxuries) / 2),
+          Luxuries.name
+        )
     )
   ),
 ];

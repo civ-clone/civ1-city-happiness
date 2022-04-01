@@ -4,8 +4,7 @@ import {
   instance as cityGrowthRegistryInstance,
 } from '@civ-clone/core-city-growth/CityGrowthRegistry';
 import { Democracy, Republic } from '@civ-clone/civ1-government/Governments';
-import { Happiness, Unhappiness } from '../../Yields';
-import {High, Low} from '@civ-clone/core-rule/Priorities';
+import { Happiness, Luxuries, Unhappiness } from '../../Yields';
 import {
   PlayerGovernmentRegistry,
   instance as playerGovernmentRegistryInstance,
@@ -18,9 +17,10 @@ import City from '@civ-clone/core-city/City';
 import CityYield from '@civ-clone/core-city/Rules/Yield';
 import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
-import Luxuries from '@civ-clone/base-city-yield-luxuries/Luxuries';
+import Government from '@civ-clone/core-government/Government';
+import { Low } from '@civ-clone/core-rule/Priorities';
 import Yield from '@civ-clone/core-yield/Yield';
-import Government from "@civ-clone/core-government/Government";
+import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
   cityGrowthRegistry?: CityGrowthRegistry,
@@ -32,44 +32,35 @@ export const getRules: (
   unitRegistry: UnitRegistry = unitRegistryInstance
 ): CityYield[] => [
   new CityYield(
-    new High(),
-    new Criterion(
-      (cityYield: Yield): boolean => cityYield instanceof Unhappiness
-    ),
     // TODO: factor in difficulty levels
-    new Effect((cityYield: Yield, city: City): void =>
-      cityYield.add(
-        Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0),
-        'Population'
-      )
+    new Effect(
+      (city: City): Yield =>
+        new Unhappiness(
+          Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0),
+          'Population'
+        )
     )
   ),
 
-  new CityYield(
-    new Criterion((cityYield: Yield): boolean => cityYield instanceof Luxuries),
-    new Effect((cityYield: Yield, city: City, yields: Yield[]): void => {
-      const [happiness] = yields.filter(
-        (cityYield: Yield): boolean => cityYield instanceof Happiness
-      );
-
-      happiness.add(Math.floor(cityYield.value() / 2), Luxuries.name);
-    })
-  ),
-
-  ...([
-    [Republic, 1],
-    [Democracy, 2],
-  ] as [typeof Government, number][])
-    .map(([GovernmentType, discontent]) =>
+  ...(
+    [
+      [Republic, 1],
+      [Democracy, 2],
+    ] as [typeof Government, number][]
+  ).map(
+    ([GovernmentType, discontent]) =>
       new CityYield(
+        new Criterion((city: City): boolean => {
+          try {
+            return playerGovernmentRegistry
+              .getByPlayer(city.player())
+              .is(GovernmentType);
+          } catch (e) {
+            return false;
+          }
+        }),
         new Criterion(
-          (cityYield: Yield): boolean => cityYield instanceof Unhappiness
-        ),
-        new Criterion((cityYield: Yield, city: City): boolean =>
-          playerGovernmentRegistry.getByPlayer(city.player()).is(GovernmentType)
-        ),
-        new Criterion(
-          (cityYield: Yield, city: City): boolean =>
+          (city: City): boolean =>
             unitRegistry
               .getByCity(city)
               .filter(
@@ -79,53 +70,21 @@ export const getRules: (
                   ) && unit.tile() !== city.tile()
               ).length > 0
         ),
-        new Effect((cityYield: Yield, city: City): void =>
-          cityYield.add(
-            unitRegistry
-              .getByCity(city)
-              .filter(
-                (unit) =>
-                  [Air, Fortifiable, Naval].some(
-                    (UnitType) => unit instanceof UnitType
-                  ) && unit.tile() !== city.tile()
-              ).length * discontent,
-            'MilitaryDiscontent'
-          )
+        new Effect(
+          (city: City): Yield =>
+            new Unhappiness(
+              unitRegistry
+                .getByCity(city)
+                .filter(
+                  (unit) =>
+                    [Air, Fortifiable, Naval].some(
+                      (UnitType) => unit instanceof UnitType
+                    ) && unit.tile() !== city.tile()
+                ).length * discontent,
+              'MilitaryDiscontent'
+            )
         )
-      ),
-    ),
-
-  new CityYield(
-    new Criterion(
-      (cityYield: Yield): boolean => cityYield instanceof Unhappiness
-    ),
-    new Criterion((cityYield: Yield, city: City): boolean =>
-      playerGovernmentRegistry.getByPlayer(city.player()).is(Democracy)
-    ),
-    new Criterion(
-      (cityYield: Yield, city: City): boolean =>
-        unitRegistry
-          .getByCity(city)
-          .filter(
-            (unit) =>
-              [Air, Fortifiable, Naval].some(
-                (UnitType) => unit instanceof UnitType
-              ) && unit.tile() !== city.tile()
-          ).length > 0
-    ),
-    new Effect((cityYield: Yield, city: City): void =>
-      cityYield.add(
-        unitRegistry
-          .getByCity(city)
-          .filter(
-            (unit) =>
-              [Air, Fortifiable, Naval].some(
-                (UnitType) => unit instanceof UnitType
-              ) && unit.tile() !== city.tile()
-          ).length * 2,
-        'MilitaryDiscontent'
       )
-    )
   ),
 ];
 

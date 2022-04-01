@@ -10,27 +10,27 @@ const UnitRegistry_1 = require("@civ-clone/core-unit/UnitRegistry");
 const Yield_1 = require("@civ-clone/core-city/Rules/Yield");
 const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
-const Priorities_1 = require("@civ-clone/core-rule/Priorities");
-const Luxuries_1 = require("@civ-clone/base-city-yield-luxuries/Luxuries");
-const Priority_1 = require("@civ-clone/core-rule/Priority");
 const getRules = (cityGrowthRegistry = CityGrowthRegistry_1.instance, playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, unitRegistry = UnitRegistry_1.instance) => [
-    new Yield_1.default(new Priorities_1.High(), new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Unhappiness), 
+    new Yield_1.default(
     // TODO: factor in difficulty levels
-    new Effect_1.default((cityYield, city) => cityYield.add(Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0), 'Population'))),
-    new Yield_1.default(new Priority_1.default(4000), new Criterion_1.default((cityYield) => cityYield instanceof Luxuries_1.default), new Effect_1.default((cityYield, city, yields) => {
-        const [happiness] = yields.filter((cityYield) => cityYield instanceof Yields_1.Happiness);
-        happiness.add(Math.floor(cityYield.value() / 2), Luxuries_1.default.name);
-    })),
-    new Yield_1.default(new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Unhappiness), new Criterion_1.default((cityYield, city) => playerGovernmentRegistry.getByPlayer(city.player()).is(Governments_1.Republic)), new Criterion_1.default((cityYield, city) => unitRegistry
+    new Effect_1.default((city) => new Yields_1.Unhappiness(Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0), 'Population'))),
+    ...[
+        [Governments_1.Republic, 1],
+        [Governments_1.Democracy, 2],
+    ].map(([GovernmentType, discontent]) => new Yield_1.default(new Criterion_1.default((city) => {
+        try {
+            return playerGovernmentRegistry
+                .getByPlayer(city.player())
+                .is(GovernmentType);
+        }
+        catch (e) {
+            return false;
+        }
+    }), new Criterion_1.default((city) => unitRegistry
         .getByCity(city)
-        .filter((unit) => [Types_1.Air, Types_1.Fortifiable, Types_1.Naval].some((UnitType) => unit instanceof UnitType) && unit.tile() !== city.tile()).length > 0), new Effect_1.default((cityYield, city) => cityYield.add(unitRegistry
+        .filter((unit) => [Types_1.Air, Types_1.Fortifiable, Types_1.Naval].some((UnitType) => unit instanceof UnitType) && unit.tile() !== city.tile()).length > 0), new Effect_1.default((city) => new Yields_1.Unhappiness(unitRegistry
         .getByCity(city)
-        .filter((unit) => [Types_1.Air, Types_1.Fortifiable, Types_1.Naval].some((UnitType) => unit instanceof UnitType) && unit.tile() !== city.tile()).length, 'MilitaryDiscontent'))),
-    new Yield_1.default(new Criterion_1.default((cityYield) => cityYield instanceof Yields_1.Unhappiness), new Criterion_1.default((cityYield, city) => playerGovernmentRegistry.getByPlayer(city.player()).is(Governments_1.Democracy)), new Criterion_1.default((cityYield, city) => unitRegistry
-        .getByCity(city)
-        .filter((unit) => [Types_1.Air, Types_1.Fortifiable, Types_1.Naval].some((UnitType) => unit instanceof UnitType) && unit.tile() !== city.tile()).length > 0), new Effect_1.default((cityYield, city) => cityYield.add(unitRegistry
-        .getByCity(city)
-        .filter((unit) => [Types_1.Air, Types_1.Fortifiable, Types_1.Naval].some((UnitType) => unit instanceof UnitType) && unit.tile() !== city.tile()).length * 2, 'MilitaryDiscontent'))),
+        .filter((unit) => [Types_1.Air, Types_1.Fortifiable, Types_1.Naval].some((UnitType) => unit instanceof UnitType) && unit.tile() !== city.tile()).length * discontent, 'MilitaryDiscontent')))),
 ];
 exports.getRules = getRules;
 exports.default = exports.getRules;

@@ -1,95 +1,68 @@
-import { Happiness } from '../Yields';
-import { Luxuries } from '@civ-clone/base-city-yield-luxuries/Luxuries';
-import CityBuildRegistry from '@civ-clone/core-city-build/CityBuildRegistry';
+import { Happiness, Luxuries } from '../Yields';
 import CityGrowthRegistry from '@civ-clone/core-city-growth/CityGrowthRegistry';
-import CityRegistry from '@civ-clone/core-city/CityRegistry';
+import Effect from '@civ-clone/core-rule/Effect';
 import PlayerGovernmentRegistry from '@civ-clone/core-government/PlayerGovernmentRegistry';
 import PlayerWorldRegistry from '@civ-clone/core-player-world/PlayerWorldRegistry';
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
-import TerrainFeatureRegistry from '@civ-clone/core-terrain-feature/TerrainFeatureRegistry';
 import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprovementRegistry';
 import UnitRegistry from '@civ-clone/core-unit/UnitRegistry';
 import Yield from '@civ-clone/core-yield/Yield';
-import cost from '../Rules/City/cost';
-import created from '@civ-clone/civ1-city/Rules/City/created';
+import YieldRule from '@civ-clone/core-city/Rules/Yield';
+import cityYield from '../Rules/City/yield';
 import { expect } from 'chai';
 import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
+import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
+import cost from '../Rules/City/cost';
+import CityImprovementRegistry from '@civ-clone/core-city-improvement/CityImprovementRegistry';
+import PlayerResearchRegistry from '@civ-clone/core-science/PlayerResearchRegistry';
+import PlayerGovernment from '@civ-clone/core-government/PlayerGovernment';
 
 describe('city:cost', (): void => {
-  const ruleRegistry = new RuleRegistry(),
-    tileImprovementRegistry = new TileImprovementRegistry(),
+  const tileImprovementRegistry = new TileImprovementRegistry(),
     cityGrowthRegistry = new CityGrowthRegistry(),
+    cityImprovementRegistry = new CityImprovementRegistry(),
     playerGovernmentRegistry = new PlayerGovernmentRegistry(),
+    playerResearchRegistry = new PlayerResearchRegistry(),
     playerWorldRegistry = new PlayerWorldRegistry(),
-    unitRegistry = new UnitRegistry(),
-    cityBuildRegistry = new CityBuildRegistry(),
-    cityRegistry = new CityRegistry();
+    unitRegistry = new UnitRegistry();
 
-  ruleRegistry.register(
-    ...created(
-      tileImprovementRegistry,
-      cityBuildRegistry,
-      cityGrowthRegistry,
-      cityRegistry,
-      playerWorldRegistry,
-      ruleRegistry
-    ),
-    ...cost(playerGovernmentRegistry, unitRegistry)
+  (
+    [
+      [1, 0],
+      [2, 1],
+      [3, 1],
+    ] as [number, number][]
+  ).forEach(([luxuries, happiness]) =>
+    it(`should provide ${happiness} Happiness for ${luxuries} Luxuries yield`, async (): Promise<void> => {
+      const ruleRegistry = new RuleRegistry(),
+        city = await setUpCity({
+          size: 2,
+          ruleRegistry,
+          playerWorldRegistry,
+          cityGrowthRegistry,
+          tileImprovementRegistry,
+        });
+
+      playerGovernmentRegistry.register(new PlayerGovernment(city.player()));
+
+      ruleRegistry.register(
+        ...cityYield(
+          cityGrowthRegistry,
+          playerGovernmentRegistry,
+          unitRegistry
+        ),
+        ...cost(
+          ruleRegistry,
+          cityGrowthRegistry,
+          cityImprovementRegistry,
+          playerGovernmentRegistry,
+          playerResearchRegistry,
+          unitRegistry
+        ),
+        new YieldRule(new Effect(() => new Luxuries(luxuries)))
+      );
+
+      expect(reduceYield(city.yields(), Happiness)).equal(happiness);
+    })
   );
-
-  it('should not provide Happiness for 1 Luxuries yield', async (): Promise<void> => {
-    const city = await setUpCity({
-        size: 2,
-        ruleRegistry,
-        playerWorldRegistry,
-        cityGrowthRegistry,
-        tileImprovementRegistry,
-      }),
-      tile = city.tile();
-
-    tile.yields = (): Yield[] => [new Luxuries(1), new Happiness(0)];
-
-    const [happiness] = city
-      .yields([Luxuries, Happiness])
-      .filter((cityYield: Yield): boolean => cityYield instanceof Happiness);
-    expect(happiness.value()).to.equal(0);
-  });
-
-  it('should provide 1 Happiness for 2 Luxuries yields', async (): Promise<void> => {
-    const city = await setUpCity({
-        size: 2,
-        ruleRegistry,
-        playerWorldRegistry,
-        cityGrowthRegistry,
-        tileImprovementRegistry,
-      }),
-      tile = city.tile();
-
-    tile.yields = (): Yield[] => [new Luxuries(2), new Happiness(0)];
-
-    const [happiness] = city
-      .yields([Luxuries, Happiness])
-      .filter((cityYield: Yield): boolean => cityYield instanceof Happiness);
-
-    expect(happiness.value()).to.equal(1);
-  });
-
-  it('should provide 1 Happiness for 3 Luxuries yields', async (): Promise<void> => {
-    const city = await setUpCity({
-        size: 2,
-        ruleRegistry,
-        playerWorldRegistry,
-        cityGrowthRegistry,
-        tileImprovementRegistry,
-      }),
-      tile = city.tile();
-
-    tile.yields = (): Yield[] => [new Luxuries(3), new Happiness(0)];
-
-    const [happiness] = city
-      .yields([Luxuries, Happiness])
-      .filter((cityYield: Yield): boolean => cityYield instanceof Happiness);
-
-    expect(happiness.value()).to.equal(1);
-  });
 });
