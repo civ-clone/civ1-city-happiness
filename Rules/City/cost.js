@@ -5,7 +5,6 @@ const Governments_1 = require("@civ-clone/civ1-government/Governments");
 const CityImprovements_1 = require("@civ-clone/civ1-city-improvement/CityImprovements");
 const CityGrowthRegistry_1 = require("@civ-clone/core-city-growth/CityGrowthRegistry");
 const CityImprovementRegistry_1 = require("@civ-clone/core-city-improvement/CityImprovementRegistry");
-const CivilDisorder_1 = require("@civ-clone/core-city-happiness/Rules/CivilDisorder");
 const Yields_1 = require("../../Yields");
 const PlayerGovernmentRegistry_1 = require("@civ-clone/core-government/PlayerGovernmentRegistry");
 const PlayerResearchRegistry_1 = require("@civ-clone/core-science/PlayerResearchRegistry");
@@ -18,12 +17,8 @@ const Types_1 = require("@civ-clone/civ1-unit/Types");
 const High_1 = require("@civ-clone/core-rule/Priorities/High");
 const Priorities_1 = require("@civ-clone/core-rule/Priorities");
 const Advances_1 = require("@civ-clone/civ1-science/Advances");
-const Priority_1 = require("@civ-clone/core-rule/Priority");
 const reduceYields_1 = require("@civ-clone/core-yield/lib/reduceYields");
 const getRules = (ruleRegistry = RuleRegistry_1.instance, cityGrowthRegistry = CityGrowthRegistry_1.instance, cityImprovementRegistry = CityImprovementRegistry_1.instance, playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, playerResearchRegistry = PlayerResearchRegistry_1.instance, unitRegistry = UnitRegistry_1.instance) => [
-    new Cost_1.default(new Priority_1.default(9001), new Criterion_1.default((city, yields) => ruleRegistry
-        .get(CivilDisorder_1.CivilDisorder)
-        .some((rule) => rule.validate(city, yields))), new Effect_1.default((city, yields) => [Yields_1.Gold, Yields_1.Research, Yields_1.Production].map((YieldType) => new YieldType(-(0, reduceYields_1.reduceYield)(yields, YieldType), CivilDisorder_1.CivilDisorder.name)))),
     // Martial Law
     new Cost_1.default(new Criterion_1.default((city) => playerGovernmentRegistry
         .getByPlayer(city.player())

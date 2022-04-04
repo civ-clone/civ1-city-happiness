@@ -74,21 +74,6 @@ export const getRules: (
   playerResearchRegistry: PlayerResearchRegistry = playerResearchRegistryInstance,
   unitRegistry: UnitRegistry = unitRegistryInstance
 ): Cost[] => [
-  new Cost(
-    new Priority(9001),
-    new Criterion((city: City, yields: Yield[]): boolean =>
-      (ruleRegistry as ICivilDisorderRegistry)
-        .get(CivilDisorder)
-        .some((rule: CivilDisorder): boolean => rule.validate(city, yields))
-    ),
-    new Effect((city: City, yields: Yield[]): Yield[] =>
-      [Gold, Research, Production].map(
-        (YieldType) =>
-          new YieldType(-reduceYield(yields, YieldType), CivilDisorder.name)
-      )
-    )
-  ),
-
   // Martial Law
   new Cost(
     new Criterion((city: City): boolean =>
