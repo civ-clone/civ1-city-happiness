@@ -17,18 +17,7 @@ import {
   CityImprovementRegistry,
   instance as cityImprovementRegistryInstance,
 } from '@civ-clone/core-city-improvement/CityImprovementRegistry';
-import {
-  CivilDisorder,
-  ICivilDisorderRegistry,
-} from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
-import {
-  Gold,
-  Happiness,
-  Luxuries,
-  Production,
-  Research,
-  Unhappiness,
-} from '../../Yields';
+import { Happiness, Luxuries, Unhappiness } from '../../Yields';
 import {
   PlayerGovernmentRegistry,
   instance as playerGovernmentRegistryInstance,
@@ -45,6 +34,7 @@ import {
   UnitRegistry,
   instance as unitRegistryInstance,
 } from '@civ-clone/core-unit/UnitRegistry';
+import Advance from '@civ-clone/core-science/Advance';
 import City from '@civ-clone/core-city/City';
 import CityImprovement from '@civ-clone/core-city-improvement/CityImprovement';
 import Cost from '@civ-clone/core-city/Rules/Cost';
@@ -54,7 +44,7 @@ import { Fortifiable } from '@civ-clone/civ1-unit/Types';
 import High from '@civ-clone/core-rule/Priorities/High';
 import { Low } from '@civ-clone/core-rule/Priorities';
 import { Mysticism } from '@civ-clone/civ1-science/Advances';
-import Priority from '@civ-clone/core-rule/Priority';
+import Or from '@civ-clone/core-rule/Criteria/Or';
 import Unit from '@civ-clone/core-unit/Unit';
 import Yield from '@civ-clone/core-yield/Yield';
 import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
@@ -90,73 +80,46 @@ export const getRules: (
     )
   ),
 
-  new Cost(
-    new Low(),
-    new Criterion((city: City): boolean =>
-      cityImprovementRegistry
-        .getByCity(city)
-        .some(
-          (cityImprovement: CityImprovement): boolean =>
-            cityImprovement instanceof Temple
-        )
-    ),
-    new Criterion(
-      (city: City): boolean =>
-        !playerResearchRegistry.getByPlayer(city.player()).completed(Mysticism)
-    ),
-    new Effect(
-      (city: City, yields: Yield[]): Yield =>
-        new Unhappiness(
-          -Math.min(1, reduceYield(yields, Unhappiness)),
-          Temple.name
-        )
-    )
-  ),
-
-  new Cost(
-    new Low(),
-    new Criterion((city: City): boolean =>
-      cityImprovementRegistry
-        .getByCity(city)
-        .some(
-          (cityImprovement: CityImprovement): boolean =>
-            cityImprovement instanceof Temple
-        )
-    ),
-    new Criterion((city: City): boolean =>
-      playerResearchRegistry.getByPlayer(city.player()).completed(Mysticism)
-    ),
-    new Effect(
-      (city: City, yields: Yield[]): Yield =>
-        new Unhappiness(
-          -Math.min(2, reduceYield(yields, Unhappiness)),
-          Temple.name
-        )
-    )
-  ),
-
   ...(
     [
+      [Temple, 1],
+      [Temple, 1, Mysticism],
       [Colosseum, 3],
       [Cathedral, 4],
-    ] as [typeof CityImprovement, number][]
+    ] as [typeof CityImprovement, number, ...typeof Advance[]][]
   ).map(
-    ([Improvement, reduction]) =>
+    ([CityImprovementType, cost, ...advances]) =>
       new Cost(
         new Low(),
-        new Criterion((city: City, yields: Yield[]): boolean =>
+        new Criterion((city: City): boolean =>
           cityImprovementRegistry
             .getByCity(city)
             .some(
               (cityImprovement: CityImprovement): boolean =>
-                cityImprovement instanceof Improvement
+                cityImprovement instanceof CityImprovementType
             )
+        ),
+        new Or(
+          new Criterion((city: City): boolean => advances.length === 0),
+          new Criterion((city: City): boolean =>
+            advances.every((AdvanceType) =>
+              playerResearchRegistry
+                .getByPlayer(city.player())
+                .completed(AdvanceType)
+            )
+          )
+        ),
+        new Criterion(
+          (city: City, yields: Yield[]) => reduceYield(yields, Unhappiness) > 0
         ),
         new Effect(
           (city: City, yields: Yield[]): Yield =>
             new Unhappiness(
-              -Math.min(reduction, reduceYield(yields, Unhappiness)),
-              Improvement.name
+              -Math.min(cost, reduceYield(yields, Unhappiness)),
+              [
+                CityImprovementType.name,
+                ...advances.map((AdvanceType) => AdvanceType.name),
+              ].join('-')
             )
         )
       )

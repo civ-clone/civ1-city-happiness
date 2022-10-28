@@ -21,6 +21,7 @@
   "devDependencies": {
     "@civ-clone/civ1-city": "github:civ-clone/civ1-city",
     "@civ-clone/core-player-world": "^0.1.0",
+    "@civ-clone/core-science": "^0.1.0",
     "@civ-clone/core-terrain-feature": "^0.1.0",
     "@civ-clone/core-tile-improvement": "^0.1.0",
     "@civ-clone/simple-world-generator": "github:civ-clone/simple-world-generator",

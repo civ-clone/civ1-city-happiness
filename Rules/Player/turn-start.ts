@@ -10,13 +10,9 @@ import {
   RuleRegistry,
   instance as ruleRegistryInstance,
 } from '@civ-clone/core-rule/RuleRegistry';
-import CelebrateLeader, {
-  ICelebrateLeaderRegistry,
-} from '@civ-clone/core-city-happiness/Rules/CelebrateLeader';
 import City from '@civ-clone/core-city/City';
-import CivilDisorder, {
-  ICivilDisorderRegistry,
-} from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
+import CelebrateLeader from '@civ-clone/core-city-happiness/Rules/CelebrateLeader';
+import CivilDisorder from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
 import Effect from '@civ-clone/core-rule/Effect';
 import { Low } from '@civ-clone/core-rule/Priorities';
 import Player from '@civ-clone/core-player/Player';
@@ -36,7 +32,7 @@ export const getRules: (
     new Effect((player: Player): void =>
       cityRegistry.getByPlayer(player).forEach((city: City) => {
         if (
-          (ruleRegistry as ICivilDisorderRegistry)
+          ruleRegistry
             .get(CivilDisorder)
             .some((rule: CivilDisorder): boolean =>
               rule.validate(city, city.yields())
@@ -46,7 +42,7 @@ export const getRules: (
         }
 
         if (
-          (ruleRegistry as ICelebrateLeaderRegistry)
+          ruleRegistry
             .get(CelebrateLeader)
             .some((rule: CelebrateLeader): boolean =>
               rule.validate(city, city.yields())

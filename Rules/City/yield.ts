@@ -4,7 +4,6 @@ import {
   instance as cityGrowthRegistryInstance,
 } from '@civ-clone/core-city-growth/CityGrowthRegistry';
 import { Democracy, Republic } from '@civ-clone/civ1-government/Governments';
-import { Happiness, Luxuries, Unhappiness } from '../../Yields';
 import {
   PlayerGovernmentRegistry,
   instance as playerGovernmentRegistryInstance,
@@ -18,9 +17,8 @@ import CityYield from '@civ-clone/core-city/Rules/Yield';
 import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import Government from '@civ-clone/core-government/Government';
-import { Low } from '@civ-clone/core-rule/Priorities';
+import { Unhappiness } from '../../Yields';
 import Yield from '@civ-clone/core-yield/Yield';
-import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
   cityGrowthRegistry?: CityGrowthRegistry,

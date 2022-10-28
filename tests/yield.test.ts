@@ -10,9 +10,8 @@ import PlayerResearchRegistry from '@civ-clone/core-science/PlayerResearchRegist
 import PlayerWorldRegistry from '@civ-clone/core-player-world/PlayerWorldRegistry';
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
 import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprovementRegistry';
-import { Happiness, Unhappiness } from '../Yields';
+import { Unhappiness } from '../Yields';
 import UnitRegistry from '@civ-clone/core-unit/UnitRegistry';
-import Yield from '@civ-clone/core-yield/Yield';
 import cityCost from '../Rules/City/cost';
 import cityCreated from '@civ-clone/civ1-city/Rules/City/created';
 import cityYield from '../Rules/City/yield';
