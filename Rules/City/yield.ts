@@ -4,6 +4,7 @@ import {
   instance as cityGrowthRegistryInstance,
 } from '@civ-clone/core-city-growth/CityGrowthRegistry';
 import { Democracy, Republic } from '@civ-clone/civ1-government/Governments';
+import { MilitaryUnhappiness, PopulationUnhappiness } from '../../Yields';
 import {
   PlayerGovernmentRegistry,
   instance as playerGovernmentRegistryInstance,
@@ -17,7 +18,6 @@ import CityYield from '@civ-clone/core-city/Rules/Yield';
 import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import Government from '@civ-clone/core-government/Government';
-import { Unhappiness } from '../../Yields';
 import Yield from '@civ-clone/core-yield/Yield';
 
 export const getRules: (
@@ -33,9 +33,8 @@ export const getRules: (
     // TODO: factor in difficulty levels
     new Effect(
       (city: City): Yield =>
-        new Unhappiness(
-          Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0),
-          'Population'
+        new PopulationUnhappiness(
+          Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0)
         )
     )
   ),
@@ -68,19 +67,16 @@ export const getRules: (
                   ) && unit.tile() !== city.tile()
               ).length > 0
         ),
-        new Effect(
-          (city: City): Yield =>
-            new Unhappiness(
-              unitRegistry
-                .getByCity(city)
-                .filter(
-                  (unit) =>
-                    [Air, Fortifiable, Naval].some(
-                      (UnitType) => unit instanceof UnitType
-                    ) && unit.tile() !== city.tile()
-                ).length * discontent,
-              'MilitaryDiscontent'
+        new Effect((city: City): Yield[] =>
+          unitRegistry
+            .getByCity(city)
+            .filter(
+              (unit) =>
+                [Air, Fortifiable, Naval].some(
+                  (UnitType) => unit instanceof UnitType
+                ) && unit.tile() !== city.tile()
             )
+            .map((unit) => new MilitaryUnhappiness(discontent, unit) as Yield)
         )
       )
   ),

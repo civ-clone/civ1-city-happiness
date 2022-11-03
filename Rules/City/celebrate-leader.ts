@@ -25,6 +25,7 @@ export const getRules: (
         Unhappiness
       );
 
+      // TODO: This might not have to be 0, it needs to be worked out properly based on the city size
       return (
         unhappiness === 0 &&
         Math.floor(happiness) >= cityGrowthRegistry.getByCity(city).size() / 2

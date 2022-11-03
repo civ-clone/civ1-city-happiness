@@ -36,8 +36,13 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
+    "@civ-clone/base-city-yield-city-improvement-content": "^0.1.0",
     "@civ-clone/base-city-yield-happiness": "^0.1.0",
     "@civ-clone/base-city-yield-luxuries": "^0.1.0",
+    "@civ-clone/base-city-yield-luxury-happiness": "^0.1.0",
+    "@civ-clone/base-city-yield-martial-law-content": "^0.1.0",
+    "@civ-clone/base-city-yield-military-unhappiness": "^0.1.0",
+    "@civ-clone/base-city-yield-population-unhappiness": "^0.1.0",
     "@civ-clone/base-city-yield-unhappiness": "^0.1.0",
     "@civ-clone/civ1-city": "github:civ-clone/civ1-city",
     "@civ-clone/civ1-city-improvement": "github:civ-clone/civ1-city-improvement",
@@ -48,10 +53,12 @@
     "@civ-clone/core-city": "^0.1.0",
     "@civ-clone/core-city-growth": "^0.1.0",
     "@civ-clone/core-city-happiness": "^0.1.0",
+    "@civ-clone/core-city-improvement": "^0.1.0",
     "@civ-clone/core-engine": "^0.1.0",
     "@civ-clone/core-government": "^0.1.0",
     "@civ-clone/core-player": "^0.1.0",
     "@civ-clone/core-rule": "^0.1.0",
+    "@civ-clone/core-science": "^0.1.0",
     "@civ-clone/core-unit": "^0.1.0",
     "@civ-clone/core-yield": "^0.1.0"
   }
