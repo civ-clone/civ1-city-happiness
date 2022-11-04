@@ -126,7 +126,7 @@ describe('city:cost', (): void => {
       expect(reduceYield(city.yields(), Unhappiness)).equal(8);
 
       cityImprovementRegistry.register(
-        new CityImprovementType(city.player(), city, ruleRegistry)
+        new CityImprovementType(city, ruleRegistry)
       );
 
       expect(reduceYield(city.yields(), Unhappiness)).equal(

@@ -1480,7 +1480,7 @@
 
 "@civ-clone/civ1-city-improvement@github:civ-clone/civ1-city-improvement":
   version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/civ1-city-improvement/tar.gz/ce7ae66c283a662062cad638453ff55fb0189070"
+  resolved "https://codeload.github.com/civ-clone/civ1-city-improvement/tar.gz/86c42e76c4d738289b1edaf79c6a2a342b6809cc"
   dependencies:
     "@civ-clone/base-city-improvement-aqueduct" "^0.1.0"
     "@civ-clone/base-city-improvement-bank" "^0.1.0"
@@ -1523,7 +1523,7 @@
 
 "@civ-clone/civ1-city@github:civ-clone/civ1-city":
   version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/civ1-city/tar.gz/7e8dd48c6d69b584680aea9c15a5b6fc46d7ba0e"
+  resolved "https://codeload.github.com/civ-clone/civ1-city/tar.gz/156b0ef15ae60c13e8f71c0900bd2071b6776a99"
   dependencies:
     "@civ-clone/base-city-yield-gold" "^0.1.0"
     "@civ-clone/base-city-yield-happiness" "^0.1.0"
@@ -1655,7 +1655,7 @@
 
 "@civ-clone/civ1-unit@github:civ-clone/civ1-unit":
   version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/civ1-unit/tar.gz/f07453a457eecfc730c7d3024e77526ce1e51ac0"
+  resolved "https://codeload.github.com/civ-clone/civ1-unit/tar.gz/a8baff7f3bfc244964eff2980642565aeddb7372"
   dependencies:
     "@civ-clone/base-player-action-active-unit" "^0.1.0"
     "@civ-clone/base-player-action-inactive-unit" "^0.1.0"
@@ -1736,7 +1736,7 @@
 
 "@civ-clone/civ1-world@github:civ-clone/civ1-world":
   version "0.1.0"
-  resolved "https://codeload.github.com/civ-clone/civ1-world/tar.gz/916726db913590b890660b920540cef2a20fa857"
+  resolved "https://codeload.github.com/civ-clone/civ1-world/tar.gz/e3937e90dc9403a90f089341c743053ed6d2d53e"
   dependencies:
     "@civ-clone/base-terrain-arctic" "^0.1.0"
     "@civ-clone/base-terrain-desert" "^0.1.0"
@@ -1823,9 +1823,9 @@
     "@civ-clone/core-yield" "^0.1.0"
 
 "@civ-clone/core-city-improvement@^0.1.0", "@civ-clone/core-city-improvement@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@civ-clone/core-city-improvement/-/core-city-improvement-0.1.2.tgz#816aa1a163197dfa83bc3f920581c74a4e2f696b"
-  integrity sha512-tvcng3MgnpUOOe0Og6qUIEb6W5GZ2Av5mnWoihA8QDtUxgZ08MZm/c1mtJAOpPJm7xx0CX1DUFWQEYtq7jJqEQ==
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@civ-clone/core-city-improvement/-/core-city-improvement-0.1.3.tgz#6c3f20f65268d616985507af90d68bb5905edb2e"
+  integrity sha512-arzpn4G7sPOLbhBduA2fYTWSGy03Oaq3jT55m1mItQbrCYALRK/usOVtoS3pLvGWir8JI59HqCPtorChuG+9aA==
   dependencies:
     "@civ-clone/core-city" "^0.1.0"
     "@civ-clone/core-city-build" "^0.1.3"
@@ -2031,7 +2031,7 @@
 
 "@civ-clone/simple-world-generator@github:civ-clone/simple-world-generator":
   version "0.1.2"
-  resolved "https://codeload.github.com/civ-clone/simple-world-generator/tar.gz/6ba4d4fe78c298878469ee332500d27feb40d5db"
+  resolved "https://codeload.github.com/civ-clone/simple-world-generator/tar.gz/2cba459ec5f204f9df5e3ac90578ec0f94409ae2"
   dependencies:
     "@civ-clone/civ1-world" "github:civ-clone/civ1-world"
     "@civ-clone/core-rule" "^0.1.0"
