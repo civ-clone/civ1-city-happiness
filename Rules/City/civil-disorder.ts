@@ -1,18 +1,24 @@
-import { Happiness, Unhappiness } from '../../Yields';
+import {
+  CityGrowthRegistry,
+  instance as cityGrowthRegistryInstance,
+} from '@civ-clone/core-city-growth/CityGrowthRegistry';
+import {
+  calculateCitizenState,
+  citizenSummary,
+} from '../../lib/calculateCitizenState';
 import City from '@civ-clone/core-city/City';
 import CivilDisorder from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
-import Criterion from '@civ-clone/core-rule/Criterion';
+import Effect from "@civ-clone/core-rule/Effect";
 import Yield from '@civ-clone/core-yield/Yield';
-import { reduceYields } from '@civ-clone/core-yield/lib/reduceYields';
 
-export const getRules: () => CivilDisorder[] = (): CivilDisorder[] => [
+export const getRules = (
+  cityGrowthRegistry: CityGrowthRegistry = cityGrowthRegistryInstance
+): CivilDisorder[] => [
   new CivilDisorder(
-    new Criterion((city: City, yields: Yield[] = city.yields()): boolean => {
-      const [happiness, unhappiness] = reduceYields(
-        yields,
-        Happiness,
-        Unhappiness
-      );
+    new Effect((city: City, yields: Yield[] = city.yields()): boolean => {
+      const cityGrowth = cityGrowthRegistry.getByCity(city),
+        citizenState = calculateCitizenState(cityGrowth, yields),
+        [unhappiness, , happiness] = citizenSummary(citizenState);
 
       return unhappiness > happiness;
     })

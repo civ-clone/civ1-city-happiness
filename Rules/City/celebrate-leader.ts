@@ -2,12 +2,15 @@ import {
   CityGrowthRegistry,
   instance as cityGrowthRegistryInstance,
 } from '@civ-clone/core-city-growth/CityGrowthRegistry';
-import { Happiness, Unhappiness } from '../../Yields';
+import {
+  calculateCitizenState,
+  citizenSummary,
+} from '../../lib/calculateCitizenState';
 import CelebrateLeader from '@civ-clone/core-city-happiness/Rules/CelebrateLeader';
 import City from '@civ-clone/core-city/City';
 import Criterion from '@civ-clone/core-rule/Criterion';
+import Effect from "@civ-clone/core-rule/Effect";
 import Yield from '@civ-clone/core-yield/Yield';
-import { reduceYields } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
   cityGrowthRegistry?: CityGrowthRegistry
@@ -18,17 +21,13 @@ export const getRules: (
     new Criterion(
       (city: City): boolean => cityGrowthRegistry.getByCity(city).size() > 2
     ),
-    new Criterion((city: City, yields: Yield[] = city.yields()): boolean => {
-      const [happiness, unhappiness] = reduceYields(
-        yields,
-        Happiness,
-        Unhappiness
-      );
+    new Effect((city: City, yields: Yield[] = city.yields()): boolean => {
+      const cityGrowth = cityGrowthRegistry.getByCity(city),
+        citizenState = calculateCitizenState(cityGrowth, yields),
+        [unhappiness, , happiness] = citizenSummary(citizenState);
 
-      // TODO: This might not have to be 0, it needs to be worked out properly based on the city size
       return (
-        unhappiness === 0 &&
-        Math.floor(happiness) >= cityGrowthRegistry.getByCity(city).size() / 2
+        unhappiness === 0 && Math.floor(happiness) >= cityGrowth.size() / 2
       );
     })
   ),
