@@ -9,7 +9,7 @@ import {
 import CelebrateLeader from '@civ-clone/core-city-happiness/Rules/CelebrateLeader';
 import City from '@civ-clone/core-city/City';
 import Criterion from '@civ-clone/core-rule/Criterion';
-import Effect from "@civ-clone/core-rule/Effect";
+import Effect from '@civ-clone/core-rule/Effect';
 import Yield from '@civ-clone/core-yield/Yield';
 
 export const getRules: (

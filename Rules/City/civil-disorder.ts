@@ -8,7 +8,7 @@ import {
 } from '../../lib/calculateCitizenState';
 import City from '@civ-clone/core-city/City';
 import CivilDisorder from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
-import Effect from "@civ-clone/core-rule/Effect";
+import Effect from '@civ-clone/core-rule/Effect';
 import Yield from '@civ-clone/core-yield/Yield';
 
 export const getRules = (

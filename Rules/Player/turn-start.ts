@@ -22,7 +22,8 @@ import { Low } from '@civ-clone/core-rule/Priorities';
 import Player from '@civ-clone/core-player/Player';
 import TurnStart from '@civ-clone/core-player/Rules/TurnStart';
 
-const hasCivilDisorder: Set<City> = new Set(),
+// These could be `Registry`s but this is enough for now.
+export const hasCivilDisorder: Set<City> = new Set(),
   hasLeaderCelebration: Set<City> = new Set();
 
 export const getRules: (
@@ -42,14 +43,10 @@ export const getRules: (
       cityRegistry.getByPlayer(player).forEach((city: City) => {
         const isCivilDisorder = ruleRegistry
             .process(CivilDisorder, city, city.yields())
-            .some((result: boolean): boolean =>
-              result
-            ),
+            .some((result: boolean): boolean => result),
           isLeaderCelebration = ruleRegistry
             .process(CelebrateLeader, city, city.yields())
-            .some((result: boolean): boolean =>
-              result
-            );
+            .some((result: boolean): boolean => result);
 
         if (isCivilDisorder) {
           engine.emit('city:civil-disorder', city);

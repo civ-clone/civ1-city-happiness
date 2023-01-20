@@ -13,7 +13,7 @@ const Effect_1 = require("@civ-clone/core-rule/Effect");
 const getRules = (cityGrowthRegistry = CityGrowthRegistry_1.instance, playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, unitRegistry = UnitRegistry_1.instance) => [
     new Yield_1.default(
     // TODO: factor in difficulty levels
-    new Effect_1.default((city) => new Yields_1.PopulationUnhappiness(Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0)))),
+    new Criterion_1.default((city) => cityGrowthRegistry.getByCity(city).size() - 5 > 0), new Effect_1.default((city) => new Yields_1.PopulationUnhappiness(Math.max(cityGrowthRegistry.getByCity(city).size() - 5, 0)))),
     ...[
         [Governments_1.Republic, 1],
         [Governments_1.Democracy, 2],

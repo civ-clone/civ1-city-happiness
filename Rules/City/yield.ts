@@ -31,6 +31,9 @@ export const getRules: (
 ): CityYield[] => [
   new CityYield(
     // TODO: factor in difficulty levels
+    new Criterion(
+      (city: City) => cityGrowthRegistry.getByCity(city).size() - 5 > 0
+    ),
     new Effect(
       (city: City): Yield =>
         new PopulationUnhappiness(

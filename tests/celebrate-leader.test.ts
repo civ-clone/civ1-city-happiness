@@ -45,8 +45,8 @@ describe('city:celebrate-leader', (): void => {
 
     expect(
       ruleRegistry
-        .get(CelebrateLeader)
-        .some((rule: CelebrateLeader): boolean => rule.validate(city))
+        .process(CelebrateLeader, city)
+        .some((result: boolean): boolean => result)
     ).to.true;
   });
 
@@ -63,8 +63,8 @@ describe('city:celebrate-leader', (): void => {
 
     expect(
       ruleRegistry
-        .get(CelebrateLeader)
-        .some((rule: CelebrateLeader): boolean => rule.validate(city))
+        .process(CelebrateLeader, city)
+        .some((result: boolean): boolean => result)
     ).to.false;
   });
 
@@ -81,8 +81,8 @@ describe('city:celebrate-leader', (): void => {
 
     expect(
       ruleRegistry
-        .get(CelebrateLeader)
-        .some((rule: CelebrateLeader): boolean => rule.validate(city))
+        .process(CelebrateLeader, city)
+        .some((result: boolean): boolean => result)
     ).to.false;
   });
 
@@ -99,8 +99,8 @@ describe('city:celebrate-leader', (): void => {
 
     expect(
       ruleRegistry
-        .get(CelebrateLeader)
-        .some((rule: CelebrateLeader): boolean => rule.validate(city))
+        .process(CelebrateLeader, city)
+        .some((result: boolean): boolean => result)
     ).to.false;
   });
 });

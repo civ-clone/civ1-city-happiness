@@ -29,12 +29,12 @@ describe('city:civil-disorder', (): void => {
         tileImprovementRegistry,
       });
 
-    ruleRegistry.register(...civilDisorder());
+    ruleRegistry.register(...civilDisorder(cityGrowthRegistry));
 
     expect(
       ruleRegistry
-        .get(CivilDisorder)
-        .some((rule: CivilDisorder): boolean => rule.validate(city))
+        .process(CivilDisorder, city)
+        .some((result: boolean): boolean => result)
     ).to.false;
   });
 
@@ -49,13 +49,13 @@ describe('city:civil-disorder', (): void => {
 
     ruleRegistry.register(
       new YieldRule(new Effect(() => new Unhappiness(1))),
-      ...civilDisorder()
+      ...civilDisorder(cityGrowthRegistry)
     );
 
     expect(
       ruleRegistry
-        .get(CivilDisorder)
-        .some((rule: CivilDisorder): boolean => rule.validate(city))
+        .process(CivilDisorder, city)
+        .some((result: boolean): boolean => result)
     ).to.true;
   });
 
@@ -71,13 +71,13 @@ describe('city:civil-disorder', (): void => {
     ruleRegistry.register(
       new YieldRule(new Effect(() => new Unhappiness(1))),
       new YieldRule(new Effect(() => new Happiness(1))),
-      ...civilDisorder()
+      ...civilDisorder(cityGrowthRegistry)
     );
 
     expect(
       ruleRegistry
-        .get(CivilDisorder)
-        .some((rule: CivilDisorder): boolean => rule.validate(city))
+        .process(CivilDisorder, city)
+        .some((result: boolean): boolean => result)
     ).to.false;
   });
 
@@ -93,13 +93,13 @@ describe('city:civil-disorder', (): void => {
     ruleRegistry.register(
       new YieldRule(new Effect(() => new Unhappiness(1))),
       new YieldRule(new Effect(() => new Happiness(2))),
-      ...civilDisorder()
+      ...civilDisorder(cityGrowthRegistry)
     );
 
     expect(
       ruleRegistry
-        .get(CivilDisorder)
-        .some((rule: CivilDisorder): boolean => rule.validate(city))
+        .process(CivilDisorder, city)
+        .some((result: boolean): boolean => result)
     );
   });
 });

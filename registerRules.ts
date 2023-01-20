@@ -1,14 +1,16 @@
-import { instance as ruleRegistryInstance } from '@civ-clone/core-rule/RuleRegistry';
-import celebrateLeader from './Rules/City/celebrate-leader';
+import cityCelebrateLeader from './Rules/City/celebrate-leader';
+import cityCivilDisorder from './Rules/City/civil-disorder';
+import cityCost from './Rules/City/cost';
 import cityYield from './Rules/City/yield';
-import civilDisorder from './Rules/City/civil-disorder';
-import cost from './Rules/City/cost';
-import turnStart from './Rules/Player/turn-start';
+import { instance as ruleRegistryInstance } from '@civ-clone/core-rule/RuleRegistry';
+import playerAction from './Rules/Player/action';
+import playerTurnStart from './Rules/Player/turn-start';
 
 ruleRegistryInstance.register(
-  ...celebrateLeader(),
+  ...cityCelebrateLeader(),
   ...cityYield(),
-  ...civilDisorder(),
-  ...cost(),
-  ...turnStart()
+  ...cityCivilDisorder(),
+  ...cityCost(),
+  ...playerAction(),
+  ...playerTurnStart()
 );
