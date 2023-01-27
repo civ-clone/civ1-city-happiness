@@ -62,11 +62,9 @@ export const getRules: (
           hasCivilDisorder.delete(city);
         }
 
-        if (isLeaderCelebration) {
-          engine.emit('city:leader-celebration', city);
-        }
-
         if (isLeaderCelebration && !hasLeaderCelebration.has(city)) {
+          engine.emit('city:leader-celebration', city);
+
           hasLeaderCelebration.add(city);
         }
 

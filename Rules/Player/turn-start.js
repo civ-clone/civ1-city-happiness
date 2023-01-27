@@ -29,10 +29,8 @@ const getRules = (cityRegistry = CityRegistry_1.instance, ruleRegistry = RuleReg
             engine.emit('city:order-restored', city);
             exports.hasCivilDisorder.delete(city);
         }
-        if (isLeaderCelebration) {
-            engine.emit('city:leader-celebration', city);
-        }
         if (isLeaderCelebration && !exports.hasLeaderCelebration.has(city)) {
+            engine.emit('city:leader-celebration', city);
             exports.hasLeaderCelebration.add(city);
         }
         if (!isLeaderCelebration && exports.hasLeaderCelebration.has(city)) {
