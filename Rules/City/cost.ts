@@ -92,7 +92,7 @@ export const getRules: (
       [Temple, 1, Mysticism],
       [Colosseum, 3],
       [Cathedral, 4],
-    ] as [typeof CityImprovement, number, ...typeof Advance[]][]
+    ] as [typeof CityImprovement, number, ...(typeof Advance)[]][]
   ).map(
     ([CityImprovementType, value, ...advances]) =>
       new Cost(

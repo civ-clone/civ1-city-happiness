@@ -83,7 +83,7 @@ describe('city:cost', (): void => {
       [Temple, 2, Mysticism],
       [Colosseum, 3],
       [Cathedral, 4],
-    ] as [typeof CityImprovement, number, ...typeof Advance[]][]
+    ] as [typeof CityImprovement, number, ...(typeof Advance)[]][]
   ).forEach(([CityImprovementType, expectedReduction, ...advances]) =>
     it(`should reduce Unhappiness by ${expectedReduction} when city contains ${CityImprovementType.name}`, async (): Promise<void> => {
       const ruleRegistry = new RuleRegistry(),
