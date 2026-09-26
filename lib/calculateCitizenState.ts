@@ -1,3 +1,7 @@
+import {
+  SpecialistRegistry,
+  instance as specialistRegistryInstance,
+} from '@civ-clone/core-city/SpecialistRegistry';
 import CityGrowth from '@civ-clone/core-city-growth/CityGrowth';
 import Happiness from '@civ-clone/base-city-yield-happiness/Happiness';
 import Unhappiness from '@civ-clone/base-city-yield-unhappiness/Unhappiness';
@@ -10,9 +14,15 @@ enum CitizenState {
   Happy,
 }
 
+/**
+ * The mood of each of a city's working citizens. Its specialists are neither: they are drawn from the content citizens
+ * first and then from the happy ones (p249, Wilson, J.L & Emrich A. (1992). Sid Meier's Civilization, or Rome on 640K a
+ * Day. Rocklin, CA: Prima Publishing), so the list is shorter than the city's size by one per specialist.
+ */
 export const calculateCitizenState = (
   cityGrowth: CityGrowth,
-  yields: Yield[] = cityGrowth.city().yields()
+  yields: Yield[] = cityGrowth.city().yields(),
+  specialistRegistry: SpecialistRegistry = specialistRegistryInstance
 ): CitizenState[] => {
   const city = cityGrowth.city(),
     state: CitizenState[] = new Array(cityGrowth.size()).fill(
@@ -46,6 +56,17 @@ export const calculateCitizenState = (
       currentIndex++;
     }
   }
+
+  let specialists = specialistRegistry.getByCity(city).length;
+
+  [CitizenState.Content, CitizenState.Happy, CitizenState.Unhappy].forEach(
+    (citizenState) => {
+      while (specialists > 0 && state.includes(citizenState)) {
+        state.splice(state.lastIndexOf(citizenState), 1);
+        specialists--;
+      }
+    }
+  );
 
   return state;
 };
