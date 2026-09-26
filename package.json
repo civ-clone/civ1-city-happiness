@@ -50,7 +50,7 @@
     "@civ-clone/civ1-science": "github:civ-clone/civ1-science",
     "@civ-clone/civ1-unit": "github:civ-clone/civ1-unit",
     "@civ-clone/civ1-world": "github:civ-clone/civ1-world",
-    "@civ-clone/core-city": "^0.1.0",
+    "@civ-clone/core-city": "^0.1.16",
     "@civ-clone/core-city-growth": "^0.1.0",
     "@civ-clone/core-city-happiness": "^0.1.0",
     "@civ-clone/core-city-improvement": "^0.1.0",
