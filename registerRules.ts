@@ -20,7 +20,15 @@ export const register = (game: Game): void =>
       game.units
     ),
     ...playerAction(game.cities),
-    ...playerTurnStart(game.cities, game.rules, game.engine, game.cityGrowth)
+    ...playerTurnStart(
+      game.cities,
+      game.rules,
+      game.engine,
+      game.cityGrowth,
+      game.playerGovernments,
+      game.pendingEffects,
+      game.turn
+    )
   );
 
 // The plugin loader imports each package for this side effect. Until it passes
