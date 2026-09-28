@@ -1,8 +1,6 @@
-import { CityRegistry } from '@civ-clone/core-city/CityRegistry';
 import { PendingEffectRegistry } from '@civ-clone/core-pending-effect';
-import Action from '@civ-clone/core-player/Rules/Action';
+import Destroyed from '@civ-clone/core-city/Rules/Destroyed';
 export declare const getRules: (
-  cityRegistry?: CityRegistry,
   pendingEffects?: PendingEffectRegistry
-) => Action[];
+) => Destroyed[];
 export default getRules;

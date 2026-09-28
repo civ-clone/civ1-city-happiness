@@ -1,6 +1,7 @@
 import cityCelebrateLeader from './Rules/City/celebrate-leader';
 import cityCivilDisorder from './Rules/City/civil-disorder';
 import cityCost from './Rules/City/cost';
+import cityDestroyed from './Rules/City/destroyed';
 import cityYield from './Rules/City/yield';
 import playerAction from './Rules/Player/action';
 import playerTurnStart from './Rules/Player/turn-start';
@@ -19,7 +20,8 @@ export const register = (game: Game): void =>
       game.playerResearch,
       game.units
     ),
-    ...playerAction(game.cities),
+    ...cityDestroyed(game.pendingEffects),
+    ...playerAction(game.cities, game.pendingEffects),
     ...playerTurnStart(
       game.cities,
       game.rules,
