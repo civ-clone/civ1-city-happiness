@@ -11,6 +11,7 @@ import PlayerWorldRegistry from '@civ-clone/core-player-world/PlayerWorldRegistr
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
 import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprovementRegistry';
 import { Unhappiness } from '../Yields';
+import { Warrior } from '@civ-clone/civ1-unit/Units';
 import UnitRegistry from '@civ-clone/core-unit/UnitRegistry';
 import cityCost from '../Rules/City/cost';
 import cityCreated from '@civ-clone/civ1-city/Rules/City/created';
@@ -19,6 +20,7 @@ import { expect } from 'chai';
 import playerAdded from '@civ-clone/civ1-government/Rules/Player/added';
 import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 import setUpCity from '@civ-clone/civ1-city/tests/lib/setUpCity';
+import unitYield from '@civ-clone/civ1-unit/Rules/Unit/yield';
 
 describe('city:yield', (): void => {
   const ruleRegistry = new RuleRegistry(),
@@ -48,6 +50,8 @@ describe('city:yield', (): void => {
       ruleRegistry
     ),
     ...cityYield(cityGrowthRegistry, playerGovernmentRegistry, unitRegistry),
+    // Martial law uses units that can attack.
+    ...unitYield(undefined, ruleRegistry),
     ...cityCost(
       ruleRegistry,
       cityGrowthRegistry,
@@ -85,12 +89,12 @@ describe('city:yield', (): void => {
 
     expect(reduceYield(city.yields(), Unhappiness)).to.equal(1);
 
-    unitRegistry.register(new Fortifiable(city, player, tile, ruleRegistry));
+    unitRegistry.register(new Warrior(city, player, tile, ruleRegistry));
 
     expect(reduceYield(city.yields(), Unhappiness)).to.equal(0);
   });
 
-  it('should eradicate Unhappiness by martial law for up to 4 units', async (): Promise<void> => {
+  it('should eradicate Unhappiness by martial law for up to 3 units', async (): Promise<void> => {
     const city = await setUpCity({
         size: 10,
         ruleRegistry,
@@ -104,10 +108,10 @@ describe('city:yield', (): void => {
     expect(reduceYield(city.yields(), Unhappiness)).to.equal(5);
 
     for (let i = 0; i < 5; i++) {
-      unitRegistry.register(new Fortifiable(city, player, tile, ruleRegistry));
+      unitRegistry.register(new Warrior(city, player, tile, ruleRegistry));
     }
 
-    expect(reduceYield(city.yields(), Unhappiness)).to.equal(1);
+    expect(reduceYield(city.yields(), Unhappiness)).to.equal(2);
   });
 
   it('should cause Unhappiness when a supported Fortifiable, Air, or Naval unit is outside of the city', async (): Promise<void> => {
