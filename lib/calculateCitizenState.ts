@@ -15,9 +15,16 @@ enum CitizenState {
 }
 
 /**
- * The mood of each of a city's working citizens. Its specialists are neither: they are drawn from the content citizens
- * first and then from the happy ones (p249, Wilson, J.L & Emrich A. (1992). Sid Meier's Civilization, or Rome on 640K a
- * Day. Rocklin, CA: Prima Publishing), so the list is shorter than the city's size by one per specialist.
+ * The mood of each of a city's working citizens, as v474.05 works it out (OpenCivOne's decompile,
+ * `src/Game/CodeObjects/CityWorker.cs`, the city happiness routine and `F0_1d12_6dfe_AdjustHappyUnhappyCitizens`).
+ * Specialists are neither happy nor unhappy, and are taken out before any `Happiness` is applied: from the content
+ * citizens first, then from the unhappy ones. So the list is shorter than the city's size by one per specialist.
+ *
+ * Each point of `Happiness` then makes a content citizen happy or, when none is left, an unhappy one content.
+ *
+ * Rome on 640K a Day (p249) has specialists drawn from the content citizens and then the happy ones, which is what
+ * this did until civ-clone/web-renderer#224: Entertainers' luxuries then made the happy citizens that the
+ * Entertainers themselves were taken from, so a city that ran out of content citizens could never be calmed by them.
  */
 export const calculateCitizenState = (
   cityGrowth: CityGrowth,
@@ -30,6 +37,7 @@ export const calculateCitizenState = (
     );
 
   let [happiness, unhappiness] = reduceYields(yields, Happiness, Unhappiness),
+    specialists = specialistRegistry.getByCity(city).length,
     currentIndex = state.length - 1;
 
   // Set the citizens at the end of the list to unhappy for each Unhappiness...
@@ -38,35 +46,30 @@ export const calculateCitizenState = (
     unhappiness--;
   }
 
-  // ...then for each Happiness start at the beginning, setting each Content citizen
+  // ...take the specialists out, the content citizens first...
+  [CitizenState.Content, CitizenState.Unhappy].forEach((citizenState) => {
+    while (specialists > 0 && state.includes(citizenState)) {
+      state.splice(state.lastIndexOf(citizenState), 1);
+      specialists--;
+    }
+  });
+
+  // ...then for each Happiness start at the beginning, making a content citizen happy, or an unhappy one content.
   currentIndex = 0;
 
   while (happiness > 0 && currentIndex < state.length) {
-    if (state[currentIndex] === CitizenState.Unhappy) {
-      state[currentIndex] = CitizenState.Content;
-      happiness--;
-    }
-
-    if (state[currentIndex] === CitizenState.Content) {
-      state[currentIndex++] = CitizenState.Happy;
-      happiness--;
-    }
-
     if (state[currentIndex] === CitizenState.Happy) {
       currentIndex++;
+
+      continue;
     }
+
+    state[currentIndex] =
+      state[currentIndex] === CitizenState.Unhappy
+        ? CitizenState.Content
+        : CitizenState.Happy;
+    happiness--;
   }
-
-  let specialists = specialistRegistry.getByCity(city).length;
-
-  [CitizenState.Content, CitizenState.Happy, CitizenState.Unhappy].forEach(
-    (citizenState) => {
-      while (specialists > 0 && state.includes(citizenState)) {
-        state.splice(state.lastIndexOf(citizenState), 1);
-        specialists--;
-      }
-    }
-  );
 
   return state;
 };

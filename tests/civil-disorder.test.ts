@@ -105,7 +105,46 @@ describe('city:civil-disorder', (): void => {
     );
   });
 
-  it('should be triggered once specialists take the happy citizens out of the count', async (): Promise<void> => {
+  // civ-clone/web-renderer#224: in v474.05 specialists come from the content citizens, then the unhappy ones, before
+  //  luxuries make anyone happy. Each Entertainer gives 2 luxuries, so 1 Happiness.
+  (
+    [
+      [2, true],
+      [3, false],
+    ] as [number, boolean][]
+  ).forEach(([entertainers, inDisorder]) =>
+    it(`should ${
+      inDisorder ? '' : 'not '
+    }be triggered in a size 8 city with 3 unhappy citizens and ${entertainers} Entertainers`, async (): Promise<void> => {
+      const ruleRegistry = new RuleRegistry(),
+        specialistRegistry = new SpecialistRegistry(),
+        city = await setUpCity({
+          size: 8,
+          ruleRegistry,
+          playerWorldRegistry,
+          cityGrowthRegistry,
+          tileImprovementRegistry,
+        });
+
+      ruleRegistry.register(
+        new YieldRule(new Effect(() => new Unhappiness(3))),
+        new YieldRule(new Effect(() => new Happiness(entertainers))),
+        ...civilDisorder(cityGrowthRegistry, specialistRegistry)
+      );
+
+      for (let i = 0; i < entertainers; i++) {
+        specialistRegistry.register(new Specialist(city));
+      }
+
+      expect(
+        ruleRegistry
+          .process(CivilDisorder, city)
+          .some((result: boolean): boolean => result)
+      ).to.equal(inDisorder);
+    })
+  );
+
+  it('should not be triggered when specialists leave only unhappy citizens and enough Happiness to calm them', async (): Promise<void> => {
     const ruleRegistry = new RuleRegistry(),
       specialistRegistry = new SpecialistRegistry(),
       city = await setUpCity({
@@ -129,9 +168,10 @@ describe('city:civil-disorder', (): void => {
     // Two happy citizens and one unhappy.
     expect(disorder()).to.false;
 
-    // Nobody is content, so both specialists come from the happy citizens, leaving the unhappy one.
+    // Both specialists come from the content citizens the Happiness would have made happy, leaving the unhappy one,
+    //  whom the Happiness then makes content, and then happy.
     specialistRegistry.register(new Specialist(city), new Specialist(city));
 
-    expect(disorder()).to.true;
+    expect(disorder()).to.false;
   });
 });
