@@ -54,13 +54,23 @@ describe('calculateCitizenState', (): void => {
     ]);
   });
 
-  it('then from the happy citizens, leaving the unhappy ones', async (): Promise<void> => {
+  // civ-clone/web-renderer#224: v474.05 takes specialists out before any Happiness is applied, so never from the happy
+  //  citizens. Here 3 of the 4 content citizens become specialists, and the Happiness makes the last one happy and an
+  //  unhappy one content.
+  it('then from the unhappy citizens, before any are made happy', async (): Promise<void> => {
     expect(await summarise([new Unhappiness(2), new Happiness(2)], 3)).eql([
-      2, 0, 1,
+      1, 1, 1,
     ]);
   });
 
-  it('and only then from the unhappy citizens', async (): Promise<void> => {
+  it('from the unhappy citizens when there are no content ones', async (): Promise<void> => {
     expect(await summarise([new Unhappiness(6)], 2)).eql([4, 0, 0]);
+  });
+
+  // 3 content citizens made happy, then an unhappy one made content with the last point: not made happy as well.
+  it('spends each point of Happiness once', async (): Promise<void> => {
+    expect(await summarise([new Unhappiness(3), new Happiness(4)], 0)).eql([
+      2, 1, 3,
+    ]);
   });
 });
