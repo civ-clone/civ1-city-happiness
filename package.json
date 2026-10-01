@@ -18,13 +18,9 @@
     "ts:compile": "tsc --build tsconfig.json"
   },
   "devDependencies": {
-    "@civ-clone/civ1-city": "github:civ-clone/civ1-city",
     "@civ-clone/core-player-world": "^0.1.0",
     "@civ-clone/core-city-build": "^0.1.0",
-    "@civ-clone/core-science": "^0.1.0",
-    "@civ-clone/core-terrain-feature": "^0.1.0",
     "@civ-clone/core-tile-improvement": "^0.1.0",
-    "@civ-clone/simple-world-generator": "github:civ-clone/simple-world-generator",
     "@types/chai": "^4.0.0",
     "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.0",
