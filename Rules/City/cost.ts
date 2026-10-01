@@ -1,10 +1,4 @@
 import {
-  Anarchy,
-  Communism,
-  Despotism,
-  Monarchy,
-} from '@civ-clone/civ1-government/Governments';
-import {
   Cathedral,
   Colosseum,
   Temple,
@@ -47,13 +41,18 @@ import CityImprovement from '@civ-clone/core-city-improvement/CityImprovement';
 import Cost from '@civ-clone/core-city/Rules/Cost';
 import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
-import { Fortifiable } from '@civ-clone/civ1-unit/Types';
 import High from '@civ-clone/core-rule/Priorities/High';
 import { Low } from '@civ-clone/core-rule/Priorities';
 import { Mysticism } from '@civ-clone/civ1-science/Advances';
 import Or from '@civ-clone/core-rule/Criteria/Or';
+import Priority from '@civ-clone/core-rule/Priority';
 import Unit from '@civ-clone/core-unit/Unit';
 import Yield from '@civ-clone/core-yield/Yield';
+import {
+  keepsMartialLaw,
+  martialLawGovernments,
+  martialLawUnitLimit,
+} from '../../martialLaw';
 import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
@@ -71,21 +70,6 @@ export const getRules: (
   playerResearchRegistry: PlayerResearchRegistry = playerResearchRegistryInstance,
   unitRegistry: UnitRegistry = unitRegistryInstance
 ): Cost[] => [
-  new Cost(
-    new Criterion((city: City): boolean =>
-      playerGovernmentRegistry
-        .getByPlayer(city.player())
-        .is(Anarchy, Communism, Despotism, Monarchy)
-    ),
-    new Effect((city: City, yields: Yield[]): Yield[] =>
-      unitRegistry
-        .getByTile(city.tile())
-        .filter((unit: Unit): boolean => unit instanceof Fortifiable)
-        .slice(0, Math.min(4, reduceYield(yields, Unhappiness)))
-        .map((unit) => new MartialLaw(1, unit) as Yield)
-    )
-  ),
-
   ...(
     [
       [Temple, 1],
@@ -131,6 +115,35 @@ export const getRules: (
             ) as Yield
         )
       )
+  ),
+
+  // Martial law (`martialLaw.ts`) comes after the improvements here and the Wonders in civ1-wonder, which are `Low`, so
+  //  it calms what they leave, as v474.05 does. Shakespeare's Theatre (4000) still comes last.
+  new Cost(
+    'civ1-city-happiness:city/cost/martial-law',
+    new Priority(3500),
+    new Criterion((city: City): boolean =>
+      playerGovernmentRegistry
+        .getByPlayer(city.player())
+        .is(...martialLawGovernments)
+    ),
+    new Criterion(
+      (city: City, yields: Yield[]): boolean =>
+        reduceYield(yields, Unhappiness) > 0
+    ),
+    new Effect((city: City, yields: Yield[]): Yield[] =>
+      unitRegistry
+        .getByTile(city.tile())
+        .filter(
+          (unit: Unit): boolean =>
+            unit.player() === city.player() && keepsMartialLaw(unit)
+        )
+        .slice(
+          0,
+          Math.min(martialLawUnitLimit, reduceYield(yields, Unhappiness))
+        )
+        .map((unit) => new MartialLaw(1, unit) as Yield)
+    )
   ),
 
   new Cost(
