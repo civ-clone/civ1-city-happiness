@@ -1,7 +1,7 @@
 import { SpecialistRegistry } from '@civ-clone/core-city/SpecialistRegistry';
 import CityGrowth from '@civ-clone/core-city-growth/CityGrowth';
 import Yield from '@civ-clone/core-yield/Yield';
-declare enum CitizenState {
+export declare enum CitizenState {
   Unhappy = 0,
   Content = 1,
   Happy = 2,
@@ -23,6 +23,9 @@ export declare const calculateCitizenState: (
   yields?: Yield[],
   specialistRegistry?: SpecialistRegistry
 ) => CitizenState[];
+export type CitizenMood = 'unhappy' | 'content' | 'happy';
+/** The name a renderer is sent for a `CitizenState`. */
+export declare const citizenMood: (citizenState: CitizenState) => CitizenMood;
 export declare const citizenSummary: (
   state: CitizenState[]
 ) => [number, number, number];

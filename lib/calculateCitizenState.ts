@@ -8,7 +8,7 @@ import Unhappiness from '@civ-clone/base-city-yield-unhappiness/Unhappiness';
 import { reduceYields } from '@civ-clone/core-yield/lib/reduceYields';
 import Yield from '@civ-clone/core-yield/Yield';
 
-enum CitizenState {
+export enum CitizenState {
   Unhappy,
   Content,
   Happy,
@@ -73,6 +73,12 @@ export const calculateCitizenState = (
 
   return state;
 };
+
+export type CitizenMood = 'unhappy' | 'content' | 'happy';
+
+/** The name a renderer is sent for a `CitizenState`. */
+export const citizenMood = (citizenState: CitizenState): CitizenMood =>
+  (['unhappy', 'content', 'happy'] as CitizenMood[])[citizenState];
 
 export const citizenSummary = (
   state: CitizenState[]
