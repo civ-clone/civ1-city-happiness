@@ -1,1 +1,2 @@
+import './registerAdditionalData';
 import './registerRules';
