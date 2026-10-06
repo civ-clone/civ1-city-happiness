@@ -1,4 +1,4 @@
-import { Air, Fortifiable, Naval } from '@civ-clone/civ1-unit/Types';
+import { Air, Diplomatic } from '@civ-clone/civ1-unit/Types';
 import {
   CityGrowthRegistry,
   instance as cityGrowthRegistryInstance,
@@ -19,6 +19,15 @@ import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import Government from '@civ-clone/core-government/Government';
 import Yield from '@civ-clone/core-yield/Yield';
+import Unit from '@civ-clone/core-unit/Unit';
+
+// v474.05 (OpenCivOne `CityWorker.cs` L422-L460): a unit with an attack makes its home city unhappy when it's away, or
+//  wherever it is if it's an aircraft. Unarmed units (a Transport, Settlers) never do, and Diplomats and Caravans are
+//  skipped before the check.
+const causesUnhappiness = (unit: Unit, city: City): boolean =>
+  !(unit instanceof Diplomatic) &&
+  unit.attack().value() > 0 &&
+  (unit instanceof Air || unit.tile() !== city.tile());
 
 export const getRules: (
   cityGrowthRegistry?: CityGrowthRegistry,
@@ -63,22 +72,12 @@ export const getRules: (
           (city: City): boolean =>
             unitRegistry
               .getByCity(city)
-              .filter(
-                (unit) =>
-                  [Air, Fortifiable, Naval].some(
-                    (UnitType) => unit instanceof UnitType
-                  ) && unit.tile() !== city.tile()
-              ).length > 0
+              .filter((unit) => causesUnhappiness(unit, city)).length > 0
         ),
         new Effect((city: City): Yield[] =>
           unitRegistry
             .getByCity(city)
-            .filter(
-              (unit) =>
-                [Air, Fortifiable, Naval].some(
-                  (UnitType) => unit instanceof UnitType
-                ) && unit.tile() !== city.tile()
-            )
+            .filter((unit) => causesUnhappiness(unit, city))
             .map((unit) => new MilitaryUnhappiness(discontent, unit) as Yield)
         )
       )

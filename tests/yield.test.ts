@@ -4,14 +4,21 @@ import CityBuildRegistry from '@civ-clone/core-city-build/CityBuildRegistry';
 import CityGrowthRegistry from '@civ-clone/core-city-growth/CityGrowthRegistry';
 import CityImprovementRegistry from '@civ-clone/core-city-improvement/CityImprovementRegistry';
 import CityRegistry from '@civ-clone/core-city/CityRegistry';
-import { Fortifiable } from '@civ-clone/civ1-unit/Types';
 import PlayerGovernmentRegistry from '@civ-clone/core-government/PlayerGovernmentRegistry';
 import PlayerResearchRegistry from '@civ-clone/core-science/PlayerResearchRegistry';
 import PlayerWorldRegistry from '@civ-clone/core-player-world/PlayerWorldRegistry';
 import RuleRegistry from '@civ-clone/core-rule/RuleRegistry';
 import TileImprovementRegistry from '@civ-clone/core-tile-improvement/TileImprovementRegistry';
 import { Unhappiness } from '../Yields';
-import { Warrior } from '@civ-clone/civ1-unit/Units';
+import {
+  Bomber,
+  Caravan,
+  Diplomat,
+  Transport,
+  Trireme,
+  Warrior,
+} from '@civ-clone/civ1-unit/Units';
+import Unit from '@civ-clone/core-unit/Unit';
 import UnitRegistry from '@civ-clone/core-unit/UnitRegistry';
 import cityCost from '../Rules/City/cost';
 import cityCreated from '@civ-clone/civ1-city/Rules/City/created';
@@ -114,7 +121,7 @@ describe('city:yield', (): void => {
     expect(reduceYield(city.yields(), Unhappiness)).to.equal(2);
   });
 
-  it('should cause Unhappiness when a supported Fortifiable, Air, or Naval unit is outside of the city', async (): Promise<void> => {
+  it('should cause Unhappiness when a supported unit with an attack is outside of the city', async (): Promise<void> => {
     const city = await setUpCity({
         ruleRegistry,
         playerWorldRegistry,
@@ -130,7 +137,7 @@ describe('city:yield', (): void => {
 
     expect(reduceYield(city.yields(), Unhappiness)).equal(0);
 
-    const unit = new Fortifiable(city, player, unitTile, ruleRegistry);
+    const unit = new Warrior(city, player, unitTile, ruleRegistry);
 
     unitRegistry.register(unit);
 
@@ -147,5 +154,51 @@ describe('city:yield', (): void => {
     unit.setTile(unitTile);
 
     expect(reduceYield(city.yields(), Unhappiness)).to.equal(2);
+  });
+
+  (
+    [
+      // Aircraft cause it even at home.
+      [Bomber, true, 1, 2],
+      [Bomber, false, 1, 2],
+      [Trireme, false, 1, 2],
+      [Trireme, true, 0, 0],
+      // Unarmed units never do.
+      [Transport, false, 0, 0],
+      [Caravan, false, 0, 0],
+      [Diplomat, false, 0, 0],
+    ] as [typeof Unit, boolean, number, number][]
+  ).forEach(([UnitType, atHome, republic, democracy]): void => {
+    it(`should cause ${republic} Unhappiness under the Republic and ${democracy} under Democracy for a ${
+      UnitType.name
+    } ${
+      atHome ? 'in' : 'away from'
+    } its home city`, async (): Promise<void> => {
+      const city = await setUpCity({
+          ruleRegistry,
+          playerWorldRegistry,
+          cityGrowthRegistry,
+          tileImprovementRegistry,
+        }),
+        player = city.player(),
+        playerGovernment = playerGovernmentRegistry.getByPlayer(player);
+
+      unitRegistry.register(
+        new UnitType(
+          city,
+          player,
+          atHome ? city.tile() : city.tile().getNeighbour('e'),
+          ruleRegistry
+        )
+      );
+
+      playerGovernment.set(new Republic());
+
+      expect(reduceYield(city.yields(), Unhappiness)).to.equal(republic);
+
+      playerGovernment.set(new Democracy());
+
+      expect(reduceYield(city.yields(), Unhappiness)).to.equal(democracy);
+    });
   });
 });
