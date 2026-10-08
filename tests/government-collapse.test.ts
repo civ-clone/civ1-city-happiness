@@ -128,3 +128,23 @@ describe('player:government:collapsed', (): void => {
     expect(collapsed).to.have.length(1);
   });
 });
+
+describe('player:turn-start', (): void => {
+  // civ-clone/web-renderer#315: working out a city's yields isn't cheap, and the disorder and celebration checks read
+  //  the same ones.
+  it("should work out each city's yields once", (): void => {
+    const { city, turn } = setUp(Monarchy);
+
+    let calls = 0;
+
+    city.yields = () => {
+      calls++;
+
+      return [];
+    };
+
+    turn(false);
+
+    expect(calls).to.equal(1);
+  });
+});

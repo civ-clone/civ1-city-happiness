@@ -71,11 +71,14 @@ export const getRules: (
       new Low(),
       new Effect((player: Player): void =>
         cityRegistry.getByPlayer(player).forEach((city: City) => {
-          const isCivilDisorder = ruleRegistry
-              .process(CivilDisorder, city, city.yields())
+          // Both rules read the same yields, and working them out isn't cheap
+          // (civ-clone/web-renderer#315).
+          const yields = city.yields(),
+            isCivilDisorder = ruleRegistry
+              .process(CivilDisorder, city, yields)
               .some((result: boolean): boolean => result),
             isLeaderCelebration = ruleRegistry
-              .process(CelebrateLeader, city, city.yields())
+              .process(CelebrateLeader, city, yields)
               .some((result: boolean): boolean => result);
 
           if (isCivilDisorder) {

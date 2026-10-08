@@ -20,10 +20,12 @@ const getRules = (cityRegistry = CityRegistry_1.instance, ruleRegistry = RuleReg
     (0, cityStatus_1.registerHandlers)(pendingEffects, engine);
     return [
         new TurnStart_1.default(new Priorities_1.Low(), new Effect_1.default((player) => cityRegistry.getByPlayer(player).forEach((city) => {
-            const isCivilDisorder = ruleRegistry
-                .process(CivilDisorder_1.default, city, city.yields())
+            // Both rules read the same yields, and working them out isn't cheap
+            // (civ-clone/web-renderer#315).
+            const yields = city.yields(), isCivilDisorder = ruleRegistry
+                .process(CivilDisorder_1.default, city, yields)
                 .some((result) => result), isLeaderCelebration = ruleRegistry
-                .process(CelebrateLeader_1.default, city, city.yields())
+                .process(CelebrateLeader_1.default, city, yields)
                 .some((result) => result);
             if (isCivilDisorder) {
                 engine.emit('city:civil-disorder', city);
