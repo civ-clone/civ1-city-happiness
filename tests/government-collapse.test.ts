@@ -17,9 +17,12 @@ import Government from '@civ-clone/core-government/Government';
 import Player from '@civ-clone/core-player/Player';
 import PlayerGovernment from '@civ-clone/core-government/PlayerGovernment';
 import TurnStart from '@civ-clone/core-player/Rules/TurnStart';
+import * as spies from 'chai-spies';
 import anarchyDuration from '@civ-clone/civ1-government/Rules/Player/anarchy-duration';
-import { expect } from 'chai';
+import { expect, spy, use } from 'chai';
 import turnStart from '../Rules/Player/turn-start';
+
+use(spies);
 
 const setUp = (GovernmentType: typeof Government = Democracy) => {
   const game = new Game(),
@@ -135,16 +138,10 @@ describe('player:turn-start', (): void => {
   it("should work out each city's yields once", (): void => {
     const { city, turn } = setUp(Monarchy);
 
-    let calls = 0;
-
-    city.yields = () => {
-      calls++;
-
-      return [];
-    };
+    spy.on(city, ['yields']);
 
     turn(false);
 
-    expect(calls).to.equal(1);
+    expect(city.yields).to.have.been.called.once;
   });
 });
