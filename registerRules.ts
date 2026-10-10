@@ -10,7 +10,14 @@ import { Game, defaultGame } from '@civ-clone/core-game';
 export const register = (game: Game): void =>
   game.rules.register(
     ...cityCelebrateLeader(game.cityGrowth, game.specialists),
-    ...cityYield(game.cityGrowth, game.playerGovernments, game.units),
+    ...cityYield(
+      game.cityGrowth,
+      game.playerGovernments,
+      game.units,
+      game.cities,
+      game.difficulty,
+      game.clients
+    ),
     ...cityCivilDisorder(game.cityGrowth, game.specialists),
     ...cityCost(
       game.rules,
