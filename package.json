@@ -18,6 +18,7 @@
     "ts:compile": "tsc --build tsconfig.json"
   },
   "devDependencies": {
+    "@civ-clone/core-ai-client": "^0.1.0",
     "@civ-clone/core-player-world": "^0.1.0",
     "@civ-clone/core-city-build": "^0.1.0",
     "@civ-clone/core-tile-improvement": "^0.1.0",
