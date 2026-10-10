@@ -94,10 +94,12 @@ export const getRules: (
         size(city)
       ),
     // A large empire makes one more citizen unhappy in each of the human's cities per E cities, where
-    //  E = (government pair + 2) × (7 - level) (v474.05 `CityWorker.cs` L1433-L1437). The city's number staggers it:
-    //  with E + 1 cities one of them gets the extra unhappy citizen, with E + 2 two of them, and so on. Civ1 numbers its
-    //  cities across the game; this uses the order the player's cities were founded in, which staggers them the same
-    //  way.
+    //  E = (government pair + 2) × (7 - level) (v474.05 `CityWorker.cs` L1433-L1437):
+    //  `(cityID % E + cityCount - E) / E`. `cityID` is the city's number across every civilization's cities, so which
+    //  of the human's cities tip over first, and how many, depends on how their numbers fall: with another
+    //  civilization founding a city between each of theirs, every number is even and E + 1 cities add none. The city's
+    //  place in the city registry is that number, except that Civ1 hands a destroyed city's slot to the next one
+    //  founded and the registry keeps destroyed cities in place.
     empireSize = (city: City): number => {
       const player = city.player();
 
@@ -119,8 +121,7 @@ export const getRules: (
       }
 
       const limit = factor * (7 - levelOf(gameDifficultyRegistry)),
-        cities = cityRegistry.getByPlayer(player, true),
-        cityNumber = Math.max(cities.indexOf(city), 0),
+        cityNumber = Math.max(cityRegistry.indexOf(city), 0),
         cityCount = cityRegistry.getByPlayer(player).length;
 
       return Math.max(

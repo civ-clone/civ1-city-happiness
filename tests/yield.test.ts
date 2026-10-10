@@ -290,46 +290,110 @@ describe('city:yield', (): void => {
       expect(unhappy).eql([3, 3, 3, 3, 3]);
     });
 
-    // Prince under Despotism: E = 2 × (7 - 2) = 10 cities.
-    it("should make one more citizen unhappy in one of the human's cities once there are more than 10, on Prince", async (): Promise<void> => {
-      gameDifficultyRegistry.set(Prince);
-
-      const player = new Player(ruleRegistry),
-        cities: City[] = [],
-        // Room for 11 cities whose areas don't overlap: a city every 5 tiles.
+    // Prince under Despotism: E = 2 × (7 - 2) = 10 cities. Each city is size 4, and Prince leaves 4 content, so any
+    //  unhappy citizen is the empire's. Its own registries, so the cities' numbers are the order they're founded in.
+    const empire = async (
+      founders: ('human' | 'computer')[]
+    ): Promise<{ human: City[]; unhappy: () => number[] }> => {
+      const empireRules = new RuleRegistry(),
+        empireCities = new CityRegistry(),
+        empireGrowth = new CityGrowthRegistry(),
+        empireGovernments = new PlayerGovernmentRegistry(),
+        empireWorlds = new PlayerWorldRegistry(),
+        empireClients = new ClientRegistry(),
+        empireDifficulty = new GameDifficultyRegistry(),
+        empireTileImprovements = new TileImprovementRegistry(),
+        governments = new AvailableGovernmentRegistry(),
         world = await generateWorld(
-          generateGenerator(15, 20, Grassland),
-          ruleRegistry
-        );
+          // A city every 5 tiles, so their areas don't overlap.
+          generateGenerator(25, 25, Grassland),
+          empireRules
+        ),
+        humanCities: City[] = [];
 
-      clientRegistry.register(new Client(player));
+      governments.register(Despotism);
+      empireDifficulty.set(Prince);
+      empireRules.register(
+        ...playerAdded(governments, empireGovernments, empireRules),
+        ...cityCreated(
+          empireTileImprovements,
+          new CityBuildRegistry(),
+          empireGrowth,
+          empireCities,
+          empireWorlds,
+          empireRules
+        ),
+        ...cityYield(
+          empireGrowth,
+          empireGovernments,
+          new UnitRegistry(),
+          empireCities,
+          empireDifficulty,
+          empireClients
+        )
+      );
 
-      for (let i = 0; i < 11; i++) {
-        cities.push(
-          await setUpCity({
+      // After the rules, which give each player a government as it's created.
+      const human = new Player(empireRules),
+        computer = new Player(empireRules);
+
+      empireClients.register(new Client(human), new AIClient(computer));
+
+      for (const [i, founder] of founders.entries()) {
+        const player = founder === 'human' ? human : computer,
+          city = await setUpCity({
             size: 4,
             player,
             world,
-            tile: world.get(2 + (i % 4) * 5, 2 + Math.floor(i / 4) * 5),
-            ruleRegistry,
-            playerWorldRegistry,
-            cityGrowthRegistry,
-            tileImprovementRegistry,
-          })
-        );
+            tile: world.get(2 + (i % 5) * 5, 2 + Math.floor(i / 5) * 5),
+            ruleRegistry: empireRules,
+            playerWorldRegistry: empireWorlds,
+            cityGrowthRegistry: empireGrowth,
+            tileImprovementRegistry: empireTileImprovements,
+          });
 
-        playerGovernmentRegistry.getByPlayer(player).set(new Despotism());
+        empireGovernments.getByPlayer(player).set(new Despotism());
+
+        if (founder === 'human') {
+          humanCities.push(city);
+        }
       }
 
-      const unhappy = (): number[] =>
-        cities.map((city) => reduceYield(city.yields(), Unhappiness));
+      return {
+        human: humanCities,
+        unhappy: () =>
+          humanCities.map((city) => reduceYield(city.yields(), Unhappiness)),
+      };
+    };
 
-      // 4 content citizens on Prince, so a size 4 city has none unhappy: the empire's size adds the first.
-      expect(unhappy().filter((count) => count === 1)).length(1);
+    it("should make one more citizen unhappy in one of the human's cities once there are more than 10, on Prince", async (): Promise<void> => {
+      const { human, unhappy } = await empire(new Array(11).fill('human'));
 
-      cities.pop()!.destroy();
+      // Cities 0 to 10: (9 % 10 + 11 - 10) / 10 = 1, and only city 9 reaches it.
+      expect(unhappy()).eql([0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0]);
 
-      expect(unhappy().filter((count) => count > 0)).length(0);
+      human.pop()!.destroy();
+
+      expect(unhappy()).eql([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    });
+
+    // As Civ1 numbers them, across every civilization's cities (Copilot on #8).
+    it("should number the human's cities among everyone's", async (): Promise<void> => {
+      const interleaved = (count: number) =>
+          new Array(count * 2 - 1)
+            .fill(null)
+            .map((value, i): 'human' | 'computer' =>
+              i % 2 === 0 ? 'human' : 'computer'
+            ),
+        eleven = await empire(interleaved(11));
+
+      // The human's cities are numbers 0, 2, ... 20, so none is 9 more than a multiple of 10: 11 cities add nobody.
+      expect(eleven.unhappy()).eql([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+      const twelve = await empire(interleaved(12));
+
+      // With 12, a number 8 more than a multiple of 10 is enough: cities 8 and 18.
+      expect(twelve.unhappy()).eql([0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0]);
     });
 
     it('should not add the empire-size citizen in a computer player city', async (): Promise<void> => {
