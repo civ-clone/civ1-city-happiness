@@ -1,3 +1,4 @@
+import describedRequirements from './Requirements';
 import cityCelebrateLeader from './Rules/City/celebrate-leader';
 import cityCivilDisorder from './Rules/City/civil-disorder';
 import cityCost from './Rules/City/cost';
@@ -7,7 +8,7 @@ import playerAction from './Rules/Player/action';
 import playerTurnStart from './Rules/Player/turn-start';
 import { Game, defaultGame } from '@civ-clone/core-game';
 
-export const register = (game: Game): void =>
+export const register = (game: Game): void => {
   game.rules.register(
     ...cityCelebrateLeader(game.cityGrowth, game.specialists),
     ...cityYield(
@@ -39,6 +40,11 @@ export const register = (game: Game): void =>
       game.turn
     )
   );
+
+  // What makes its improvements work better, for the civilopedia: they only describe, so no rules are made from them
+  //  (civ-clone/web-renderer#37).
+  game.requirements.add(null, ...describedRequirements);
+};
 
 // The plugin loader imports each package for this side effect. Until it passes
 // a `Game` of its own, dropping it would produce a game with silently absent
