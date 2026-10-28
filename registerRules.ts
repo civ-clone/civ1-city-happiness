@@ -1,5 +1,6 @@
 import describedRequirements from './Requirements';
 import cityCelebrateLeader from './Rules/City/celebrate-leader';
+import cityCelebrationYield from './Rules/City/celebration-yield';
 import cityCivilDisorder from './Rules/City/civil-disorder';
 import cityCost from './Rules/City/cost';
 import cityDestroyed from './Rules/City/destroyed';
@@ -11,6 +12,11 @@ import { Game, defaultGame } from '@civ-clone/core-game';
 export const register = (game: Game): void => {
   game.rules.register(
     ...cityCelebrateLeader(game.cityGrowth, game.specialists),
+    ...cityCelebrationYield(
+      game.pendingEffects,
+      game.playerGovernments,
+      game.tileImprovements
+    ),
     ...cityYield(
       game.cityGrowth,
       game.playerGovernments,
