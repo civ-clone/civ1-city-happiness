@@ -21,7 +21,6 @@
     "@civ-clone/core-ai-client": "^0.1.0",
     "@civ-clone/core-player-world": "^0.1.0",
     "@civ-clone/core-city-build": "^0.1.0",
-    "@civ-clone/core-tile-improvement": "^0.1.0",
     "@types/chai": "^4.0.0",
     "@types/chai-spies": "^1.0.0",
     "@types/mocha": "^8.0.0",

@@ -3,6 +3,8 @@ import {
   TRADE_BONUS,
 } from '@civ-clone/civ1-world/lib/governmentTileYield';
 import {
+  Anarchy,
+  Communism,
   Despotism,
   Monarchy,
   Republic,
@@ -155,5 +157,43 @@ describe('city:yield:celebration', (): void => {
     );
 
     expect(total(yields, Trade)).to.equal(1);
+  });
+
+  it('gives back the Anarchy penalty too', (): void => {
+    const yields = setUp(Anarchy, [
+      new Food(2, 'Grassland'),
+      new Food(1, 'Irrigation'),
+      new Food(-1, DESPOTISM_PENALTY),
+    ]);
+
+    expect(total(yields, Food)).to.equal(1);
+  });
+
+  it('gives a celebrating Communism city +1 trade', (): void => {
+    const yields = setUp(Communism, [new Trade(2, 'Ocean')]);
+
+    expect(total(yields, Trade)).to.equal(1);
+  });
+
+  it('gives back the penalty on trade, with no bonus, under Despotism', (): void => {
+    // Jungle with Gems: 4 trade, 3 under Despotism; celebrating, 4.
+    const yields = setUp(Despotism, [
+      new Trade(4, 'Gems'),
+      new Trade(-1, DESPOTISM_PENALTY),
+    ]);
+
+    expect(total(yields, Trade)).to.equal(1);
+  });
+
+  it('counts the railroad in what the square yielded before the penalty', (): void => {
+    // Irrigated Grassland with a railroad: 3 + 1 = 4, 3 under Despotism; celebrating, 4.
+    const yields = setUp(Despotism, [
+      new Food(2, 'Grassland'),
+      new Food(1, 'Irrigation'),
+      new Food(1, 'Railroad'),
+      new Food(-1, DESPOTISM_PENALTY),
+    ]);
+
+    expect(total(yields, Food)).to.equal(1);
   });
 });
