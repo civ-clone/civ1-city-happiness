@@ -43,7 +43,8 @@ export const register = (game: Game): void => {
       game.cityGrowth,
       game.playerGovernments,
       game.pendingEffects,
-      game.turn
+      game.turn,
+      game.cityImprovements
     )
   );
 

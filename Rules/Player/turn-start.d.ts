@@ -1,4 +1,5 @@
 import { CityGrowthRegistry } from '@civ-clone/core-city-growth/CityGrowthRegistry';
+import { CityImprovementRegistry } from '@civ-clone/core-city-improvement/CityImprovementRegistry';
 import { CityRegistry } from '@civ-clone/core-city/CityRegistry';
 import { Engine } from '@civ-clone/core-engine/Engine';
 import { PendingEffectRegistry } from '@civ-clone/core-pending-effect';
@@ -13,6 +14,7 @@ export declare const getRules: (
   cityGrowthRegistry?: CityGrowthRegistry,
   playerGovernmentRegistry?: PlayerGovernmentRegistry,
   pendingEffects?: PendingEffectRegistry,
-  turn?: Turn
+  turn?: Turn,
+  cityImprovementRegistry?: CityImprovementRegistry
 ) => TurnStart[];
 export default getRules;

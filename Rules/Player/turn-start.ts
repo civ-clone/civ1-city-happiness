@@ -3,6 +3,10 @@ import {
   instance as cityGrowthRegistryInstance,
 } from '@civ-clone/core-city-growth/CityGrowthRegistry';
 import {
+  CityImprovementRegistry,
+  instance as cityImprovementRegistryInstance,
+} from '@civ-clone/core-city-improvement/CityImprovementRegistry';
+import {
   CityRegistry,
   instance as cityRegistryInstance,
 } from '@civ-clone/core-city/CityRegistry';
@@ -33,6 +37,7 @@ import {
   Turn,
   instance as turnInstance,
 } from '@civ-clone/core-turn-based-game/Turn';
+import { Democracy, Republic } from '@civ-clone/civ1-government/Governments';
 import {
   pendingRevolution,
   revolution,
@@ -41,11 +46,15 @@ import City from '@civ-clone/core-city/City';
 import { updateCityStatus } from '@civ-clone/base-city-happiness-status/lib/cityStatus';
 import CelebrateLeader from '@civ-clone/core-city-happiness/Rules/CelebrateLeader';
 import CivilDisorder from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
-import { Democracy } from '@civ-clone/civ1-government/Governments';
+import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
+import { Food } from '@civ-clone/civ1-city/Yields';
 import { Low } from '@civ-clone/core-rule/Priorities';
 import Player from '@civ-clone/core-player/Player';
 import TurnStart from '@civ-clone/core-player/Rules/TurnStart';
+import Yield from '@civ-clone/core-yield/Yield';
+import { growthLimit } from '@civ-clone/civ1-city-improvement/lib/growthLimit';
+import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
   cityRegistry?: CityRegistry,
@@ -54,7 +63,8 @@ export const getRules: (
   cityGrowthRegistry?: CityGrowthRegistry,
   playerGovernmentRegistry?: PlayerGovernmentRegistry,
   pendingEffects?: PendingEffectRegistry,
-  turn?: Turn
+  turn?: Turn,
+  cityImprovementRegistry?: CityImprovementRegistry
 ) => TurnStart[] = (
   cityRegistry: CityRegistry = cityRegistryInstance,
   ruleRegistry: RuleRegistry = ruleRegistryInstance,
@@ -62,9 +72,14 @@ export const getRules: (
   cityGrowthRegistry: CityGrowthRegistry = cityGrowthRegistryInstance,
   playerGovernmentRegistry: PlayerGovernmentRegistry = playerGovernmentRegistryInstance,
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance,
-  turn: Turn = turnInstance
+  turn: Turn = turnInstance,
+  cityImprovementRegistry: CityImprovementRegistry = cityImprovementRegistryInstance
 ): TurnStart[] => {
   registerHandlers(pendingEffects, engine);
+
+  // The cities celebrating for a second turn running (or more), with the yields they were judged on: only the first
+  //  rule still knows whether a city was celebrating before this turn's check, so it hands them to the growth rule.
+  const celebratingAgain = new WeakMap<City, Yield[]>();
 
   return [
     new TurnStart(
@@ -90,6 +105,12 @@ export const getRules: (
           // (civ-clone/web-renderer#121).
           const disorder = civilDisorder(city, pendingEffects),
             celebration = leaderCelebration(city, pendingEffects);
+
+          if (isLeaderCelebration && celebration !== null) {
+            celebratingAgain.set(city, yields);
+          } else {
+            celebratingAgain.delete(city);
+          }
 
           // A Democracy falls when a city is in civil disorder for a second turn
           // running (Rome on 640K a Day, p221-223), and the Anarchy lasts twice
@@ -137,17 +158,45 @@ export const getRules: (
         })
       )
     ),
+    // A city celebrating "We Love the King Day" for a second turn running grows by one under a Republic or a Democracy,
+    //  while it has food to spare (its Settlers' included) and the Aqueduct doesn't hold it back. v474.05
+    //  (`CITYMGT.C` `city_process`, where the first celebrating turn only sets the flag):
+    //    if (!(townbuf[city].status & CITY_CELEBRATING)) { ... townbuf[city].status |= CITY_CELEBRATING; }
+    //    else if (civ_gov[selected_owner] >= 4 && townbuf[city].size * 2 + colonist_homed * sett_food_j <
+    //      town_res_sums[0] && (townbuf[city].size < 10 || (townbuf[city].buildings & HAS_AQUEDUCT)))
+    //      townbuf[city].size++;
+    //  `civ_gov` 4 and 5 are the Republic and Democracy (`GAME.C` `government_names`). The food store is left as it is:
+    //  this growth isn't paid for from it (civ-clone/web-renderer#1010).
     new TurnStart(
+      'civ1-city-happiness:player/turn-start/celebration-growth',
       new Low(),
+      new Criterion((player: Player): boolean =>
+        playerGovernmentRegistry.getByPlayer(player).is(Republic, Democracy)
+      ),
       new Effect((player: Player): void =>
         cityRegistry.getByPlayer(player).forEach((city: City) => {
-          if (leaderCelebration(city, pendingEffects) === null) {
+          const yields = celebratingAgain.get(city);
+
+          if (yields === undefined) {
             return;
           }
 
           const cityGrowth = cityGrowthRegistry.getByCity(city);
 
-          cityGrowth.grow();
+          // The city's food net of what its citizens and Settlers eat.
+          if (
+            reduceYield(yields, Food) <= 0 ||
+            growthLimit(cityGrowth, cityImprovementRegistry) !== null
+          ) {
+            return;
+          }
+
+          const storedFood = cityGrowth.progress().value();
+
+          // Grown through `CityGrowth`, so the new citizen is put to work, as joining Settlers are; its `Grow` rules
+          //  also empty the store (or, with a Granary, half-fill it), so it's put back.
+          cityGrowth.grow(CelebrateLeader);
+          cityGrowth.progress().set(storedFood, 'celebration-growth');
         })
       )
     ),
