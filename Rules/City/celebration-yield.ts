@@ -40,10 +40,16 @@ export const getRules: (
   tileImprovementRegistry: TileImprovementRegistry = tileImprovementRegistryInstance
 ): CityYield[] => [
   // A celebrating city's squares escape the Anarchy and Despotism penalty, and under Monarchy and Communism get The
-  //  Republic's trade bonus (v474.05 `CityWorker.cs` L4102-4134, civ-clone/web-renderer#401). A square's own yields
-  //  are worked out for a city that isn't celebrating, as they're kept per player, so this adds the difference: what
-  //  the square yields before the government's steps, through them again as a celebrating city, then pollution. After
-  //  the worked squares, and before trade routes and corruption, which count it.
+  //  Republic's trade bonus (civ-clone/web-renderer#401). v474.05 (`CITYMGT.C` `tile_yield`):
+  //    if (yield_value_n > 2 && !(townbuf[selected_city].status & CITY_CELEBRATING)) {
+  //      if (civ_gov[selected_owner] <= 1) yield_value_n--; ... }                                    (1981-1983)
+  //    if ((townbuf[selected_city].status & CITY_CELEBRATING ? 2 : 4) <= civ_gov[selected_owner])
+  //      yield_value_n++;                                                                (trade only, 1990-1991)
+  //  It reads the flag, not whether the city is celebrating now, so a celebrating city in civil disorder, which keeps
+  //  its flag, keeps these too, as the record here is kept (`turn-start`, civ-clone/web-renderer#1013). A square's own
+  //  yields are worked out for a city that isn't celebrating, as they're kept per player, so this adds the difference:
+  //  what the square yields before the government's steps, through them again as a celebrating city, then pollution.
+  //  After the worked squares, and before trade routes and corruption, which count it.
   new CityYield(
     'civ1-city-happiness:city/yield/celebration',
     new Priority(1),
