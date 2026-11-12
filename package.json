@@ -34,6 +34,7 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
+    "@civ-clone/base-city-celebration-yields": "^0.1.0",
     "@civ-clone/base-city-happiness": "^0.1.0",
     "@civ-clone/base-city-happiness-status": "^0.1.0",
     "@civ-clone/base-city-yield-city-improvement-content": "^0.1.0",
