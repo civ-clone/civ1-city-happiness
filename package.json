@@ -34,8 +34,8 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
-    "@civ-clone/base-city-happiness": "github:civ-clone/base-city-happiness#feat/citizen-state",
-    "@civ-clone/base-city-happiness-status": "github:civ-clone/base-city-happiness-status#feat/city-status",
+    "@civ-clone/base-city-happiness": "^0.1.0",
+    "@civ-clone/base-city-happiness-status": "^0.1.0",
     "@civ-clone/base-city-yield-city-improvement-content": "^0.1.0",
     "@civ-clone/base-city-yield-happiness": "^0.1.0",
     "@civ-clone/base-city-yield-luxuries": "^0.1.0",
@@ -44,8 +44,8 @@
     "@civ-clone/base-city-yield-military-unhappiness": "^0.1.0",
     "@civ-clone/base-city-yield-population-unhappiness": "^0.1.0",
     "@civ-clone/base-city-yield-unhappiness": "^0.1.0",
-    "@civ-clone/base-government-martial-law": "github:civ-clone/base-government-martial-law#feat/martial-law",
-    "@civ-clone/base-government-military-unhappiness": "github:civ-clone/base-government-military-unhappiness#feat/military-unhappiness",
+    "@civ-clone/base-government-martial-law": "^0.1.0",
+    "@civ-clone/base-government-military-unhappiness": "^0.1.0",
     "@civ-clone/civ1-city": "github:civ-clone/civ1-city",
     "@civ-clone/civ1-city-improvement": "github:civ-clone/civ1-city-improvement",
     "@civ-clone/civ1-difficulty": "github:civ-clone/civ1-difficulty",
