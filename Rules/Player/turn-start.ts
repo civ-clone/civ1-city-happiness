@@ -182,17 +182,16 @@ export const getRules: (
     //    else if (civ_gov[selected_owner] >= 4 && townbuf[city].size * 2 + colonist_homed * sett_food_j <
     //      town_res_sums[0] && (townbuf[city].size < 10 || (townbuf[city].buildings & HAS_AQUEDUCT)))
     //      townbuf[city].size++;
-    //  `civ_gov` 4 and 5 are the Republic and Democracy (`GAME.C` `government_names`). The food store is left as it is:
+    //  The size cap here is unconditional; growth from the food store has the same one, under `rule_options & 4`
+    //  (`CITYMGT.C` 321-322), which is always set (`rule_options = 15;`, `NEWGAME.C` 65). `civ_gov` 4 and 5 are the Republic and Democracy (`GAME.C` `government_names`). The food store is left as it is:
     //  this growth isn't paid for from it (civ-clone/web-renderer#1010).
     new TurnStart(
       'civ1-city-happiness:player/turn-start/celebration-growth',
       new Low(),
       new Effect((player: Player): void => {
         // Read here, not in a `Criterion`: every rule's criteria are checked before any rule runs, and the status rule
-        //  above can bring a Democracy down this turn.
-        const republicOrDemocracy = playerGovernmentRegistry
-          .getByPlayer(player)
-          .is(Republic, Democracy);
+        //  above can bring a Democracy down this turn. Only once a city is celebrating again, and then once.
+        let republicOrDemocracy: boolean | undefined;
 
         cityRegistry.getByPlayer(player).forEach((city: City) => {
           const yields = celebratingAgain.get(city);
@@ -200,7 +199,12 @@ export const getRules: (
           // Taken once, so an entry the status rule didn't set this turn can't grow the city again.
           celebratingAgain.delete(city);
 
-          if (yields === undefined || !republicOrDemocracy) {
+          if (
+            yields === undefined ||
+            !(republicOrDemocracy ??= playerGovernmentRegistry
+              .getByPlayer(player)
+              .is(Republic, Democracy))
+          ) {
             return;
           }
 

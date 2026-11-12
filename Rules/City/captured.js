@@ -12,8 +12,8 @@ const getRules = (pendingEffects = core_pending_effect_1.instance) => [
     //  celebrating, as v474.05 (`CAPTURE.C` `capunit`, which both captures go through): `townbuf[b].status &=
     //  CITY_CAPTURE_MASK;` and `townbuf[b].status &= CITY_TRANSFER_MASK;`, which clear `CITY_DISORDER` (0x01) and
     //  `CITY_CELEBRATING` (0x40) (`CIV.H`). Dropped rather than ended, so the captor isn't told order was restored or the
-    //  celebration is over, and its first turn of either counts as a first. First, so no other rule for the capture
-    //  sees the last owner's status (civ-clone/web-renderer#1010).
+    //  celebration is over, and its first turn of either counts as a first. At `High`, ahead of the other packages'
+    //  `Captured` rules that read the city's status (civ-clone/web-renderer#1010).
     new Captured_1.default('civ1-city-happiness:city/captured/forget-status', new Priorities_1.High(), new Effect_1.default((city) => (0, cityStatus_2.forgetCityStatuses)(city, [cityStatus_1.CIVIL_DISORDER, cityStatus_1.LEADER_CELEBRATION], pendingEffects))),
 ];
 exports.getRules = getRules;
