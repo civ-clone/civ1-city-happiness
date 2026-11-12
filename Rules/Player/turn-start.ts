@@ -83,14 +83,21 @@ export const getRules: (
 ): TurnStart[] => {
   registerHandlers(pendingEffects, engine);
 
-  // The cities celebrating for a second turn running (or more), with the yields they were judged on: only the first
-  //  rule still knows whether a city was celebrating before this turn's check, so it hands them to the growth rule.
-  const celebratingAgain = new WeakMap<City, Yield[]>();
+  // The cities celebrating for a second turn running (or more), with the yields they were judged on and whether the
+  //  player was a Republic or Democracy when the city's turn came: only the first rule still knows whether a city was
+  //  celebrating before this turn's check, so it hands them to the growth rule.
+  const celebratingAgain = new WeakMap<
+    City,
+    { republicOrDemocracy: boolean; yields: Yield[] }
+  >();
 
   return [
     new TurnStart(
       new Low(),
-      new Effect((player: Player): void =>
+      new Effect((player: Player): void => {
+        // Asked once a city is celebrating again, and then once, until a city's disorder brings a Democracy down.
+        let republicOrDemocracy: boolean | undefined;
+
         cityRegistry.getByPlayer(player).forEach((city: City) => {
           // Both rules read the same yields, and working them out isn't cheap
           // (civ-clone/web-renderer#315).
@@ -112,12 +119,6 @@ export const getRules: (
           const disorder = civilDisorder(city, pendingEffects),
             celebration = leaderCelebration(city, pendingEffects);
 
-          if (isLeaderCelebration && celebration !== null) {
-            celebratingAgain.set(city, yields);
-          } else {
-            celebratingAgain.delete(city);
-          }
-
           // A Democracy falls when a city is in civil disorder for a second turn
           // running (Rome on 640K a Day, p221-223), and the Anarchy lasts twice
           // as long as usual.
@@ -137,8 +138,26 @@ export const getRules: (
                 'civil-disorder'
               );
 
+              republicOrDemocracy = undefined;
+
               engine.emit('player:government:collapsed', player, city);
             }
+          }
+
+          // v474.05 works through a player's cities one at a time, and a Democracy falls inside the city whose
+          //  disorder brings it down (`set_government(selected_owner, 0);`, `CITYMGT.C` 1740), so the cities before it
+          //  have already grown under the Democracy, and those after it see Anarchy. The government is asked here, as
+          //  each city's turn comes, for the growth rule (civ-clone/web-renderer#1013).
+          if (isLeaderCelebration && celebration !== null) {
+            celebratingAgain.set(city, {
+              republicOrDemocracy: (republicOrDemocracy ??=
+                playerGovernmentRegistry
+                  .getByPlayer(player)
+                  .is(Republic, Democracy)),
+              yields,
+            });
+          } else {
+            celebratingAgain.delete(city);
           }
 
           // Records disorder that has started, and ends disorder that has
@@ -151,29 +170,50 @@ export const getRules: (
             pendingEffects
           );
 
+          // v474.05 ends a celebration only while the city isn't in civil disorder (`CITYMGT.C` `city_process`):
+          //    scratch_i = town_happy_ones_num - town_unhappy_counts;                                    (1697)
+          //    if (scratch_i < 0) { ... "Civil Disorder in" ... }                                          (1698)
+          //    ...
+          //    if (town_unhappy_counts == 0 && townbuf[city].size > 2 && ... && civ_gov[selected_owner] != 0) {
+          //      ...                                                           (1765, starts it or grows the city)
+          //    } else if (scratch_i >= 0 && (townbuf[city].status & CITY_CELEBRATING)) {                (1788)
+          //      if ((human_set & (1 << selected_owner)) && civ_gov[selected_owner] != 0) {               (1789)
+          //        ... "celebration canceled" ... }
+          //      townbuf[city].status &= ~CITY_CELEBRATING;                                             (1799)
+          //    }
+          //  So a celebrating city in disorder keeps its celebration, with no notice, under any government (Anarchy
+          //  too); its squares keep the celebration's yields (`celebration-yield`); and when order returns with the
+          //  celebration's conditions met it carries on, with no new notice, and a Republic or Democracy grows it at
+          //  once (civ-clone/web-renderer#1013).
+          if (isCivilDisorder && !isLeaderCelebration) {
+            return;
+          }
+
           // A city can't celebrate under Anarchy (`celebrate-leader`), and v474.05 ends a celebration then without a
-          //  word: its "celebration canceled" notice needs `civ_gov[selected_owner] != 0` (`CITYMGT.C` `city_process`),
-          //  so the record is dropped rather than ended (civ-clone/web-renderer#1010).
+          //  word: its "celebration canceled" notice needs `civ_gov[selected_owner] != 0` (1789), so the record is
+          //  dropped rather than ended (civ-clone/web-renderer#1010).
           if (
             !isLeaderCelebration &&
             celebration !== null &&
             playerGovernmentRegistry.getByPlayer(player).is(Anarchy)
           ) {
             forgetCityStatuses(city, [LEADER_CELEBRATION], pendingEffects);
-          } else {
-            // The same for a celebration, emitting `city:leader-celebration` as
-            // it starts and `city:leader-celebration-ended` as it ends.
-            updateCityStatus(
-              LEADER_CELEBRATION,
-              city,
-              isLeaderCelebration,
-              celebration,
-              pendingEffects,
-              () => engine.emit('city:leader-celebration', city)
-            );
+
+            return;
           }
-        })
-      )
+
+          // The same for a celebration, emitting `city:leader-celebration` as
+          // it starts and `city:leader-celebration-ended` as it ends.
+          updateCityStatus(
+            LEADER_CELEBRATION,
+            city,
+            isLeaderCelebration,
+            celebration,
+            pendingEffects,
+            () => engine.emit('city:leader-celebration', city)
+          );
+        });
+      })
     ),
     // A city celebrating "We Love the King Day" for a second turn running grows by one under a Republic or a Democracy,
     //  while it has food to spare (its Settlers' included) and the Aqueduct doesn't hold it back. v474.05
@@ -188,25 +228,21 @@ export const getRules: (
     new TurnStart(
       'civ1-city-happiness:player/turn-start/celebration-growth',
       new Low(),
-      new Effect((player: Player): void => {
-        // Read here, not in a `Criterion`: every rule's criteria are checked before any rule runs, and the status rule
-        //  above can bring a Democracy down this turn. Only once a city is celebrating again, and then once.
-        let republicOrDemocracy: boolean | undefined;
-
+      new Effect((player: Player): void =>
         cityRegistry.getByPlayer(player).forEach((city: City) => {
-          const yields = celebratingAgain.get(city);
+          const celebrating = celebratingAgain.get(city);
 
           // Taken once, so an entry the status rule didn't set this turn can't grow the city again.
           celebratingAgain.delete(city);
 
-          if (
-            yields === undefined ||
-            !(republicOrDemocracy ??= playerGovernmentRegistry
-              .getByPlayer(player)
-              .is(Republic, Democracy))
-          ) {
+          // The government as it was when the status rule came to the city, not as it is now: the status rule can
+          //  bring a Democracy down part-way through the player's cities. (Not a `Criterion` either: every rule's
+          //  criteria are checked before any rule runs.)
+          if (celebrating === undefined || !celebrating.republicOrDemocracy) {
             return;
           }
+
+          const { yields } = celebrating;
 
           const cityGrowth = cityGrowthRegistry.getByCity(city);
 
@@ -224,8 +260,8 @@ export const getRules: (
           //  also empty the store (or, with a Granary, half-fill it), so it's put back.
           cityGrowth.grow(CelebrateLeader);
           cityGrowth.progress().set(storedFood, 'celebration-growth');
-        });
-      })
+        })
+      )
     ),
   ];
 };

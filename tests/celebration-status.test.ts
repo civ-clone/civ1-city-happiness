@@ -229,15 +229,20 @@ describe('celebration and disorder status', (): void => {
     expect(events).to.deep.equal([['city:leader-celebration-ended', city]]);
   });
 
-  // The status rule can bring a Democracy down part-way through a player's cities: the growth rule reads the
-  //  government after it has, whichever city comes first.
+  // v474.05 works through a player's cities one at a time and brings a Democracy down inside the city whose disorder
+  //  does it (`set_government(selected_owner, 0);`, `CITYMGT.C` 1740): a city celebrating again before it has already
+  //  grown, and one after it is judged under Anarchy (civ-clone/web-renderer#1013).
   [
-    ['before', true],
-    ['after', false],
-  ].forEach(([where, celebratingFirst]) =>
-    it(`should not grow a city celebrating again ${where} the city whose disorder brings a Democracy down`, (): void => {
+    ['before', true, 6],
+    ['after', false, 5],
+  ].forEach(([where, celebratingFirst, expectedSize]) =>
+    it(`should ${
+      expectedSize === 6 ? '' : 'not '
+    }grow a city celebrating again ${where} the city whose disorder brings a Democracy down`, (): void => {
       const {
         city: addCity,
+        events,
+        game,
         government,
         players: [player],
         size,
@@ -255,9 +260,41 @@ describe('celebration and disorder status', (): void => {
       turn();
 
       expect(government(player).is(Anarchy)).true;
-      expect(size(celebrating)).to.equal(5);
+      expect(size(celebrating)).to.equal(expectedSize);
+      // Kept by the city before, as v474.05 keeps the flag, and dropped without a word by the city after.
+      expect(
+        leaderCelebration(celebrating, game.pendingEffects) !== null
+      ).to.equal(celebratingFirst);
+      expect(
+        events.filter(
+          ([event]): boolean => event === 'city:leader-celebration-ended'
+        )
+      ).to.be.empty;
     })
   );
+
+  // The order within a city's turn: v474.05 brings the Democracy down (1740) before it looks at the celebration
+  //  (1765), so the government the growth is judged by is the one after the fall, for the city that brought it down
+  //  as for every city after it, though one before it saw the Democracy.
+  it('should judge the city whose disorder brings a Democracy down by the government after the fall', (): void => {
+    const {
+      city: addCity,
+      government,
+      players: [player],
+      size,
+      turn,
+    } = setUp(Democracy);
+    const first = addCity(player),
+      // In disorder by one rule and celebrating by another, as no city of Civ1's is.
+      second = addCity(player, { disorder: true, happy: true });
+
+    turn();
+    turn();
+
+    expect(government(player).is(Anarchy)).true;
+    expect(size(first)).to.equal(6);
+    expect(size(second)).to.equal(5);
+  });
 
   // v474.05 (`CAPTURE.C` `capunit`): `townbuf[b].status &= CITY_CAPTURE_MASK;` then `&= CITY_TRANSFER_MASK;`, which
   //  clear `CITY_DISORDER` and `CITY_CELEBRATING`.
