@@ -10,6 +10,7 @@ const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const TileImprovements_1 = require("@civ-clone/civ1-world/TileImprovements");
 const Priority_1 = require("@civ-clone/core-rule/Priority");
+const celebrationYields_1 = require("@civ-clone/base-government-trade-bonus/lib/celebrationYields");
 const cityStatus_1 = require("../../lib/cityStatus");
 // The providers of what the government and pollution did to a square, which a celebrating city works out again.
 const governmentSteps = [governmentTileYield_1.DESPOTISM_PENALTY, governmentTileYield_1.TRADE_BONUS, TileImprovements_1.Pollution.name];
@@ -33,26 +34,13 @@ const getRules = (pendingEffects = core_pending_effect_1.instance, playerGovernm
         catch (e) {
             return [];
         }
-        return city
-            .tilesWorked()
-            .entries()
-            .flatMap((tile) => {
-            const tileYields = tile.yields(city.player()), polluted = tileImprovementRegistry
-                .getByTile(tile)
-                .some((improvement) => improvement instanceof TileImprovements_1.Pollution);
-            return governmentTileYield_1.governmentTileYieldTypes.flatMap((YieldType) => {
-                const ofType = tileYields.filter((tileYield) => tileYield instanceof YieldType), current = ofType.reduce((total, tileYield) => total + tileYield.value(), 0), before = ofType
-                    .flatMap((tileYield) => tileYield.values())
-                    .filter(([, provider]) => !governmentSteps.includes(provider))
-                    .reduce((total, [value]) => total + value, 0), celebrating = (0, governmentTileYield_1.governmentTileYield)(YieldType, before, government, true), value = polluted ? Math.ceil(celebrating / 2) : celebrating;
-                if (value === current) {
-                    return [];
-                }
-                return [
-                    new YieldType(value - current, `${tile.id()}: celebration`),
-                ];
-            });
-        });
+        // Pollution halves what the steps leave, rounded up, as civ1-world's tile rules do.
+        const afterSteps = (tile) => tileImprovementRegistry
+            .getByTile(tile)
+            .some((improvement) => improvement instanceof TileImprovements_1.Pollution)
+            ? (value) => Math.ceil(value / 2)
+            : (value) => value;
+        return (0, celebrationYields_1.default)(city, government, governmentTileYield_1.governmentTileYieldTypes, governmentSteps, governmentTileYield_1.governmentTileYield, afterSteps);
     })),
 ];
 exports.getRules = getRules;

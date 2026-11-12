@@ -24,7 +24,10 @@ import PlayerGovernment from '@civ-clone/core-government/PlayerGovernment';
 import { Pollution } from '@civ-clone/civ1-world/TileImprovements';
 import Priority from '@civ-clone/core-rule/Priority';
 import TileImprovement from '@civ-clone/core-tile-improvement/TileImprovement';
-import Yield, { YieldValue } from '@civ-clone/core-yield/Yield';
+import Yield from '@civ-clone/core-yield/Yield';
+import celebrationYields, {
+  AfterSteps,
+} from '@civ-clone/base-government-trade-bonus/lib/celebrationYields';
 import { leaderCelebration } from '../../lib/cityStatus';
 
 // The providers of what the government and pollution did to a square, which a celebrating city works out again.
@@ -65,57 +68,25 @@ export const getRules: (
         return [];
       }
 
-      return city
-        .tilesWorked()
-        .entries()
-        .flatMap((tile): Yield[] => {
-          const tileYields = tile.yields(city.player()),
-            polluted = tileImprovementRegistry
-              .getByTile(tile)
-              .some(
-                (improvement: TileImprovement): boolean =>
-                  improvement instanceof Pollution
-              );
+      // Pollution halves what the steps leave, rounded up, as civ1-world's tile rules do.
+      const afterSteps: AfterSteps = (tile) =>
+        tileImprovementRegistry
+          .getByTile(tile)
+          .some(
+            (improvement: TileImprovement): boolean =>
+              improvement instanceof Pollution
+          )
+          ? (value: number): number => Math.ceil(value / 2)
+          : (value: number): number => value;
 
-          return governmentTileYieldTypes.flatMap(
-            (YieldType: typeof Yield): Yield[] => {
-              const ofType = tileYields.filter(
-                  (tileYield: Yield): boolean => tileYield instanceof YieldType
-                ),
-                current = ofType.reduce(
-                  (total: number, tileYield: Yield): number =>
-                    total + tileYield.value(),
-                  0
-                ),
-                before = ofType
-                  .flatMap((tileYield: Yield) => tileYield.values())
-                  .filter(
-                    ([, provider]: YieldValue): boolean =>
-                      !governmentSteps.includes(provider)
-                  )
-                  .reduce(
-                    (total: number, [value]: YieldValue): number =>
-                      total + value,
-                    0
-                  ),
-                celebrating = governmentTileYield(
-                  YieldType,
-                  before,
-                  government,
-                  true
-                ),
-                value = polluted ? Math.ceil(celebrating / 2) : celebrating;
-
-              if (value === current) {
-                return [];
-              }
-
-              return [
-                new YieldType(value - current, `${tile.id()}: celebration`),
-              ];
-            }
-          );
-        });
+      return celebrationYields(
+        city,
+        government,
+        governmentTileYieldTypes,
+        governmentSteps,
+        governmentTileYield,
+        afterSteps
+      );
     })
   ),
 ];
