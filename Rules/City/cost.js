@@ -18,6 +18,7 @@ const Advances_1 = require("@civ-clone/civ1-science/Advances");
 const Or_1 = require("@civ-clone/core-rule/Criteria/Or");
 const Priority_1 = require("@civ-clone/core-rule/Priority");
 const martialLaw_1 = require("../../martialLaw");
+const martialLaw_2 = require("@civ-clone/base-government-martial-law/lib/martialLaw");
 const reduceYields_1 = require("@civ-clone/core-yield/lib/reduceYields");
 const getRules = (ruleRegistry = RuleRegistry_1.instance, cityGrowthRegistry = CityGrowthRegistry_1.instance, cityImprovementRegistry = CityImprovementRegistry_1.instance, playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, playerResearchRegistry = PlayerResearchRegistry_1.instance, unitRegistry = UnitRegistry_1.instance) => [
     ...[
@@ -34,13 +35,7 @@ const getRules = (ruleRegistry = RuleRegistry_1.instance, cityGrowthRegistry = C
         .filter((cityImprovement) => cityImprovement instanceof CityImprovementType)[0])))),
     // Martial law (`martialLaw.ts`) comes after the improvements here and the Wonders in civ1-wonder, which are `Low`, so
     //  it calms what they leave, as v474.05 does. Shakespeare's Theatre (4000) still comes last.
-    new Cost_1.default('civ1-city-happiness:city/cost/martial-law', new Priority_1.default(3500), new Criterion_1.default((city) => playerGovernmentRegistry
-        .getByPlayer(city.player())
-        .is(...martialLaw_1.martialLawGovernments)), new Criterion_1.default((city, yields) => (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness) > 0), new Effect_1.default((city, yields) => unitRegistry
-        .getByTile(city.tile())
-        .filter((unit) => unit.player() === city.player() && (0, martialLaw_1.keepsMartialLaw)(unit))
-        .slice(0, Math.min(martialLaw_1.martialLawUnitLimit, (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness)))
-        .map((unit) => new Yields_1.MartialLaw(1, unit)))),
+    new Cost_1.default('civ1-city-happiness:city/cost/martial-law', new Priority_1.default(3500), new Criterion_1.default((city) => (0, martialLaw_2.martialLawLevel)(martialLaw_1.martialLawTable, playerGovernmentRegistry.getByPlayer(city.player())) !== null), new Criterion_1.default((city, yields) => (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness) > 0), new Effect_1.default((city, yields) => (0, martialLaw_2.martialLaw)(city, (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness), (0, martialLaw_2.martialLawLevel)(martialLaw_1.martialLawTable, playerGovernmentRegistry.getByPlayer(city.player())), martialLaw_1.keepsMartialLaw, unitRegistry))),
     new Cost_1.default(new High_1.default(), new Effect_1.default((city, yields) => new Yields_1.LuxuryHappiness(Math.floor((0, reduceYields_1.reduceYield)(yields, Yields_1.Luxuries) / 2), Yields_1.Luxuries.name))),
 ];
 exports.getRules = getRules;

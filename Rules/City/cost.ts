@@ -12,7 +12,6 @@ import {
   Happiness,
   Luxuries,
   LuxuryHappiness,
-  MartialLaw,
   Unhappiness,
 } from '../../Yields';
 import {
@@ -46,13 +45,12 @@ import { Low } from '@civ-clone/core-rule/Priorities';
 import { Mysticism } from '@civ-clone/civ1-science/Advances';
 import Or from '@civ-clone/core-rule/Criteria/Or';
 import Priority from '@civ-clone/core-rule/Priority';
-import Unit from '@civ-clone/core-unit/Unit';
 import Yield from '@civ-clone/core-yield/Yield';
+import { keepsMartialLaw, martialLawTable } from '../../martialLaw';
 import {
-  keepsMartialLaw,
-  martialLawGovernments,
-  martialLawUnitLimit,
-} from '../../martialLaw';
+  martialLaw,
+  martialLawLevel,
+} from '@civ-clone/base-government-martial-law/lib/martialLaw';
 import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
 
 export const getRules: (
@@ -122,27 +120,29 @@ export const getRules: (
   new Cost(
     'civ1-city-happiness:city/cost/martial-law',
     new Priority(3500),
-    new Criterion((city: City): boolean =>
-      playerGovernmentRegistry
-        .getByPlayer(city.player())
-        .is(...martialLawGovernments)
+    new Criterion(
+      (city: City): boolean =>
+        martialLawLevel(
+          martialLawTable,
+          playerGovernmentRegistry.getByPlayer(city.player())
+        ) !== null
     ),
     new Criterion(
       (city: City, yields: Yield[]): boolean =>
         reduceYield(yields, Unhappiness) > 0
     ),
-    new Effect((city: City, yields: Yield[]): Yield[] =>
-      unitRegistry
-        .getByTile(city.tile())
-        .filter(
-          (unit: Unit): boolean =>
-            unit.player() === city.player() && keepsMartialLaw(unit)
-        )
-        .slice(
-          0,
-          Math.min(martialLawUnitLimit, reduceYield(yields, Unhappiness))
-        )
-        .map((unit) => new MartialLaw(1, unit) as Yield)
+    new Effect(
+      (city: City, yields: Yield[]): Yield[] =>
+        martialLaw(
+          city,
+          reduceYield(yields, Unhappiness),
+          martialLawLevel(
+            martialLawTable,
+            playerGovernmentRegistry.getByPlayer(city.player())
+          )!,
+          keepsMartialLaw,
+          unitRegistry
+        ) as Yield[]
     )
   ),
 

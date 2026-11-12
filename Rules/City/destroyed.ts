@@ -1,10 +1,10 @@
 import {
-  PendingEffect,
   PendingEffectRegistry,
   instance as pendingEffectRegistryInstance,
 } from '@civ-clone/core-pending-effect';
 import { CIVIL_DISORDER, LEADER_CELEBRATION } from '../../lib/cityStatus';
 import City from '@civ-clone/core-city/City';
+import { forgetCityStatuses } from '@civ-clone/base-city-happiness-status/lib/cityStatus';
 import Destroyed from '@civ-clone/core-city/Rules/Destroyed';
 import Effect from '@civ-clone/core-rule/Effect';
 
@@ -16,14 +16,11 @@ export const getRules = (
   new Destroyed(
     'civ1-city-happiness:city/destroyed/forget-status',
     new Effect((city: City): void =>
-      pendingEffects
-        .getByTarget(city)
-        .filter((pendingEffect: PendingEffect): boolean =>
-          [CIVIL_DISORDER, LEADER_CELEBRATION].includes(pendingEffect.handler())
-        )
-        .forEach((pendingEffect: PendingEffect): void =>
-          pendingEffects.unregister(pendingEffect)
-        )
+      forgetCityStatuses(
+        city,
+        [CIVIL_DISORDER, LEADER_CELEBRATION],
+        pendingEffects
+      )
     )
   ),
 ];

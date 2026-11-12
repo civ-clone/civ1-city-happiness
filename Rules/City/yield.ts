@@ -24,7 +24,13 @@ import {
   instance as gameDifficultyRegistryInstance,
 } from '@civ-clone/core-difficulty/GameDifficultyRegistry';
 import { contentCitizens, levelOf } from '@civ-clone/civ1-difficulty/level';
-import { MilitaryUnhappiness, PopulationUnhappiness } from '../../Yields';
+import {
+  MilitaryUnhappinessTable,
+  aggressiveUnits,
+  isAggressive,
+  militaryUnhappiness,
+} from '@civ-clone/base-government-military-unhappiness/lib/militaryUnhappiness';
+import { PopulationUnhappiness } from '../../Yields';
 import {
   PlayerGovernmentRegistry,
   instance as playerGovernmentRegistryInstance,
@@ -46,9 +52,16 @@ import isHuman from '@civ-clone/civ1-difficulty/isHuman';
 //  wherever it is if it's an aircraft. Unarmed units (a Transport, Settlers) never do, and Diplomats and Caravans are
 //  skipped before the check.
 const causesUnhappiness = (unit: Unit, city: City): boolean =>
-  !(unit instanceof Diplomatic) &&
-  unit.attack().value() > 0 &&
-  (unit instanceof Air || unit.tile() !== city.tile());
+  isAggressive(unit, city, {
+    neverAggressive: (unit: Unit): boolean => unit instanceof Diplomatic,
+    aggressiveAnywhere: (unit: Unit): boolean => unit instanceof Air,
+  });
+
+// Under a Republic each such unit makes one citizen unhappy, and under a Democracy two.
+const militaryUnhappinessTable: MilitaryUnhappinessTable = [
+  [Republic, 1],
+  [Democracy, 2],
+];
 
 // v474.05 (OpenCivOne `CityWorker.cs` L1433-L1437) groups the governments in pairs for the empire size: Anarchy and
 //  Despotism, Monarchy and Communism, Republic and Democracy.
@@ -156,12 +169,7 @@ export const getRules: (
       )
     ),
 
-    ...(
-      [
-        [Republic, 1],
-        [Democracy, 2],
-      ] as [typeof Government, number][]
-    ).map(
+    ...militaryUnhappinessTable.map(
       ([GovernmentType, discontent]) =>
         new CityYield(
           new Criterion((city: City): boolean => {
@@ -175,15 +183,16 @@ export const getRules: (
           }),
           new Criterion(
             (city: City): boolean =>
-              unitRegistry
-                .getByCity(city)
-                .filter((unit) => causesUnhappiness(unit, city)).length > 0
+              aggressiveUnits(city, causesUnhappiness, unitRegistry).length > 0
           ),
-          new Effect((city: City): Yield[] =>
-            unitRegistry
-              .getByCity(city)
-              .filter((unit) => causesUnhappiness(unit, city))
-              .map((unit) => new MilitaryUnhappiness(discontent, unit) as Yield)
+          new Effect(
+            (city: City): Yield[] =>
+              militaryUnhappiness(
+                city,
+                discontent,
+                causesUnhappiness,
+                unitRegistry
+              ) as Yield[]
           )
         )
     ),

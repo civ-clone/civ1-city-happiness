@@ -7,6 +7,10 @@ import {
   PendingEffectRegistry,
   instance as pendingEffectRegistryInstance,
 } from '@civ-clone/core-pending-effect';
+import {
+  cityStatus,
+  registerCityStatusHandler,
+} from '@civ-clone/base-city-happiness-status/lib/cityStatus';
 import City from '@civ-clone/core-city/City';
 
 /**
@@ -19,38 +23,32 @@ export const CIVIL_DISORDER = 'civ1-city-happiness:civil-disorder';
 /** Recorded in the save for a city celebrating ("We Love the King Day"). */
 export const LEADER_CELEBRATION = 'civ1-city-happiness:leader-celebration';
 
-const find = (
-  handler: string,
-  city: City,
-  pendingEffects: PendingEffectRegistry
-): PendingEffect | null =>
-  pendingEffects
-    .getByTarget(city)
-    .find(
-      (pendingEffect: PendingEffect): boolean =>
-        pendingEffect.handler() === handler
-    ) ?? null;
-
 export const civilDisorder = (
   city: City,
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
-): PendingEffect | null => find(CIVIL_DISORDER, city, pendingEffects);
+): PendingEffect | null => cityStatus(CIVIL_DISORDER, city, pendingEffects);
 
 export const leaderCelebration = (
   city: City,
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
-): PendingEffect | null => find(LEADER_CELEBRATION, city, pendingEffects);
+): PendingEffect | null => cityStatus(LEADER_CELEBRATION, city, pendingEffects);
 
 /** Registered with the rules, at import, so a status loaded from a save can still end. */
 export const registerHandlers = (
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance,
   engine: Engine = engineInstance
 ): void => {
-  pendingEffects.handler(CIVIL_DISORDER, (pendingEffect: PendingEffect) =>
-    engine.emit('city:order-restored', pendingEffect.target())
+  registerCityStatusHandler(
+    CIVIL_DISORDER,
+    'city:order-restored',
+    pendingEffects,
+    engine
   );
 
-  pendingEffects.handler(LEADER_CELEBRATION, (pendingEffect: PendingEffect) =>
-    engine.emit('city:leader-celebration-ended', pendingEffect.target())
+  registerCityStatusHandler(
+    LEADER_CELEBRATION,
+    'city:leader-celebration-ended',
+    pendingEffects,
+    engine
   );
 };

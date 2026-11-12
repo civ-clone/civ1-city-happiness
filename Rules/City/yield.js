@@ -8,6 +8,7 @@ const CityRegistry_1 = require("@civ-clone/core-city/CityRegistry");
 const ClientRegistry_1 = require("@civ-clone/core-client/ClientRegistry");
 const GameDifficultyRegistry_1 = require("@civ-clone/core-difficulty/GameDifficultyRegistry");
 const level_1 = require("@civ-clone/civ1-difficulty/level");
+const militaryUnhappiness_1 = require("@civ-clone/base-government-military-unhappiness/lib/militaryUnhappiness");
 const Yields_1 = require("../../Yields");
 const PlayerGovernmentRegistry_1 = require("@civ-clone/core-government/PlayerGovernmentRegistry");
 const UnitRegistry_1 = require("@civ-clone/core-unit/UnitRegistry");
@@ -18,9 +19,15 @@ const isHuman_1 = require("@civ-clone/civ1-difficulty/isHuman");
 // v474.05 (OpenCivOne `CityWorker.cs` L422-L460): a unit with an attack makes its home city unhappy when it's away, or
 //  wherever it is if it's an aircraft. Unarmed units (a Transport, Settlers) never do, and Diplomats and Caravans are
 //  skipped before the check.
-const causesUnhappiness = (unit, city) => !(unit instanceof Types_1.Diplomatic) &&
-    unit.attack().value() > 0 &&
-    (unit instanceof Types_1.Air || unit.tile() !== city.tile());
+const causesUnhappiness = (unit, city) => (0, militaryUnhappiness_1.isAggressive)(unit, city, {
+    neverAggressive: (unit) => unit instanceof Types_1.Diplomatic,
+    aggressiveAnywhere: (unit) => unit instanceof Types_1.Air,
+});
+// Under a Republic each such unit makes one citizen unhappy, and under a Democracy two.
+const militaryUnhappinessTable = [
+    [Governments_1.Republic, 1],
+    [Governments_1.Democracy, 2],
+];
 // v474.05 (OpenCivOne `CityWorker.cs` L1433-L1437) groups the governments in pairs for the empire size: Anarchy and
 //  Despotism, Monarchy and Communism, Republic and Democracy.
 const empireSizeFactors = [
@@ -67,10 +74,7 @@ const getRules = (cityGrowthRegistry = CityGrowthRegistry_1.instance, playerGove
         // What the empire's size adds to the citizens already born unhappy, within the city's size. Below the content
         //  limit it makes a content citizen unhappy only once the extra takes the city past it, as Civ1 counts it.
         new Yield_1.default('civ1-city-happiness:city/yield/empire-size', new Criterion_1.default((city) => empireSize(city) > 0), new Criterion_1.default((city) => bornUnhappy(city, empireSize(city)) > bornUnhappy(city)), new Effect_1.default((city) => new Yields_1.PopulationUnhappiness(bornUnhappy(city, empireSize(city)) - bornUnhappy(city)))),
-        ...[
-            [Governments_1.Republic, 1],
-            [Governments_1.Democracy, 2],
-        ].map(([GovernmentType, discontent]) => new Yield_1.default(new Criterion_1.default((city) => {
+        ...militaryUnhappinessTable.map(([GovernmentType, discontent]) => new Yield_1.default(new Criterion_1.default((city) => {
             try {
                 return playerGovernmentRegistry
                     .getByPlayer(city.player())
@@ -79,12 +83,7 @@ const getRules = (cityGrowthRegistry = CityGrowthRegistry_1.instance, playerGove
             catch (e) {
                 return false;
             }
-        }), new Criterion_1.default((city) => unitRegistry
-            .getByCity(city)
-            .filter((unit) => causesUnhappiness(unit, city)).length > 0), new Effect_1.default((city) => unitRegistry
-            .getByCity(city)
-            .filter((unit) => causesUnhappiness(unit, city))
-            .map((unit) => new Yields_1.MilitaryUnhappiness(discontent, unit))))),
+        }), new Criterion_1.default((city) => (0, militaryUnhappiness_1.aggressiveUnits)(city, causesUnhappiness, unitRegistry).length > 0), new Effect_1.default((city) => (0, militaryUnhappiness_1.militaryUnhappiness)(city, discontent, causesUnhappiness, unitRegistry)))),
     ];
 };
 exports.getRules = getRules;

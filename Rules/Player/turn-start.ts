@@ -18,7 +18,6 @@ import {
   registerHandlers,
 } from '../../lib/cityStatus';
 import {
-  PendingEffect,
   PendingEffectRegistry,
   instance as pendingEffectRegistryInstance,
 } from '@civ-clone/core-pending-effect';
@@ -39,6 +38,7 @@ import {
   revolution,
 } from '@civ-clone/civ1-government/lib/revolution';
 import City from '@civ-clone/core-city/City';
+import { updateCityStatus } from '@civ-clone/base-city-happiness-status/lib/cityStatus';
 import CelebrateLeader from '@civ-clone/core-city-happiness/Rules/CelebrateLeader';
 import CivilDisorder from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
 import { Democracy } from '@civ-clone/civ1-government/Governments';
@@ -114,27 +114,26 @@ export const getRules: (
             }
           }
 
-          if (isCivilDisorder && disorder === null) {
-            pendingEffects.register(new PendingEffect(CIVIL_DISORDER, city));
-          }
+          // Records disorder that has started, and ends disorder that has
+          // stopped, which emits `city:order-restored`.
+          updateCityStatus(
+            CIVIL_DISORDER,
+            city,
+            isCivilDisorder,
+            disorder,
+            pendingEffects
+          );
 
-          // Emits `city:order-restored`.
-          if (!isCivilDisorder && disorder !== null) {
-            pendingEffects.discharge(disorder);
-          }
-
-          if (isLeaderCelebration && celebration === null) {
-            engine.emit('city:leader-celebration', city);
-
-            pendingEffects.register(
-              new PendingEffect(LEADER_CELEBRATION, city)
-            );
-          }
-
-          // Emits `city:leader-celebration-ended`.
-          if (!isLeaderCelebration && celebration !== null) {
-            pendingEffects.discharge(celebration);
-          }
+          // The same for a celebration, emitting `city:leader-celebration` as
+          // it starts and `city:leader-celebration-ended` as it ends.
+          updateCityStatus(
+            LEADER_CELEBRATION,
+            city,
+            isLeaderCelebration,
+            celebration,
+            pendingEffects,
+            () => engine.emit('city:leader-celebration', city)
+          );
         })
       )
     ),
