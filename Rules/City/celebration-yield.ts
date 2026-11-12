@@ -27,7 +27,7 @@ import TileImprovement from '@civ-clone/core-tile-improvement/TileImprovement';
 import Yield from '@civ-clone/core-yield/Yield';
 import celebrationYields, {
   AfterSteps,
-} from '@civ-clone/base-government-trade-bonus/lib/celebrationYields';
+} from '@civ-clone/base-city-celebration-yields/lib/celebrationYields';
 import { leaderCelebration } from '../../lib/cityStatus';
 
 // The providers of what the government and pollution did to a square, which a celebrating city works out again.

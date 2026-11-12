@@ -10,7 +10,7 @@ const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const TileImprovements_1 = require("@civ-clone/civ1-world/TileImprovements");
 const Priority_1 = require("@civ-clone/core-rule/Priority");
-const celebrationYields_1 = require("@civ-clone/base-government-trade-bonus/lib/celebrationYields");
+const celebrationYields_1 = require("@civ-clone/base-city-celebration-yields/lib/celebrationYields");
 const cityStatus_1 = require("../../lib/cityStatus");
 // The providers of what the government and pollution did to a square, which a celebrating city works out again.
 const governmentSteps = [governmentTileYield_1.DESPOTISM_PENALTY, governmentTileYield_1.TRADE_BONUS, TileImprovements_1.Pollution.name];

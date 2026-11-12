@@ -34,6 +34,7 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
+    "@civ-clone/base-city-celebration-yields": "github:civ-clone/base-city-celebration-yields#feat/celebration-yields",
     "@civ-clone/base-city-happiness": "^0.1.0",
     "@civ-clone/base-city-happiness-status": "^0.1.0",
     "@civ-clone/base-city-yield-city-improvement-content": "^0.1.0",
@@ -46,7 +47,6 @@
     "@civ-clone/base-city-yield-unhappiness": "^0.1.0",
     "@civ-clone/base-government-martial-law": "^0.1.0",
     "@civ-clone/base-government-military-unhappiness": "^0.1.0",
-    "@civ-clone/base-government-trade-bonus": "github:civ-clone/base-government-trade-bonus#feat/trade-bonus",
     "@civ-clone/civ1-city": "github:civ-clone/civ1-city",
     "@civ-clone/civ1-city-improvement": "github:civ-clone/civ1-city-improvement",
     "@civ-clone/civ1-difficulty": "github:civ-clone/civ1-difficulty",
