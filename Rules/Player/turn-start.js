@@ -15,7 +15,6 @@ const revolution_1 = require("@civ-clone/civ1-government/lib/revolution");
 const cityStatus_2 = require("@civ-clone/base-city-happiness-status/lib/cityStatus");
 const CelebrateLeader_1 = require("@civ-clone/core-city-happiness/Rules/CelebrateLeader");
 const CivilDisorder_1 = require("@civ-clone/core-city-happiness/Rules/CivilDisorder");
-const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const Yields_1 = require("@civ-clone/civ1-city/Yields");
 const Priorities_1 = require("@civ-clone/core-rule/Priorities");
@@ -63,9 +62,19 @@ const getRules = (cityRegistry = CityRegistry_1.instance, ruleRegistry = RuleReg
             // Records disorder that has started, and ends disorder that has
             // stopped, which emits `city:order-restored`.
             (0, cityStatus_2.updateCityStatus)(cityStatus_1.CIVIL_DISORDER, city, isCivilDisorder, disorder, pendingEffects);
-            // The same for a celebration, emitting `city:leader-celebration` as
-            // it starts and `city:leader-celebration-ended` as it ends.
-            (0, cityStatus_2.updateCityStatus)(cityStatus_1.LEADER_CELEBRATION, city, isLeaderCelebration, celebration, pendingEffects, () => engine.emit('city:leader-celebration', city));
+            // A city can't celebrate under Anarchy (`celebrate-leader`), and v474.05 ends a celebration then without a
+            //  word: its "celebration canceled" notice needs `civ_gov[selected_owner] != 0` (`CITYMGT.C` `city_process`),
+            //  so the record is dropped rather than ended (civ-clone/web-renderer#1010).
+            if (!isLeaderCelebration &&
+                celebration !== null &&
+                playerGovernmentRegistry.getByPlayer(player).is(Governments_1.Anarchy)) {
+                (0, cityStatus_2.forgetCityStatuses)(city, [cityStatus_1.LEADER_CELEBRATION], pendingEffects);
+            }
+            else {
+                // The same for a celebration, emitting `city:leader-celebration` as
+                // it starts and `city:leader-celebration-ended` as it ends.
+                (0, cityStatus_2.updateCityStatus)(cityStatus_1.LEADER_CELEBRATION, city, isLeaderCelebration, celebration, pendingEffects, () => engine.emit('city:leader-celebration', city));
+            }
         }))),
         // A city celebrating "We Love the King Day" for a second turn running grows by one under a Republic or a Democracy,
         //  while it has food to spare (its Settlers' included) and the Aqueduct doesn't hold it back. v474.05
@@ -76,23 +85,32 @@ const getRules = (cityRegistry = CityRegistry_1.instance, ruleRegistry = RuleReg
         //      townbuf[city].size++;
         //  `civ_gov` 4 and 5 are the Republic and Democracy (`GAME.C` `government_names`). The food store is left as it is:
         //  this growth isn't paid for from it (civ-clone/web-renderer#1010).
-        new TurnStart_1.default('civ1-city-happiness:player/turn-start/celebration-growth', new Priorities_1.Low(), new Criterion_1.default((player) => playerGovernmentRegistry.getByPlayer(player).is(Governments_1.Republic, Governments_1.Democracy)), new Effect_1.default((player) => cityRegistry.getByPlayer(player).forEach((city) => {
-            const yields = celebratingAgain.get(city);
-            if (yields === undefined) {
-                return;
-            }
-            const cityGrowth = cityGrowthRegistry.getByCity(city);
-            // The city's food net of what its citizens and Settlers eat.
-            if ((0, reduceYields_1.reduceYield)(yields, Yields_1.Food) <= 0 ||
-                (0, growthLimit_1.growthLimit)(cityGrowth, cityImprovementRegistry) !== null) {
-                return;
-            }
-            const storedFood = cityGrowth.progress().value();
-            // Grown through `CityGrowth`, so the new citizen is put to work, as joining Settlers are; its `Grow` rules
-            //  also empty the store (or, with a Granary, half-fill it), so it's put back.
-            cityGrowth.grow(CelebrateLeader_1.default);
-            cityGrowth.progress().set(storedFood, 'celebration-growth');
-        }))),
+        new TurnStart_1.default('civ1-city-happiness:player/turn-start/celebration-growth', new Priorities_1.Low(), new Effect_1.default((player) => {
+            // Read here, not in a `Criterion`: every rule's criteria are checked before any rule runs, and the status rule
+            //  above can bring a Democracy down this turn.
+            const republicOrDemocracy = playerGovernmentRegistry
+                .getByPlayer(player)
+                .is(Governments_1.Republic, Governments_1.Democracy);
+            cityRegistry.getByPlayer(player).forEach((city) => {
+                const yields = celebratingAgain.get(city);
+                // Taken once, so an entry the status rule didn't set this turn can't grow the city again.
+                celebratingAgain.delete(city);
+                if (yields === undefined || !republicOrDemocracy) {
+                    return;
+                }
+                const cityGrowth = cityGrowthRegistry.getByCity(city);
+                // The city's food net of what its citizens and Settlers eat.
+                if ((0, reduceYields_1.reduceYield)(yields, Yields_1.Food) <= 0 ||
+                    (0, growthLimit_1.growthLimit)(cityGrowth, cityImprovementRegistry) !== null) {
+                    return;
+                }
+                const storedFood = cityGrowth.progress().value();
+                // Grown through `CityGrowth`, so the new citizen is put to work, as joining Settlers are; its `Grow` rules
+                //  also empty the store (or, with a Granary, half-fill it), so it's put back.
+                cityGrowth.grow(CelebrateLeader_1.default);
+                cityGrowth.progress().set(storedFood, 'celebration-growth');
+            });
+        })),
     ];
 };
 exports.getRules = getRules;

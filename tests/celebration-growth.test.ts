@@ -3,6 +3,7 @@ import {
   Granary,
 } from '@civ-clone/civ1-city-improvement/CityImprovements';
 import {
+  Anarchy,
   Democracy,
   Monarchy,
   Republic,
@@ -65,7 +66,7 @@ const setUp = ({
     ),
     cityGrowth = new CityGrowth(city, game.rules);
 
-  game.availableGovernments.register(Democracy, Monarchy, Republic);
+  game.availableGovernments.register(Anarchy, Democracy, Monarchy, Republic);
   playerGovernment.set(new GovernmentType());
   game.playerGovernments.register(playerGovernment);
   game.cityGrowth.register(cityGrowth);
@@ -97,18 +98,20 @@ const setUp = ({
 
   cityGrowth.progress().set(stored);
 
+  const rules = turnStart(
+    cityRegistry,
+    game.rules,
+    game.engine,
+    game.cityGrowth,
+    game.playerGovernments,
+    game.pendingEffects,
+    game.turn,
+    game.cityImprovements
+  );
+
   game.rules.register(
     new CelebrateLeader(new Effect((): boolean => state.celebrating)),
-    ...turnStart(
-      cityRegistry,
-      game.rules,
-      game.engine,
-      game.cityGrowth,
-      game.playerGovernments,
-      game.pendingEffects,
-      game.turn,
-      game.cityImprovements
-    )
+    ...rules
   );
 
   const grown: [City, unknown][] = [];
@@ -124,7 +127,7 @@ const setUp = ({
     game.rules.process(TurnStart, player);
   };
 
-  return { city, cityGrowth, game, grown, player, state, turn };
+  return { city, cityGrowth, game, grown, player, rules, state, turn };
 };
 
 describe('player:turn-start/celebration-growth', (): void => {
@@ -207,6 +210,49 @@ describe('player:turn-start/celebration-growth', (): void => {
     turn(false);
 
     expect(cityGrowth.size()).to.equal(6);
+  });
+
+  it('should grow a city only on the turn the status rule found it celebrating again', (): void => {
+    const { cityGrowth, rules, turn } = setUp();
+
+    turn();
+    turn();
+
+    expect(cityGrowth.size()).to.equal(6);
+
+    // With the status rule off, nothing says the city is still celebrating.
+    rules[0].disable();
+    turn();
+    turn();
+
+    expect(cityGrowth.size()).to.equal(6);
+  });
+
+  it('should not grow on what the status rule found while the growth rule was off', (): void => {
+    const { cityGrowth, rules, turn } = setUp();
+
+    turn();
+    turn();
+
+    expect(cityGrowth.size()).to.equal(6);
+
+    rules[1].disable();
+    turn();
+    rules[1].enable();
+    turn(false);
+
+    expect(cityGrowth.size()).to.equal(6);
+  });
+
+  // `celebrate-leader` says no city celebrates under Anarchy; the record follows whatever the `CelebrateLeader` rules
+  //  say, and only a celebration that has ended is dropped without a notice.
+  it('should keep the celebration of a city still celebrating under Anarchy', (): void => {
+    const { city, game, turn } = setUp({ GovernmentType: Anarchy });
+
+    turn();
+    turn();
+
+    expect(leaderCelebration(city, game.pendingEffects)).not.null;
   });
 
   it('should not grow when the celebration has ended, though it was recorded before this turn', (): void => {

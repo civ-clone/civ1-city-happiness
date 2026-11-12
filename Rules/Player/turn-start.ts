@@ -37,16 +37,22 @@ import {
   Turn,
   instance as turnInstance,
 } from '@civ-clone/core-turn-based-game/Turn';
-import { Democracy, Republic } from '@civ-clone/civ1-government/Governments';
+import {
+  Anarchy,
+  Democracy,
+  Republic,
+} from '@civ-clone/civ1-government/Governments';
 import {
   pendingRevolution,
   revolution,
 } from '@civ-clone/civ1-government/lib/revolution';
 import City from '@civ-clone/core-city/City';
-import { updateCityStatus } from '@civ-clone/base-city-happiness-status/lib/cityStatus';
+import {
+  forgetCityStatuses,
+  updateCityStatus,
+} from '@civ-clone/base-city-happiness-status/lib/cityStatus';
 import CelebrateLeader from '@civ-clone/core-city-happiness/Rules/CelebrateLeader';
 import CivilDisorder from '@civ-clone/core-city-happiness/Rules/CivilDisorder';
-import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import { Food } from '@civ-clone/civ1-city/Yields';
 import { Low } from '@civ-clone/core-rule/Priorities';
@@ -145,16 +151,27 @@ export const getRules: (
             pendingEffects
           );
 
-          // The same for a celebration, emitting `city:leader-celebration` as
-          // it starts and `city:leader-celebration-ended` as it ends.
-          updateCityStatus(
-            LEADER_CELEBRATION,
-            city,
-            isLeaderCelebration,
-            celebration,
-            pendingEffects,
-            () => engine.emit('city:leader-celebration', city)
-          );
+          // A city can't celebrate under Anarchy (`celebrate-leader`), and v474.05 ends a celebration then without a
+          //  word: its "celebration canceled" notice needs `civ_gov[selected_owner] != 0` (`CITYMGT.C` `city_process`),
+          //  so the record is dropped rather than ended (civ-clone/web-renderer#1010).
+          if (
+            !isLeaderCelebration &&
+            celebration !== null &&
+            playerGovernmentRegistry.getByPlayer(player).is(Anarchy)
+          ) {
+            forgetCityStatuses(city, [LEADER_CELEBRATION], pendingEffects);
+          } else {
+            // The same for a celebration, emitting `city:leader-celebration` as
+            // it starts and `city:leader-celebration-ended` as it ends.
+            updateCityStatus(
+              LEADER_CELEBRATION,
+              city,
+              isLeaderCelebration,
+              celebration,
+              pendingEffects,
+              () => engine.emit('city:leader-celebration', city)
+            );
+          }
         })
       )
     ),
@@ -170,14 +187,20 @@ export const getRules: (
     new TurnStart(
       'civ1-city-happiness:player/turn-start/celebration-growth',
       new Low(),
-      new Criterion((player: Player): boolean =>
-        playerGovernmentRegistry.getByPlayer(player).is(Republic, Democracy)
-      ),
-      new Effect((player: Player): void =>
+      new Effect((player: Player): void => {
+        // Read here, not in a `Criterion`: every rule's criteria are checked before any rule runs, and the status rule
+        //  above can bring a Democracy down this turn.
+        const republicOrDemocracy = playerGovernmentRegistry
+          .getByPlayer(player)
+          .is(Republic, Democracy);
+
         cityRegistry.getByPlayer(player).forEach((city: City) => {
           const yields = celebratingAgain.get(city);
 
-          if (yields === undefined) {
+          // Taken once, so an entry the status rule didn't set this turn can't grow the city again.
+          celebratingAgain.delete(city);
+
+          if (yields === undefined || !republicOrDemocracy) {
             return;
           }
 
@@ -197,8 +220,8 @@ export const getRules: (
           //  also empty the store (or, with a Granary, half-fill it), so it's put back.
           cityGrowth.grow(CelebrateLeader);
           cityGrowth.progress().set(storedFood, 'celebration-growth');
-        })
-      )
+        });
+      })
     ),
   ];
 };
