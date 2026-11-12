@@ -10,6 +10,7 @@ const PlayerGovernmentRegistry_1 = require("@civ-clone/core-government/PlayerGov
 const RuleRegistry_1 = require("@civ-clone/core-rule/RuleRegistry");
 const Turn_1 = require("@civ-clone/core-turn-based-game/Turn");
 const revolution_1 = require("@civ-clone/civ1-government/lib/revolution");
+const cityStatus_2 = require("@civ-clone/base-city-happiness-status/lib/cityStatus");
 const CelebrateLeader_1 = require("@civ-clone/core-city-happiness/Rules/CelebrateLeader");
 const CivilDisorder_1 = require("@civ-clone/core-city-happiness/Rules/CivilDisorder");
 const Governments_1 = require("@civ-clone/civ1-government/Governments");
@@ -45,21 +46,12 @@ const getRules = (cityRegistry = CityRegistry_1.instance, ruleRegistry = RuleReg
                     engine.emit('player:government:collapsed', player, city);
                 }
             }
-            if (isCivilDisorder && disorder === null) {
-                pendingEffects.register(new core_pending_effect_1.PendingEffect(cityStatus_1.CIVIL_DISORDER, city));
-            }
-            // Emits `city:order-restored`.
-            if (!isCivilDisorder && disorder !== null) {
-                pendingEffects.discharge(disorder);
-            }
-            if (isLeaderCelebration && celebration === null) {
-                engine.emit('city:leader-celebration', city);
-                pendingEffects.register(new core_pending_effect_1.PendingEffect(cityStatus_1.LEADER_CELEBRATION, city));
-            }
-            // Emits `city:leader-celebration-ended`.
-            if (!isLeaderCelebration && celebration !== null) {
-                pendingEffects.discharge(celebration);
-            }
+            // Records disorder that has started, and ends disorder that has
+            // stopped, which emits `city:order-restored`.
+            (0, cityStatus_2.updateCityStatus)(cityStatus_1.CIVIL_DISORDER, city, isCivilDisorder, disorder, pendingEffects);
+            // The same for a celebration, emitting `city:leader-celebration` as
+            // it starts and `city:leader-celebration-ended` as it ends.
+            (0, cityStatus_2.updateCityStatus)(cityStatus_1.LEADER_CELEBRATION, city, isLeaderCelebration, celebration, pendingEffects, () => engine.emit('city:leader-celebration', city));
         }))),
         new TurnStart_1.default(new Priorities_1.Low(), new Effect_1.default((player) => cityRegistry.getByPlayer(player).forEach((city) => {
             if ((0, cityStatus_1.leaderCelebration)(city, pendingEffects) === null) {
