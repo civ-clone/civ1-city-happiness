@@ -337,3 +337,53 @@ describe('a celebration through civil disorder', (): void => {
     expect(civilDisorder(city, game.pendingEffects)).not.null;
   });
 });
+
+// The government is asked only when a city is celebrating again, or has a celebration to end: simple-ai-client's
+//  suite registers these rules with no government for the player (civ-clone/web-renderer#1010).
+describe('a city that never celebrates', (): void => {
+  it('should not ask for the government', (): void => {
+    const game = new Game(),
+      player = new Player(game.rules),
+      state: { mood: Mood } = { mood: 'content' },
+      city = {
+        player: () => player,
+        yields: (): Yield[] => [...moods[state.mood]],
+      } as unknown as City,
+      cityGrowth = new CityGrowth(city, game.rules);
+
+    game.cityGrowth.register(cityGrowth);
+    game.rules.register(
+      ...cityCelebrateLeader(
+        game.cityGrowth,
+        game.specialists,
+        game.playerGovernments
+      ),
+      ...cityCivilDisorder(game.cityGrowth, game.specialists),
+      ...turnStart(
+        {
+          getByPlayer: (): City[] => [city],
+        } as unknown as CityRegistry,
+        game.rules,
+        game.engine,
+        game.cityGrowth,
+        game.playerGovernments,
+        game.pendingEffects,
+        game.turn,
+        game.cityImprovements
+      )
+    );
+
+    while (cityGrowth.size() < 5) {
+      cityGrowth.grow();
+    }
+
+    (
+      ['content', 'disorder', 'oneUnhappy', 'disorder', 'content'] as Mood[]
+    ).forEach((mood: Mood): void => {
+      state.mood = mood;
+      game.turn.increment();
+
+      expect(() => game.rules.process(TurnStart, player)).not.to.throw();
+    });
+  });
+});
