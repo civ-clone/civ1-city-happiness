@@ -47,6 +47,7 @@
     "@civ-clone/base-city-yield-unhappiness": "^0.1.0",
     "@civ-clone/base-government-martial-law": "^0.1.0",
     "@civ-clone/base-government-military-unhappiness": "^0.1.0",
+    "@civ-clone/base-unit-trait-non-combatant": "^0.1.0",
     "@civ-clone/civ1-city": "github:civ-clone/civ1-city",
     "@civ-clone/civ1-city-improvement": "github:civ-clone/civ1-city-improvement",
     "@civ-clone/civ1-difficulty": "github:civ-clone/civ1-difficulty",
@@ -71,7 +72,7 @@
     "@civ-clone/core-science": "^0.1.0",
     "@civ-clone/core-tile-improvement": "^0.1.6",
     "@civ-clone/core-turn-based-game": "^0.1.8",
-    "@civ-clone/core-unit": "^0.1.0",
+    "@civ-clone/core-unit": "^0.1.31",
     "@civ-clone/core-yield": "^0.1.0"
   }
 }
