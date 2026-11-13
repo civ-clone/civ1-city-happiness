@@ -1,4 +1,4 @@
-import { Air, Diplomatic } from '@civ-clone/civ1-unit/Types';
+import { Air } from '@civ-clone/civ1-unit/Types';
 import {
   CityGrowthRegistry,
   instance as cityGrowthRegistryInstance,
@@ -44,17 +44,24 @@ import CityYield from '@civ-clone/core-city/Rules/Yield';
 import Criterion from '@civ-clone/core-rule/Criterion';
 import Effect from '@civ-clone/core-rule/Effect';
 import Government from '@civ-clone/core-government/Government';
+import NonCombatant from '@civ-clone/base-unit-trait-non-combatant/NonCombatant';
 import Yield from '@civ-clone/core-yield/Yield';
 import Unit from '@civ-clone/core-unit/Unit';
 import isHuman from '@civ-clone/civ1-difficulty/isHuman';
+import { isA } from '@civ-clone/core-unit/traits';
 
 // v474.05 (OpenCivOne `CityWorker.cs` L422-L460): a unit with an attack makes its home city unhappy when it's away, or
 //  wherever it is if it's an aircraft. Unarmed units (a Transport, Settlers) never do, and Diplomats and Caravans are
-//  skipped before the check.
+//  skipped before the check: those that are `NonCombatant`.
+export const neverAggressive = (unit: Unit): boolean =>
+  unit.hasTrait(NonCombatant);
+
+export const aggressiveAnywhere = (unit: Unit): boolean => isA(unit, Air);
+
 const causesUnhappiness = (unit: Unit, city: City): boolean =>
   isAggressive(unit, city, {
-    neverAggressive: (unit: Unit): boolean => unit instanceof Diplomatic,
-    aggressiveAnywhere: (unit: Unit): boolean => unit instanceof Air,
+    neverAggressive,
+    aggressiveAnywhere,
   });
 
 // Under a Republic each such unit makes one citizen unhappy, and under a Democracy two.

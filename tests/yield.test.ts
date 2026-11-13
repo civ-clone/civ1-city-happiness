@@ -44,7 +44,13 @@ import Unit from '@civ-clone/core-unit/Unit';
 import UnitRegistry from '@civ-clone/core-unit/UnitRegistry';
 import cityCost from '../Rules/City/cost';
 import cityCreated from '@civ-clone/civ1-city/Rules/City/created';
-import cityYield from '../Rules/City/yield';
+import * as Units from '@civ-clone/civ1-unit/Units';
+import { Air, Diplomatic } from '@civ-clone/civ1-unit/Types';
+import cityYield, {
+  aggressiveAnywhere,
+  neverAggressive,
+} from '../Rules/City/yield';
+import traits from '@civ-clone/civ1-unit/Rules/Unit/traits';
 import { expect } from 'chai';
 import playerAdded from '@civ-clone/civ1-government/Rules/Player/added';
 import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
@@ -81,6 +87,9 @@ describe('city:yield', (): void => {
   gameDifficultyRegistry.set(Warlord);
 
   ruleRegistry.register(
+    // civ1-unit's unit traits, registered first as in a game: which units are `NonCombatant` decides who is never
+    //  aggressive.
+    ...traits(),
     ...playerAdded(
       availableGovernmentRegistry,
       playerGovernmentRegistry,
@@ -427,5 +436,31 @@ describe('city:yield', (): void => {
         [1, 1, 1, 1, 1, 1, 1, 1]
       );
     });
+  });
+
+  // Who is never aggressive was `instanceof Diplomatic`, before it was `NonCombatant`, and who is aggressive anywhere
+  //  `instanceof Air` (now `isA`): the same answers for each of the 28 types, asked of a unit in these rules.
+  it('should pick the same unit types as the class checks did', (): void => {
+    const UnitTypes = Object.values(Units) as unknown as (typeof Unit)[],
+      units = UnitTypes.map(
+        (UnitType): Unit =>
+          Object.assign(Object.create(UnitType.prototype), {
+            _ruleRegistry: ruleRegistry,
+          })
+      );
+
+    expect(units).length(28);
+
+    units.forEach((unit): void => {
+      expect(neverAggressive(unit), unit.constructor.name).equal(
+        unit instanceof Diplomatic
+      );
+      expect(aggressiveAnywhere(unit), unit.constructor.name).equal(
+        unit instanceof Air
+      );
+    });
+
+    expect(units.filter(neverAggressive)).length(2);
+    expect(units.filter(aggressiveAnywhere)).length(3);
   });
 });
