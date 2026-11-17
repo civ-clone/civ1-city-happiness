@@ -5,6 +5,7 @@ import cityCaptured from './Rules/City/captured';
 import cityCivilDisorder from './Rules/City/civil-disorder';
 import cityCost from './Rules/City/cost';
 import cityDestroyed from './Rules/City/destroyed';
+import cityProcessYield from './Rules/City/process-yield';
 import cityYield from './Rules/City/yield';
 import playerAction from './Rules/Player/action';
 import playerTurnStart from './Rules/Player/turn-start';
@@ -30,7 +31,11 @@ export const register = (game: Game): void => {
       game.difficulty,
       game.clients
     ),
-    ...cityCivilDisorder(game.cityGrowth, game.specialists),
+    ...cityCivilDisorder(
+      game.cityGrowth,
+      game.specialists,
+      game.pendingEffects
+    ),
     ...cityCost(
       game.rules,
       game.cityGrowth,
@@ -39,8 +44,14 @@ export const register = (game: Game): void => {
       game.playerResearch,
       game.units
     ),
-    ...cityCaptured(game.pendingEffects),
+    ...cityCaptured(
+      game.pendingEffects,
+      game.clients,
+      game.playerGovernments,
+      game.turn
+    ),
     ...cityDestroyed(game.pendingEffects),
+    ...cityProcessYield(game.pendingEffects, game.turn),
     ...playerAction(game.cities, game.pendingEffects),
     ...playerTurnStart(
       game.cities,

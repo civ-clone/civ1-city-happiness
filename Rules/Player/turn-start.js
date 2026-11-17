@@ -32,6 +32,15 @@ const getRules = (cityRegistry = CityRegistry_1.instance, ruleRegistry = RuleReg
             // Asked once a city is celebrating again, and then once, until a city's disorder brings a Democracy down.
             let republicOrDemocracy;
             cityRegistry.getByPlayer(player).forEach((city) => {
+                // A city the human captured on an earlier turn is judged by its citizens from here on. Its production has
+                //  normally been lost to the capture by now (`process-yield`), which has settled this already, but otherwise
+                //  its disorder would never end. One captured earlier in this turn start keeps its note, and isn't judged,
+                //  until its production has been lost on its next turn (civ-clone/web-renderer#1014).
+                (0, cityStatus_1.settleCapturedDisorder)(city, turn.value(), pendingEffects);
+                if ((0, cityStatus_1.capturedDisorder)(city, pendingEffects)) {
+                    celebratingAgain.delete(city);
+                    return;
+                }
                 // Both rules read the same yields, and working them out isn't cheap
                 // (civ-clone/web-renderer#315).
                 const yields = city.yields(), isCivilDisorder = ruleRegistry
