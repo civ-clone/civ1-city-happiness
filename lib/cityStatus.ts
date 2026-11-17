@@ -34,33 +34,37 @@ export const leaderCelebration = (
 ): PendingEffect | null => cityStatus(LEADER_CELEBRATION, city, pendingEffects);
 
 // Set in a city's `CIVIL_DISORDER` record while the disorder was put on it by its capture and its production hasn't
-//  been lost to it yet (civ-clone/web-renderer#1014).
+//  been lost to it yet, to the turn it was captured on (civ-clone/web-renderer#1014).
 const CAPTURED = 'captured';
 
 /**
- * Puts a city in civil disorder as it's captured: its disorder is recorded, carrying a note that it was captured
- * into it, which a `CivilDisorder` rule holds to until the city's next production is lost
+ * Puts a city in civil disorder as it's captured, on `turn`: its disorder is recorded, carrying a note that it was
+ * captured into it, which a `CivilDisorder` rule holds to until the city's next production is lost
  * (`settleCapturedDisorder`). Kept in the record, so it's saved with it, and dropped with it if the city is captured
  * again or destroyed first.
  */
 export const imposeCapturedDisorder = (
   city: City,
+  turn: number,
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
 ): void => {
   const recorded = civilDisorder(city, pendingEffects);
 
   if (recorded !== null) {
-    recorded.setData({ ...recorded.data(), [CAPTURED]: 'true' });
+    recorded.setData({ ...recorded.data(), [CAPTURED]: String(turn) });
 
     return;
   }
 
   pendingEffects.register(
-    new PendingEffect(CIVIL_DISORDER, city, { [CAPTURED]: 'true' })
+    new PendingEffect(CIVIL_DISORDER, city, { [CAPTURED]: String(turn) })
   );
 };
 
-/** Whether the city's disorder was put on it by its capture, and hasn't yet cost it a turn's production. */
+/**
+ * Whether the city's disorder was put on it by its capture, and hasn't yet cost it a turn's production: a city whose
+ * citizens can't calm it, which an AI needn't try to.
+ */
 export const capturedDisorder = (
   city: City,
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
@@ -68,17 +72,24 @@ export const capturedDisorder = (
 
 /**
  * Takes the capture's note off the city's disorder, leaving the record: from then on the city's citizens decide
- * whether it stays in disorder, and if it doesn't the record ends with "order restored".
+ * whether it stays in disorder, and if it doesn't the record ends with "order restored". Only for a city captured
+ * before `turn`: one captured earlier in the turn start that's settling it (by a unit finishing its route, say) hasn't
+ * lost a turn's production yet. A note without a turn is taken as an earlier one's.
  */
 export const settleCapturedDisorder = (
   city: City,
+  turn: number,
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
 ): void => {
   const recorded = civilDisorder(city, pendingEffects),
     // A copy, so it can be changed.
     data = recorded?.data() ?? {};
 
-  if (recorded === null || !(CAPTURED in data)) {
+  if (
+    recorded === null ||
+    !(CAPTURED in data) ||
+    Number(data[CAPTURED]) >= turn
+  ) {
     return;
   }
 

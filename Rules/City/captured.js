@@ -6,13 +6,14 @@ const ClientRegistry_1 = require("@civ-clone/core-client/ClientRegistry");
 const Governments_1 = require("@civ-clone/civ1-government/Governments");
 const core_pending_effect_1 = require("@civ-clone/core-pending-effect");
 const PlayerGovernmentRegistry_1 = require("@civ-clone/core-government/PlayerGovernmentRegistry");
+const Turn_1 = require("@civ-clone/core-turn-based-game/Turn");
 const Captured_1 = require("@civ-clone/core-city/Rules/Captured");
 const Criterion_1 = require("@civ-clone/core-rule/Criterion");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const Priorities_1 = require("@civ-clone/core-rule/Priorities");
 const cityStatus_2 = require("@civ-clone/base-city-happiness-status/lib/cityStatus");
 const isHuman_1 = require("@civ-clone/civ1-difficulty/isHuman");
-const getRules = (pendingEffects = core_pending_effect_1.instance, clientRegistry = ClientRegistry_1.instance, playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance) => [
+const getRules = (pendingEffects = core_pending_effect_1.instance, clientRegistry = ClientRegistry_1.instance, playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, turn = Turn_1.instance) => [
     // A captured city, taken by force or incited by a Diplomat, starts out for its captor neither in disorder nor
     //  celebrating, as v474.05 (`CAPTURE.C` `capunit`, which both captures go through): `townbuf[b].status &=
     //  CITY_CAPTURE_MASK;` and `townbuf[b].status &= CITY_TRANSFER_MASK;`, which clear `CITY_DISORDER` (0x01) and
@@ -31,7 +32,7 @@ const getRules = (pendingEffects = core_pending_effect_1.instance, clientRegistr
     new Captured_1.default('civ1-city-happiness:city/captured/disorder', new Priorities_1.High(), new Criterion_1.default((city, capturingPlayer) => (0, isHuman_1.default)(capturingPlayer, clientRegistry) &&
         !playerGovernmentRegistry
             .getByPlayer(capturingPlayer)
-            .is(Governments_1.Republic, Governments_1.Democracy)), new Effect_1.default((city) => (0, cityStatus_1.imposeCapturedDisorder)(city, pendingEffects))),
+            .is(Governments_1.Republic, Governments_1.Democracy)), new Effect_1.default((city) => (0, cityStatus_1.imposeCapturedDisorder)(city, turn.value(), pendingEffects))),
 ];
 exports.getRules = getRules;
 exports.default = exports.getRules;

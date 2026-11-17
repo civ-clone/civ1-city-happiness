@@ -6,7 +6,11 @@ import {
   Monarchy,
   Republic,
 } from '@civ-clone/civ1-government/Governments';
-import { CIVIL_DISORDER, civilDisorder } from '../lib/cityStatus';
+import {
+  CIVIL_DISORDER,
+  capturedDisorder,
+  civilDisorder,
+} from '../lib/cityStatus';
 import { Food, Production } from '@civ-clone/civ1-city/Yields';
 import AIClient from '@civ-clone/core-ai-client/AIClient';
 import Captured from '@civ-clone/core-city/Rules/Captured';
@@ -18,7 +22,7 @@ import Client from '@civ-clone/core-client/Client';
 import Effect from '@civ-clone/core-rule/Effect';
 import { Game } from '@civ-clone/core-game/Game';
 import Government from '@civ-clone/core-government/Government';
-import { High } from '@civ-clone/core-rule/Priorities';
+import { High, Normal } from '@civ-clone/core-rule/Priorities';
 import PendingEffect from '@civ-clone/core-pending-effect/PendingEffect';
 import Player from '@civ-clone/core-player/Player';
 import PlayerGovernment from '@civ-clone/core-government/PlayerGovernment';
@@ -178,8 +182,9 @@ describe('a city the human captures', (): void => {
 
         city.capture(captor);
 
-        // Recorded, so buying a unit there is refused (civ1-treasury's `Spend` asks for this record), and the city is
-        //  in disorder as soon as it's taken, but nothing is announced.
+        // Recorded, and in disorder by the `CivilDisorder` rules, as soon as it's taken, but nothing is announced.
+        //  Buying a unit there is refused either way: civ1-treasury's `Spend` asks for the record (0.1.8), or the
+        //  `CivilDisorder` rules (older releases).
         expect(civilDisorder(city, game.pendingEffects)?.handler()).to.equal(
           CIVIL_DISORDER
         );
@@ -240,6 +245,51 @@ describe('a city the human captures', (): void => {
     expect(events).to.deep.equal(['city:order-restored']);
     expect(civilDisorder(city, game.pendingEffects)).null;
     expect(inDisorder(city)).false;
+  });
+
+  it('should keep its disorder, and lose its next shields, when it’s captured during the turn start that would judge it', async (): Promise<void> => {
+    const { captor, city, events, game, inDisorder, shields, turn } =
+      await setUp();
+
+    // A unit finishing its route as the human's turn starts, after the production has been processed.
+    game.rules.register(
+      new TurnStart(
+        new Normal(),
+        new Effect((player: Player): void => {
+          if (player === captor && city.player() !== captor) {
+            city.capture(captor);
+          }
+        })
+      )
+    );
+
+    turn();
+
+    expect(capturedDisorder(city, game.pendingEffects)).true;
+    expect(inDisorder(city)).true;
+    expect(events).to.be.empty;
+
+    turn();
+
+    expect(shields).to.be.empty;
+    expect(events).to.deep.equal(['city:order-restored']);
+    expect(civilDisorder(city, game.pendingEffects)).null;
+  });
+
+  it('should still lose its next shields when it was captured in a game saved before captures were dated', async (): Promise<void> => {
+    const { city, events, game, shields, turn } = await setUp(Monarchy, {
+      owned: true,
+    });
+
+    game.pendingEffects.register(
+      new PendingEffect(CIVIL_DISORDER, city, { captured: 'true' })
+    );
+
+    turn();
+
+    expect(shields).to.be.empty;
+    expect(events).to.deep.equal(['city:order-restored']);
+    expect(civilDisorder(city, game.pendingEffects)).null;
   });
 
   it('should still lose its next shields after a save and load', async (): Promise<void> => {

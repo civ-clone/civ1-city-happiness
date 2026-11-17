@@ -16,6 +16,10 @@ import {
   PlayerGovernmentRegistry,
   instance as playerGovernmentRegistryInstance,
 } from '@civ-clone/core-government/PlayerGovernmentRegistry';
+import {
+  Turn,
+  instance as turnInstance,
+} from '@civ-clone/core-turn-based-game/Turn';
 import Captured from '@civ-clone/core-city/Rules/Captured';
 import City from '@civ-clone/core-city/City';
 import Criterion from '@civ-clone/core-rule/Criterion';
@@ -28,7 +32,8 @@ import isHuman from '@civ-clone/civ1-difficulty/isHuman';
 export const getRules = (
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance,
   clientRegistry: ClientRegistry = clientRegistryInstance,
-  playerGovernmentRegistry: PlayerGovernmentRegistry = playerGovernmentRegistryInstance
+  playerGovernmentRegistry: PlayerGovernmentRegistry = playerGovernmentRegistryInstance,
+  turn: Turn = turnInstance
 ): Captured[] => [
   // A captured city, taken by force or incited by a Diplomat, starts out for its captor neither in disorder nor
   //  celebrating, as v474.05 (`CAPTURE.C` `capunit`, which both captures go through): `townbuf[b].status &=
@@ -66,7 +71,7 @@ export const getRules = (
           .is(Republic, Democracy)
     ),
     new Effect((city: City): void =>
-      imposeCapturedDisorder(city, pendingEffects)
+      imposeCapturedDisorder(city, turn.value(), pendingEffects)
     )
   ),
 ];

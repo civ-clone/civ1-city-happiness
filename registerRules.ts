@@ -44,9 +44,14 @@ export const register = (game: Game): void => {
       game.playerResearch,
       game.units
     ),
-    ...cityCaptured(game.pendingEffects, game.clients, game.playerGovernments),
+    ...cityCaptured(
+      game.pendingEffects,
+      game.clients,
+      game.playerGovernments,
+      game.turn
+    ),
     ...cityDestroyed(game.pendingEffects),
-    ...cityProcessYield(game.pendingEffects),
+    ...cityProcessYield(game.pendingEffects, game.turn),
     ...playerAction(game.cities, game.pendingEffects),
     ...playerTurnStart(
       game.cities,
