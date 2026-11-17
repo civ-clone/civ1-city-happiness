@@ -116,19 +116,91 @@ describe('player:government:collapsed', (): void => {
     expect(collapsed).to.be.empty;
   });
 
-  it('should fall only once while a new government is still to be chosen', (): void => {
+  it('should fall into Anarchy with the Pyramids, with the choice due at once, and fall only once (civ-clone/web-renderer#1018)', (): void => {
     const { collapsed, game, playerGovernment, turn } = setUp();
 
-    // The Pyramids: no Anarchy, so Democracy stays until the choice is made.
+    // The Pyramids: no Anarchy to wait out, but a collapse still falls into it, as v474.05's `set_government(..., 0)`.
     game.rules.register(new AnarchyDuration(new Effect((): number => 0)));
 
     turn(true);
     turn(true);
+
+    expect(playerGovernment.is(Anarchy)).true;
+    expect(
+      turnsUntilChoice(playerGovernment, game.pendingEffects, game.turn)
+    ).to.equal(0);
+
     turn(true);
 
-    expect(playerGovernment.is(Democracy)).true;
     expect(pendingRevolution(playerGovernment, game.pendingEffects)).not.null;
     expect(collapsed).to.have.length(1);
+  });
+
+  it('should judge the cities after the collapsing one under Anarchy, with the Pyramids (civ-clone/web-renderer#1018)', (): void => {
+    const game = new Game(),
+      player = new Player(game.rules),
+      [first, collapsing, last] = ['first', 'collapsing', 'last'].map(
+        (name: string): City =>
+          ({
+            name: () => name,
+            player: () => player,
+            yields: () => [],
+          } as unknown as City)
+      ),
+      cityRegistry = {
+        getByPlayer: (): City[] => [first, collapsing, last],
+      } as unknown as CityRegistry,
+      playerGovernment = new PlayerGovernment(
+        player,
+        game.availableGovernments,
+        game.rules
+      ),
+      judged: [string, boolean][] = [];
+
+    game.availableGovernments.register(Anarchy, Democracy, Monarchy);
+    playerGovernment.set(new Democracy());
+    game.playerGovernments.register(playerGovernment);
+
+    game.rules.register(
+      new CivilDisorder(
+        new Effect((city: City): boolean => {
+          judged.push([city.name(), playerGovernment.is(Anarchy)]);
+
+          return city === collapsing;
+        })
+      ),
+      ...anarchyDuration(() => 0.5),
+      new AnarchyDuration(new Effect((): number => 0)),
+      ...turnStart(
+        cityRegistry,
+        game.rules,
+        game.engine,
+        game.cityGrowth,
+        game.playerGovernments,
+        game.pendingEffects,
+        game.turn
+      )
+    );
+
+    [1, 2].forEach((): void => {
+      game.turn.increment();
+      game.rules.process(TurnStart, player);
+    });
+
+    // Under the Democracy throughout the first turn, and the last city alone in Anarchy on the second.
+    expect(judged).to.deep.equal([
+      ['first', false],
+      ['collapsing', false],
+      ['last', false],
+      ['first', false],
+      ['collapsing', false],
+      ['last', true],
+    ]);
+    expect(playerGovernment.is(Anarchy)).true;
+    // The Pyramids' rule held: no Anarchy to wait out.
+    expect(
+      turnsUntilChoice(playerGovernment, game.pendingEffects, game.turn)
+    ).to.equal(0);
   });
 });
 
