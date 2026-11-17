@@ -8,12 +8,13 @@ const captured_1 = require("./Rules/City/captured");
 const civil_disorder_1 = require("./Rules/City/civil-disorder");
 const cost_1 = require("./Rules/City/cost");
 const destroyed_1 = require("./Rules/City/destroyed");
+const process_yield_1 = require("./Rules/City/process-yield");
 const yield_1 = require("./Rules/City/yield");
 const action_1 = require("./Rules/Player/action");
 const turn_start_1 = require("./Rules/Player/turn-start");
 const core_game_1 = require("@civ-clone/core-game");
 const register = (game) => {
-    game.rules.register(...(0, celebrate_leader_1.default)(game.cityGrowth, game.specialists, game.playerGovernments), ...(0, celebration_yield_1.default)(game.pendingEffects, game.playerGovernments, game.tileImprovements), ...(0, yield_1.default)(game.cityGrowth, game.playerGovernments, game.units, game.cities, game.difficulty, game.clients), ...(0, civil_disorder_1.default)(game.cityGrowth, game.specialists), ...(0, cost_1.default)(game.rules, game.cityGrowth, game.cityImprovements, game.playerGovernments, game.playerResearch, game.units), ...(0, captured_1.default)(game.pendingEffects), ...(0, destroyed_1.default)(game.pendingEffects), ...(0, action_1.default)(game.cities, game.pendingEffects), ...(0, turn_start_1.default)(game.cities, game.rules, game.engine, game.cityGrowth, game.playerGovernments, game.pendingEffects, game.turn, game.cityImprovements));
+    game.rules.register(...(0, celebrate_leader_1.default)(game.cityGrowth, game.specialists, game.playerGovernments), ...(0, celebration_yield_1.default)(game.pendingEffects, game.playerGovernments, game.tileImprovements), ...(0, yield_1.default)(game.cityGrowth, game.playerGovernments, game.units, game.cities, game.difficulty, game.clients), ...(0, civil_disorder_1.default)(game.cityGrowth, game.specialists, game.pendingEffects), ...(0, cost_1.default)(game.rules, game.cityGrowth, game.cityImprovements, game.playerGovernments, game.playerResearch, game.units), ...(0, captured_1.default)(game.pendingEffects, game.clients, game.playerGovernments), ...(0, destroyed_1.default)(game.pendingEffects), ...(0, process_yield_1.default)(game.pendingEffects), ...(0, action_1.default)(game.cities, game.pendingEffects), ...(0, turn_start_1.default)(game.cities, game.rules, game.engine, game.cityGrowth, game.playerGovernments, game.pendingEffects, game.turn, game.cityImprovements));
     // What makes its improvements work better, for the civilopedia: they only describe, so no rules are made from them
     //  (civ-clone/web-renderer#37).
     game.requirements.add(null, ...Requirements_1.default);

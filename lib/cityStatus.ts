@@ -33,6 +33,60 @@ export const leaderCelebration = (
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
 ): PendingEffect | null => cityStatus(LEADER_CELEBRATION, city, pendingEffects);
 
+// Set in a city's `CIVIL_DISORDER` record while the disorder was put on it by its capture and its production hasn't
+//  been lost to it yet (civ-clone/web-renderer#1014).
+const CAPTURED = 'captured';
+
+/**
+ * Puts a city in civil disorder as it's captured: its disorder is recorded, carrying a note that it was captured
+ * into it, which a `CivilDisorder` rule holds to until the city's next production is lost
+ * (`settleCapturedDisorder`). Kept in the record, so it's saved with it, and dropped with it if the city is captured
+ * again or destroyed first.
+ */
+export const imposeCapturedDisorder = (
+  city: City,
+  pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
+): void => {
+  const recorded = civilDisorder(city, pendingEffects);
+
+  if (recorded !== null) {
+    recorded.setData({ ...recorded.data(), [CAPTURED]: 'true' });
+
+    return;
+  }
+
+  pendingEffects.register(
+    new PendingEffect(CIVIL_DISORDER, city, { [CAPTURED]: 'true' })
+  );
+};
+
+/** Whether the city's disorder was put on it by its capture, and hasn't yet cost it a turn's production. */
+export const capturedDisorder = (
+  city: City,
+  pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
+): boolean => CAPTURED in (civilDisorder(city, pendingEffects)?.data() ?? {});
+
+/**
+ * Takes the capture's note off the city's disorder, leaving the record: from then on the city's citizens decide
+ * whether it stays in disorder, and if it doesn't the record ends with "order restored".
+ */
+export const settleCapturedDisorder = (
+  city: City,
+  pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance
+): void => {
+  const recorded = civilDisorder(city, pendingEffects),
+    // A copy, so it can be changed.
+    data = recorded?.data() ?? {};
+
+  if (recorded === null || !(CAPTURED in data)) {
+    return;
+  }
+
+  delete data[CAPTURED];
+
+  recorded.setData(data);
+};
+
 /** Registered with the rules, at import, so a status loaded from a save can still end. */
 export const registerHandlers = (
   pendingEffects: PendingEffectRegistry = pendingEffectRegistryInstance,
