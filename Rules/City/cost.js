@@ -42,7 +42,9 @@ const getRules = (ruleRegistry = RuleRegistry_1.instance, cityGrowthRegistry = C
         type: 'content',
         subject: CityImprovementType,
         value,
+        // A row with advances adds to the improvement's other rows: a Temple makes one more content with Mysticism.
         with: advances.length === 0 ? undefined : advances,
+        step: advances.length === 0 ? undefined : 'more',
     }))),
     // Martial law (`martialLaw.ts`) comes after the improvements here and the Wonders in civ1-wonder, which are `Low`, so
     //  it calms what they leave, as v474.05 does. Shakespeare's Theatre (4000) still comes last.

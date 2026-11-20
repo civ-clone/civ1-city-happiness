@@ -14,18 +14,19 @@ describe('descriptions', (): void => {
   it('each improvement makes as many content as it says it does', (): void => {
     const described = cost()
       .flatMap((rule) => rule.descriptions())
-      .map(({ type, subject, value, with: advances }) => [
+      .map(({ type, subject, value, with: advances, step }) => [
         type,
         subject,
         value,
         advances ?? null,
+        step ?? null,
       ]);
 
     expect(described).to.eql([
-      ['content', Temple, 1, null],
-      ['content', Temple, 1, [Mysticism]],
-      ['content', Colosseum, 3, null],
-      ['content', Cathedral, 4, null],
+      ['content', Temple, 1, null, null],
+      ['content', Temple, 1, [Mysticism], 'more'],
+      ['content', Colosseum, 3, null, null],
+      ['content', Cathedral, 4, null, null],
     ]);
 
     cost(undefined, undefined, {

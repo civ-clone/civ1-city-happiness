@@ -124,7 +124,9 @@ export const getRules: (
           type: 'content',
           subject: CityImprovementType,
           value,
+          // A row with advances adds to the improvement's other rows: a Temple makes one more content with Mysticism.
           with: advances.length === 0 ? undefined : advances,
+          step: advances.length === 0 ? undefined : 'more',
         })
       )
   ),
