@@ -39,6 +39,7 @@ import City from '@civ-clone/core-city/City';
 import CityImprovement from '@civ-clone/core-city-improvement/CityImprovement';
 import Cost from '@civ-clone/core-city/Rules/Cost';
 import Criterion from '@civ-clone/core-rule/Criterion';
+import Description from '@civ-clone/core-rule/Description';
 import Effect from '@civ-clone/core-rule/Effect';
 import High from '@civ-clone/core-rule/Priorities/High';
 import { Low } from '@civ-clone/core-rule/Priorities';
@@ -52,6 +53,19 @@ import {
   martialLawLevel,
 } from '@civ-clone/base-government-martial-law/lib/martialLaw';
 import { reduceYield } from '@civ-clone/core-yield/lib/reduceYields';
+
+// The unhappy citizens each improvement makes content, with the advances it needs for that, if any. The rules below,
+//  and what they say they do, read this.
+export const contentImprovements: [
+  typeof CityImprovement,
+  number,
+  ...(typeof Advance)[]
+][] = [
+  [Temple, 1],
+  [Temple, 1, Mysticism],
+  [Colosseum, 3],
+  [Cathedral, 4],
+];
 
 export const getRules: (
   ruleRegistry?: RuleRegistry,
@@ -68,14 +82,7 @@ export const getRules: (
   playerResearchRegistry: PlayerResearchRegistry = playerResearchRegistryInstance,
   unitRegistry: UnitRegistry = unitRegistryInstance
 ): Cost[] => [
-  ...(
-    [
-      [Temple, 1],
-      [Temple, 1, Mysticism],
-      [Colosseum, 3],
-      [Cathedral, 4],
-    ] as [typeof CityImprovement, number, ...(typeof Advance)[]][]
-  ).map(
+  ...contentImprovements.map(
     ([CityImprovementType, value, ...advances]) =>
       new Cost(
         new Low(),
@@ -111,7 +118,14 @@ export const getRules: (
                     cityImprovement instanceof CityImprovementType
                 )[0]
             ) as Yield
-        )
+        ),
+        // What it does, for the Civilopedia (civ-clone/web-renderer#1196).
+        new Description({
+          type: 'content',
+          subject: CityImprovementType,
+          value,
+          with: advances.length === 0 ? undefined : advances,
+        })
       )
   ),
 
