@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRules = void 0;
+exports.getRules = exports.contentImprovements = void 0;
 const CityImprovements_1 = require("@civ-clone/civ1-city-improvement/CityImprovements");
 const CityGrowthRegistry_1 = require("@civ-clone/core-city-growth/CityGrowthRegistry");
 const Yields_1 = require("../../Yields");
@@ -11,6 +11,7 @@ const RuleRegistry_1 = require("@civ-clone/core-rule/RuleRegistry");
 const UnitRegistry_1 = require("@civ-clone/core-unit/UnitRegistry");
 const Cost_1 = require("@civ-clone/core-city/Rules/Cost");
 const Criterion_1 = require("@civ-clone/core-rule/Criterion");
+const Description_1 = require("@civ-clone/core-rule/Description");
 const Effect_1 = require("@civ-clone/core-rule/Effect");
 const High_1 = require("@civ-clone/core-rule/Priorities/High");
 const Priorities_1 = require("@civ-clone/core-rule/Priorities");
@@ -20,19 +21,31 @@ const Priority_1 = require("@civ-clone/core-rule/Priority");
 const martialLaw_1 = require("../../martialLaw");
 const martialLaw_2 = require("@civ-clone/base-government-martial-law/lib/martialLaw");
 const reduceYields_1 = require("@civ-clone/core-yield/lib/reduceYields");
+// The unhappy citizens each improvement makes content, with the advances it needs for that, if any. The rules below,
+//  and what they say they do, read this.
+exports.contentImprovements = [
+    [CityImprovements_1.Temple, 1],
+    [CityImprovements_1.Temple, 1, Advances_1.Mysticism],
+    [CityImprovements_1.Colosseum, 3],
+    [CityImprovements_1.Cathedral, 4],
+];
 const getRules = (ruleRegistry = RuleRegistry_1.instance, cityGrowthRegistry = CityGrowthRegistry_1.instance, cityImprovementRegistry = CityImprovementRegistry_1.instance, playerGovernmentRegistry = PlayerGovernmentRegistry_1.instance, playerResearchRegistry = PlayerResearchRegistry_1.instance, unitRegistry = UnitRegistry_1.instance) => [
-    ...[
-        [CityImprovements_1.Temple, 1],
-        [CityImprovements_1.Temple, 1, Advances_1.Mysticism],
-        [CityImprovements_1.Colosseum, 3],
-        [CityImprovements_1.Cathedral, 4],
-    ].map(([CityImprovementType, value, ...advances]) => new Cost_1.default(new Priorities_1.Low(), new Criterion_1.default((city) => cityImprovementRegistry
+    ...exports.contentImprovements.map(([CityImprovementType, value, ...advances]) => new Cost_1.default(new Priorities_1.Low(), new Criterion_1.default((city) => cityImprovementRegistry
         .getByCity(city)
         .some((cityImprovement) => cityImprovement instanceof CityImprovementType)), new Or_1.default(new Criterion_1.default((city) => advances.length === 0), new Criterion_1.default((city) => advances.every((AdvanceType) => playerResearchRegistry
         .getByPlayer(city.player())
         .completed(AdvanceType)))), new Criterion_1.default((city, yields) => (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness) > 0), new Effect_1.default((city, yields) => new Yields_1.CityImprovementContent(Math.min(value, (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness)), cityImprovementRegistry
         .getByCity(city)
-        .filter((cityImprovement) => cityImprovement instanceof CityImprovementType)[0])))),
+        .filter((cityImprovement) => cityImprovement instanceof CityImprovementType)[0])), 
+    // What it does, for the Civilopedia (civ-clone/web-renderer#1196).
+    new Description_1.default({
+        type: 'content',
+        subject: CityImprovementType,
+        value,
+        // A row with advances adds to the improvement's other rows: a Temple makes one more content with Mysticism.
+        with: advances.length === 0 ? undefined : advances,
+        step: advances.length === 0 ? undefined : 'more',
+    }))),
     // Martial law (`martialLaw.ts`) comes after the improvements here and the Wonders in civ1-wonder, which are `Low`, so
     //  it calms what they leave, as v474.05 does. Shakespeare's Theatre (4000) still comes last.
     new Cost_1.default('civ1-city-happiness:city/cost/martial-law', new Priority_1.default(3500), new Criterion_1.default((city) => (0, martialLaw_2.martialLawLevel)(martialLaw_1.martialLawTable, playerGovernmentRegistry.getByPlayer(city.player())) !== null), new Criterion_1.default((city, yields) => (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness) > 0), new Effect_1.default((city, yields) => (0, martialLaw_2.martialLaw)(city, (0, reduceYields_1.reduceYield)(yields, Yields_1.Unhappiness), (0, martialLaw_2.martialLawLevel)(martialLaw_1.martialLawTable, playerGovernmentRegistry.getByPlayer(city.player())), martialLaw_1.keepsMartialLaw, unitRegistry))),
